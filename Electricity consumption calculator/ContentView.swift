@@ -9,24 +9,106 @@ import SwiftUI
 import CoreData
 
 struct ContentView: View {
+//    TODO: remove this to normal place:
+    @State var myCapacity: Float = 500
+    
     @Environment(\.managedObjectContext) private var viewContext
 
     @FetchRequest(
-        sortDescriptors: [NSSortDescriptor(keyPath: \Item.timestamp, ascending: true)],
+        sortDescriptors: [NSSortDescriptor(keyPath: \ConsumerEntity.timeCreated, ascending: true)],
         animation: .default)
-    private var items: FetchedResults<Item>
+    private var allGeneratorConsumers: FetchedResults<ConsumerEntity>
+    
+    var mainConsumers: [ConsumerEntity] {
+        allGeneratorConsumers.filter { consumer in
+            return consumer.priorityType == ConsumerPriorityType.main.rawValue
+        }
+    }
+    
+    var secondaryConsumers: [ConsumerEntity] {
+        allGeneratorConsumers.filter { consumer in
+            return consumer.priorityType == ConsumerPriorityType.secondary.rawValue
+        }
+    }
+
+    var mainConsumersTotalConsumption: Float {
+        mainConsumers.map { $0.consumption * Float($0.quantity) }.reduce(0, +)
+    }
+    
+    var secondaryConsumersTotalConsumption: Float {
+        secondaryConsumers.map { $0.consumption * Float($0.quantity) }.reduce(0, +)
+    }
+    
+    var totalConsumption: Float {
+        return allGeneratorConsumers.map { $0.consumption * Float($0.quantity) }.reduce(0, +)
+    }
+    
+    var leftCapacity: Float {
+        myCapacity - totalConsumption
+    }
 
     var body: some View {
         NavigationView {
             List {
-                ForEach(items) { item in
-                    NavigationLink {
-                        Text("Item at \(item.timestamp!, formatter: itemFormatter)")
-                    } label: {
-                        Text(item.timestamp!, formatter: itemFormatter)
+                Section(content: {
+                    ForEach(mainConsumers) { mainConsumerItem in
+                        NavigationLink {
+                            ConsumerView(consumer: mainConsumerItem)
+                        } label: {
+                            Text(mainConsumerItem.name)
+                        }
                     }
-                }
-                .onDelete(perform: deleteItems)
+                    .onDelete(perform: deleteItems)
+//                    .onMove { mainConsumers.move(fromOffsets: $0, toOffset: $1) }
+                    .swipeActions(edge: .leading) {
+                        Button(action: {
+                            // Define your action here
+                            print("Swipe action triggered")
+                        }) {
+                            Label("Activate", systemImage: "checkmark.circle.fill")
+                        }
+                        .tint(.green)
+                    }
+                }, header: {
+                    Text("Main item\(mainConsumers.count > 1 ? "s" : "")")
+                }, footer: {
+                    Text("Total: \(String(format: "%.2f", mainConsumersTotalConsumption)) Watt")
+                })
+                
+                Section(content: {
+                    ForEach(secondaryConsumers) { secondaryConsumerItem in
+                        NavigationLink {
+                            ConsumerView(consumer: secondaryConsumerItem)
+                        } label: {
+                            Text(secondaryConsumerItem.name)
+                        }
+                    }
+                    .onDelete(perform: deleteItems)
+//                    .onMove { mainConsumers.move(fromOffsets: $0, toOffset: $1) }
+                    .swipeActions(edge: .leading) {
+                        Button(action: {
+                            // Define your action here
+                            print("Swipe action triggered")
+                        }) {
+                            Label("Activate", systemImage: "checkmark.circle.fill")
+                        }
+                        .tint(.green)
+                    }
+                }, header: {
+                    Text("Main item\(secondaryConsumers.count > 1 ? "s" : "")")
+                }, footer: {
+                    Text("Total: \(String(format: "%.2f", secondaryConsumersTotalConsumption)) Watt")
+                })
+                
+                Section(content: {
+                    HStack {
+                        Text("My capacity")
+                        TextField("420", value: $myCapacity, format: FloatingPointFormatStyle())
+                        Text("Watt")
+                    }
+                    Text("Total consumption \(String(format: "%.2f", totalConsumption)) Watt")
+                    Text("Left capacity \(String(format: "%.2f", leftCapacity)) Watt")
+                })
             }
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
@@ -44,8 +126,8 @@ struct ContentView: View {
 
     private func addItem() {
         withAnimation {
-            let newItem = Item(context: viewContext)
-            newItem.timestamp = Date()
+//            let newItem = ConsumerEntity(context: viewContext)
+//            newItem.timestamp = Date()
 
             do {
                 try viewContext.save()
@@ -60,7 +142,7 @@ struct ContentView: View {
 
     private func deleteItems(offsets: IndexSet) {
         withAnimation {
-            offsets.map { items[$0] }.forEach(viewContext.delete)
+            offsets.map { allGeneratorConsumers[$0] }.forEach(viewContext.delete)
 
             do {
                 try viewContext.save()
@@ -73,13 +155,6 @@ struct ContentView: View {
         }
     }
 }
-
-private let itemFormatter: DateFormatter = {
-    let formatter = DateFormatter()
-    formatter.dateStyle = .short
-    formatter.timeStyle = .medium
-    return formatter
-}()
 
 #Preview {
     ContentView().environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)

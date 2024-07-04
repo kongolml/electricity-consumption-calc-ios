@@ -7,15 +7,22 @@
 
 import CoreData
 
-struct PersistenceController {
+class PersistenceController: ObservableObject {
     static let shared = PersistenceController()
 
     static var preview: PersistenceController = {
         let result = PersistenceController(inMemory: true)
         let viewContext = result.container.viewContext
-        for _ in 0..<10 {
-            let newItem = Item(context: viewContext)
-            newItem.timestamp = Date()
+        for index in 0..<10 {
+            let newItem = ConsumerEntity(context: viewContext)
+            newItem.id = UUID()
+            newItem.priorityType = Int16(index % 2) + 1
+            newItem.name = "New item \(index + 1)"
+            newItem.timeCreated = Date()
+            newItem.consumption = [10.0, 50.0, 100.0, 250.0, 500.0].randomElement() ?? 25
+            newItem.quantity = [1,2,3,5].randomElement() ?? 1
+            
+            print(newItem)
         }
         do {
             try viewContext.save()

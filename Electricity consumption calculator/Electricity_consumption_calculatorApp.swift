@@ -15,6 +15,7 @@ struct Electricity_consumption_calculatorApp: App {
         WindowGroup {
             ContentView()
                 .environment(\.managedObjectContext, persistenceController.container.viewContext)
+                .environmentObject(persistenceController)
         }
     }
 }
