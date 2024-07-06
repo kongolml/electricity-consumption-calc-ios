@@ -13,18 +13,19 @@ struct ConsumerListItemView: View {
 
     var body: some View {
         HStack {
-            Text(consumer.name)
+            Text("\(consumer.name) (\(consumer.orderInGroup))")
             Spacer()
-            Text("\(String(consumer.consumption)) Watt")
+            Text("\(String(consumer.consumptionNice)) Watt")
             Text("x\(String(consumer.quantity))")
         }
+        .opacity(consumer.isActive ? 1.0 : 0.5)
     }
 }
 
 #Preview {
     let context = PersistenceController.preview.container.viewContext
 
-    let dummyConsumer = ConsumerEntity(context: context)
+    let dummyConsumer = ConsumerEntity.createMock(context: context)
 
     return ConsumerListItemView(consumer: dummyConsumer)
 }

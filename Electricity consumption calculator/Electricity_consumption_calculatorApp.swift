@@ -13,7 +13,7 @@ struct Electricity_consumption_calculatorApp: App {
 
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            ContentView(context: persistenceController.container.viewContext)
                 .environment(\.managedObjectContext, persistenceController.container.viewContext)
                 .environmentObject(persistenceController)
         }

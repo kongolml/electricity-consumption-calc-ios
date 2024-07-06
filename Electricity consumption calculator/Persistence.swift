@@ -19,10 +19,9 @@ class PersistenceController: ObservableObject {
             newItem.priorityType = Int16(index % 2) + 1
             newItem.name = "New item \(index + 1)"
             newItem.timeCreated = Date()
-            newItem.consumption = [10.0, 50.0, 100.0, 250.0, 500.0].randomElement() ?? 25
+            newItem.consumption = Double(25.0) //[10.0, 50.0, 100.0, 250.0, 500.0].randomElement() ?? 25
             newItem.quantity = [1,2,3,5].randomElement() ?? 1
-            
-            print(newItem)
+            newItem.isActive = Bool.random()
         }
         do {
             try viewContext.save()
@@ -59,5 +58,22 @@ class PersistenceController: ObservableObject {
             }
         })
         container.viewContext.automaticallyMergesChangesFromParent = true
+    }
+    
+    func saveContext() {
+        do {
+            try container.viewContext.save()
+        } catch {
+            // Replace this implementation with code to handle the error appropriately.
+            // fatalError() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
+            print("TODO: handle error in saveItem")
+            let nsError = error as NSError
+            fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
+        }
+    }
+    
+    func deleteItem(consumer: ConsumerEntity) {
+        container.viewContext.delete(consumer)
+        saveContext()
     }
 }

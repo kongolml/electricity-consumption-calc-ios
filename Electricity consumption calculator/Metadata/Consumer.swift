@@ -20,3 +20,28 @@ enum ConsumerPriorityType: Int16, CaseIterable {
         }
     }
 }
+
+enum ConsumptionUnits: Int, CaseIterable, Identifiable {
+    case watt = 1
+    case kwatt = 2
+    
+    var id: Int { self.rawValue }
+    
+    var name: String {
+        switch self {
+        case .watt:
+            return "Watt"
+        case .kwatt:
+            return "kWatt"
+        }
+    }
+    
+    var conversionFactor: Double {
+        switch self {
+        case .watt:
+            return 1.0
+        case .kwatt:
+            return 0.001
+        }
+    }
+}

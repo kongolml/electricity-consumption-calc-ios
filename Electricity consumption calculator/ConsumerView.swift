@@ -10,45 +10,66 @@ import SwiftUI
 struct ConsumerView: View {
     @ObservedObject var consumer: ConsumerEntity
     @Environment(\.managedObjectContext) private var viewContext
+    @Environment(\.presentationMode) var presentationMode
+    @EnvironmentObject var persistenceController: PersistenceController
 
     @State var showDeleteConfirmationAlert: Bool = false
+    @State private var preferredConsumptionUnit: ConsumptionUnits = .kwatt
+    
+    // Configuring the NumberFormatter for float values
+    private var floatNumberFormatter: NumberFormatter {
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .none
+        formatter.minimumFractionDigits = 0
+        formatter.maximumFractionDigits = 4
+        return formatter
+    }
 
     var body: some View {
         NavigationStack {
-            List {
+            Form {
                 Section {
+                    
+                    Text("value: \(consumer.consumption)")
+                    
                     HStack {
-                        Text("Name")
-                            .foregroundColor(.gray)
-                        Spacer()
-                        TextField("Teapot", text: $consumer.name)
-                            .multilineTextAlignment(.trailing)
-                            .frame(maxWidth: 150)
+                        TextField("Consumption", value: Binding(
+                            get: {
+                                consumer.consumption * preferredConsumptionUnit.conversionFactor
+                            },
+                            set: { newValue in
+                                consumer.consumption = newValue / preferredConsumptionUnit.conversionFactor
+                                
+                            }
+                        ), formatter: floatNumberFormatter)
+                        .keyboardType(.decimalPad)
+                        .onChange(of: consumer.consumption, {
+                            print(consumer)
+                        })
+                        
+                        Menu {
+                            ForEach(ConsumptionUnits.allCases) { consumptionUnit in
+                                Button(action: {
+                                    preferredConsumptionUnit = consumptionUnit
+                                }) {
+                                    Text(consumptionUnit.name)
+                                }
+                            }
+                        } label: {
+                            Text(preferredConsumptionUnit.name)
+                        }
                     }
                     HStack {
-                        Text("Consumption (Watt)")
-                            .foregroundColor(.gray)
-                        Spacer()
-                        TextField("100", value: $consumer.consumption, formatter: NumberFormatter())
-                            .keyboardType(.decimalPad)
-                            .multilineTextAlignment(.trailing)
-                            .frame(maxWidth: 150)
-                    }
-                    HStack {
-                        Text("Quantity")
-                            .foregroundColor(.gray)
-                        Spacer()
                         TextField("Quantity", value: $consumer.quantity, formatter: NumberFormatter())
                             .keyboardType(.decimalPad)
-                            .multilineTextAlignment(.trailing)
-                            .frame(maxWidth: 150)
                     }
                     
                     Picker("Type", selection: $consumer.priorityType) {
                         ForEach(ConsumerPriorityType.allCases, id: \.self) { priorityType in
-                            Text(priorityType.description)
+                            Text(priorityType.description).tag(priorityType.rawValue)
                         }
                     }
+                    .pickerStyle(MenuPickerStyle())
                     .foregroundStyle(.gray)
                     
                     Toggle("Enabled", isOn: $consumer.isActive)
@@ -60,18 +81,24 @@ struct ConsumerView: View {
                     }
                     .confirmationDialog("Are you sure you want to delete this item?", isPresented: $showDeleteConfirmationAlert, titleVisibility: .visible) {
                         Button("Delete", role: .destructive) {
-                            print("TODO: delete item and bo back")
                             showDeleteConfirmationAlert = false
+                            persistenceController.deleteItem(consumer: consumer)
                             print("TODO: go back to prev view")
-//                            presentationMode.wrappedValue.dismiss()
+                            presentationMode.wrappedValue.dismiss()
                         }
                     }
                 }
             }
             .navigationTitle(consumer.name)
+            .onDisappear {
+                saveChanges()
+            }
         }
-        .onDisappear {
-            
+    }
+    
+    private func saveChanges() {
+        viewContext.perform {
+            persistenceController.saveContext()
         }
     }
 }
