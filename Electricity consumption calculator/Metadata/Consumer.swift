@@ -11,12 +11,21 @@ enum ConsumerPriorityType: Int16, CaseIterable {
     case main = 1
     case secondary = 2
     
-    var description: String {
+    var name: LocalizedStringResource {
         switch self {
         case .main:
             return "Main"
         case .secondary:
             return "Secondary"
+        }
+    }
+    
+    var namePlural: LocalizedStringResource {
+        switch self {
+        case .main:
+            return "Main_plural"
+        case .secondary:
+            return "Secondary_plural"
         }
     }
 }
@@ -27,7 +36,7 @@ enum ConsumptionUnits: Int, CaseIterable, Identifiable {
     
     var id: Int { self.rawValue }
     
-    var name: String {
+    var name: LocalizedStringResource {
         switch self {
         case .watt:
             return "Watt"

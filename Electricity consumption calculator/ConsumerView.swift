@@ -31,7 +31,7 @@ struct ConsumerView: View {
                     
                     Picker("Type", selection: $consumer.priorityType) {
                         ForEach(ConsumerPriorityType.allCases, id: \.self) { priorityType in
-                            Text(priorityType.description).tag(priorityType.rawValue)
+                            Text(priorityType.name).tag(priorityType.rawValue)
                         }
                     }
                     .pickerStyle(MenuPickerStyle())

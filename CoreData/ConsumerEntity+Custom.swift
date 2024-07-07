@@ -26,11 +26,11 @@ extension ConsumerEntity {
         newConsumer.id = UUID()
         newConsumer.name = "Mock Consumer"
         newConsumer.timeCreated = Date()
-        newConsumer.priorityType = Int16.random(in: 1...3)
+        newConsumer.priorityType = Int16.random(in: 1...2)
         newConsumer.consumption = 100.0 //Double.random(in: 10.0...500.0)
         newConsumer.quantity = Int16.random(in: 1...5)
         newConsumer.isActive = Bool.random()
-        newConsumer.orderInGroup = 1
+        newConsumer.orderInGroup = 0
         return newConsumer
     }
 }

@@ -34,45 +34,55 @@ struct GeneratorView: View {
     var body: some View {
         NavigationStack {
             List {
-                ForEach(ConsumerPriorityType.allCases, id: \.self) { filteredConsumersGroup in
-                    let consumersInGroup = filteredItems(for: filteredConsumersGroup)
-
-                    Section(content: {
-                        ForEach(consumersInGroup, id: \.self) { consumerItem in
-                            NavigationLink {
-                                ConsumerView(consumer: consumerItem)
-                            } label: {
-                                ConsumerListItemView(consumer: consumerItem)
-                            }
-                            .swipeActions(edge: .leading) {
-                                Button(action: {
-                                    toggleItemActiveStatus(consumer: consumerItem)
-                                }) {
-                                    consumerItem.isActive ? Label("Dectivate", systemImage: "bolt.slash") : Label("Activate", systemImage: "powercord")
+                if (allGeneratorConsumers.count == 0) {
+                    Text("No consumers yet")
+                }
+                
+                if (allGeneratorConsumers.count > 0) {
+                    ForEach(ConsumerPriorityType.allCases, id: \.self) { filteredConsumersGroup in
+                        let consumersInGroup = filteredItems(for: filteredConsumersGroup)
+                        
+                        Section(content: {
+                            ForEach(consumersInGroup, id: \.self) { consumerItem in
+                                NavigationLink {
+                                    ConsumerView(consumer: consumerItem)
+                                } label: {
+                                    ConsumerListItemView(consumer: consumerItem)
                                 }
-                                .tint(consumerItem.isActive ? .red : .green)
-                            }
-                            .swipeActions(edge: .trailing) {
-                                Button(action: {
-                                    deleteItem(consumer: consumerItem)
-                                }) {
-                                    Label("Delete", systemImage: "trash")
+                                .swipeActions(edge: .leading) {
+                                    Button(action: {
+                                        toggleItemActiveStatus(consumer: consumerItem)
+                                    }) {
+                                        consumerItem.isActive ? Label("Dectivate", systemImage: "bolt.slash") : Label("Activate", systemImage: "powercord")
+                                    }
+                                    .tint(consumerItem.isActive ? .red : .green)
                                 }
-                                .tint(.red)
+                                .swipeActions(edge: .trailing) {
+                                    Button(action: {
+                                        deleteItem(consumer: consumerItem)
+                                    }) {
+                                        Label("Delete", systemImage: "trash")
+                                    }
+                                    .tint(.red)
+                                }
                             }
-                        }
-//                        .onDelete(perform: deleteItemsInBulk)
-                        .onMove { indices, newOffset in
-                            moveItems(from: indices, to: newOffset, in: filteredConsumersGroup)
-                        }
-                    }, header: {
-                        Text("\(filteredConsumersGroup.description) item\(consumersInGroup.count > 1 ? "s" : "")")
-                    }, footer: {
-                        var consumersTotalConsumption: Double {
-                            consumersInGroup.filter { $0.isActive }.map { $0.consumption * Double($0.quantity) }.reduce(0, +)
-                        }
-                        Text("Total: \(convertEnergyDoubleToNiceFormat(value: consumersTotalConsumption)) Watt")
-                    })
+                            //                        .onDelete(perform: deleteItemsInBulk)
+                            .onMove { indices, newOffset in
+                                moveItems(from: indices, to: newOffset, in: filteredConsumersGroup)
+                            }
+                        }, header: {
+                            if consumersInGroup.count > 1 {
+                                Text("\(filteredConsumersGroup.namePlural) consumers")
+                            } else {
+                                Text("\(filteredConsumersGroup.name) consumer")
+                            }
+                        }, footer: {
+                            var consumersTotalConsumption: Double {
+                                consumersInGroup.filter { $0.isActive }.map { $0.consumption * Double($0.quantity) }.reduce(0, +)
+                            }
+                            Text("Total: \(convertEnergyDoubleToNiceFormat(value: consumersTotalConsumption)) Watt")
+                        })
+                    }
                 }
                 
                 Section(content: {
@@ -94,6 +104,8 @@ struct GeneratorView: View {
                         Text("\(convertEnergyDoubleToNiceFormat(value: leftCapacity)) Watt")
                             .foregroundColor(.gray)
                     }
+                }, header: {
+                    Text("Summary")
                 })
             }
             .toolbar {

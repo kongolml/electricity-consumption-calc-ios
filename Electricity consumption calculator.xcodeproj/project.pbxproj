@@ -16,9 +16,10 @@
 		1109E2FD2C3B2004003DE2AB /* Formatters.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1109E2FC2C3B2004003DE2AB /* Formatters.swift */; };
 		1109E3002C3B218C003DE2AB /* EnergyInput.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1109E2FF2C3B218C003DE2AB /* EnergyInput.swift */; };
 		1109E3022C3B261B003DE2AB /* Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1109E3012C3B261B003DE2AB /* Helpers.swift */; };
+		1109E30A2C3B32A0003DE2AB /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 1109E3092C3B32A0003DE2AB /* Localizable.xcstrings */; };
+		1109E30C2C3B3FF0003DE2AB /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1109E30B2C3B3FF0003DE2AB /* Assets.xcassets */; };
 		113084E62C3840150069845B /* ConsumersSectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 113084E52C3840150069845B /* ConsumersSectionView.swift */; };
 		11C30FE02C3720A300E43720 /* Electricity_consumption_calculatorApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11C30FDF2C3720A300E43720 /* Electricity_consumption_calculatorApp.swift */; };
-		11C30FE42C3720A500E43720 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 11C30FE32C3720A500E43720 /* Assets.xcassets */; };
 		11C30FE72C3720A500E43720 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 11C30FE62C3720A500E43720 /* Preview Assets.xcassets */; };
 		11C30FE92C3720A500E43720 /* Persistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11C30FE82C3720A500E43720 /* Persistence.swift */; };
 		11C30FF32C3720FE00E43720 /* ConsumerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11C30FF22C3720FE00E43720 /* ConsumerView.swift */; };
@@ -39,11 +40,12 @@
 		1109E2FC2C3B2004003DE2AB /* Formatters.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Formatters.swift; sourceTree = "<group>"; };
 		1109E2FF2C3B218C003DE2AB /* EnergyInput.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnergyInput.swift; sourceTree = "<group>"; };
 		1109E3012C3B261B003DE2AB /* Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Helpers.swift; sourceTree = "<group>"; };
+		1109E3092C3B32A0003DE2AB /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
+		1109E30B2C3B3FF0003DE2AB /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Assets.xcassets; path = "../../../../Downloads/AppIcons (4)/Assets.xcassets"; sourceTree = "<group>"; };
 		113084E52C3840150069845B /* ConsumersSectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConsumersSectionView.swift; sourceTree = "<group>"; };
 		11C30FDC2C3720A300E43720 /* Electricity consumption calculator.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Electricity consumption calculator.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		11C30FDF2C3720A300E43720 /* Electricity_consumption_calculatorApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Electricity_consumption_calculatorApp.swift; sourceTree = "<group>"; };
 		11C30FE12C3720A300E43720 /* GeneratorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeneratorView.swift; sourceTree = "<group>"; };
-		11C30FE32C3720A500E43720 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		11C30FE62C3720A500E43720 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		11C30FE82C3720A500E43720 /* Persistence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Persistence.swift; sourceTree = "<group>"; };
 		11C30FEB2C3720A600E43720 /* Electricity_consumption_calculator.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Electricity_consumption_calculator.xcdatamodel; sourceTree = "<group>"; };
@@ -123,9 +125,10 @@
 				11C30FF22C3720FE00E43720 /* ConsumerView.swift */,
 				11C30FFB2C37282600E43720 /* ConsumerListItemView.swift */,
 				11C30FE12C3720A300E43720 /* GeneratorView.swift */,
+				1109E3092C3B32A0003DE2AB /* Localizable.xcstrings */,
 				1109E2F02C3B0AA9003DE2AB /* GeneratorDetailsView.swift */,
 				113084E52C3840150069845B /* ConsumersSectionView.swift */,
-				11C30FE32C3720A500E43720 /* Assets.xcassets */,
+				1109E30B2C3B3FF0003DE2AB /* Assets.xcassets */,
 				11C30FE82C3720A500E43720 /* Persistence.swift */,
 				11C30FEA2C3720A600E43720 /* Electricity_consumption_calculator.xcdatamodeld */,
 				11C30FE52C3720A500E43720 /* Preview Content */,
@@ -186,11 +189,12 @@
 			};
 			buildConfigurationList = 11C30FD72C3720A300E43720 /* Build configuration list for PBXProject "Electricity consumption calculator" */;
 			compatibilityVersion = "Xcode 14.0";
-			developmentRegion = en;
+			developmentRegion = uk;
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
 				Base,
+				uk,
 			);
 			mainGroup = 11C30FD32C3720A300E43720;
 			productRefGroup = 11C30FDD2C3720A300E43720 /* Products */;
@@ -208,7 +212,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				11C30FE72C3720A500E43720 /* Preview Assets.xcassets in Resources */,
-				11C30FE42C3720A500E43720 /* Assets.xcassets in Resources */,
+				1109E30C2C3B3FF0003DE2AB /* Assets.xcassets in Resources */,
+				1109E30A2C3B32A0003DE2AB /* Localizable.xcstrings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -373,6 +378,7 @@
 				DEVELOPMENT_TEAM = 6H5SPDEMQK;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = "Споживання";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -402,6 +408,7 @@
 				DEVELOPMENT_TEAM = 6H5SPDEMQK;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = "Споживання";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;

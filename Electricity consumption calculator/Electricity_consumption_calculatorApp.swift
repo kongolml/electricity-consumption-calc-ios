@@ -32,5 +32,6 @@ struct Electricity_consumption_calculatorApp: App {
     
     private func loadDefaultGenerator() {
         defaultGenerator = persistenceController.fetchOrCreateDefaultGeneratorEntity()
+        persistenceController.fetchConsumersOrCreateDefaults()
     }
 }

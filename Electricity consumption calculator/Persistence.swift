@@ -73,6 +73,33 @@ class PersistenceController: ObservableObject {
         }
     }
     
+    func fetchConsumersOrCreateDefaults() -> ConsumerEntity? {
+        let fetchRequest: NSFetchRequest<ConsumerEntity> = ConsumerEntity.fetchRequest()
+
+        do {
+            let results = try container.viewContext.fetch(fetchRequest)
+            if let existingConsumer = results.first {
+                return existingConsumer
+            } else {
+                let newConsumerMain = ConsumerEntity.createMock(context: container.viewContext)
+                // Set default values for newEntity here if needed
+                newConsumerMain.priorityType = ConsumerPriorityType.main.rawValue
+                newConsumerMain.quantity = 1
+                newConsumerMain.name = NSLocalizedString("defaul_value_fridge", comment: "")
+                newConsumerMain.isActive = true
+                
+                let newConsumerSecondary = ConsumerEntity.createMock(context: container.viewContext)
+                newConsumerSecondary.priorityType = ConsumerPriorityType.secondary.rawValue
+                newConsumerSecondary.name = NSLocalizedString("defaul_value_backlight", comment: "")
+                newConsumerSecondary.isActive = true
+                
+                return nil
+            }
+        } catch {
+            fatalError("Error fetching GeneratorEntity: \(error.localizedDescription)")
+        }
+    }
+    
     func saveContext() {
         do {
             try container.viewContext.save()
