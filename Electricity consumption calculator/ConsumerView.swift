@@ -14,7 +14,7 @@ struct ConsumerView: View {
     @EnvironmentObject var persistenceController: PersistenceController
 
     @State var showDeleteConfirmationAlert: Bool = false
-    @State private var preferredConsumptionUnit: ConsumptionUnits = .kwatt
+    @State private var preferredConsumptionUnit: ConsumptionUnits = .watt
     
     // Configuring the NumberFormatter for float values
     private var floatNumberFormatter: NumberFormatter {
@@ -29,9 +29,7 @@ struct ConsumerView: View {
         NavigationStack {
             Form {
                 Section {
-                    
-                    Text("value: \(consumer.consumption)")
-                    
+                    TextField("Name", text: $consumer.name)
                     HStack {
                         TextField("Consumption", value: Binding(
                             get: {

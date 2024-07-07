@@ -20,95 +20,58 @@ struct ContentView: View {
         animation: .default)
     private var allGeneratorConsumers: FetchedResults<ConsumerEntity>
     
-    @StateObject private var contextObserver: ContextObserver
-    init(context: NSManagedObjectContext) {
-        _contextObserver = StateObject(wrappedValue: ContextObserver(context: context))
-    }
-    
-    @State private var mainConsumersList: [ConsumerEntity] = []
-    var mainConsumers: [ConsumerEntity] {
-        allGeneratorConsumers.filter { consumer in
-            return consumer.priorityType == ConsumerPriorityType.main.rawValue
-        }
-    }
-    
-    @State private var secondaryConsumersList: [ConsumerEntity] = []
-    var secondaryConsumers: [ConsumerEntity] {
-        allGeneratorConsumers.filter { consumer in
-            return consumer.priorityType == ConsumerPriorityType.secondary.rawValue
-        }
-    }
-    
     var totalConsumption: Double {
         return allGeneratorConsumers.filter { $0.isActive }.map { $0.consumption * Double($0.quantity) }.reduce(0, +)
-//        return 1023.2
     }
     
     var leftCapacity: Double {
         myCapacity - totalConsumption
     }
     
-    
-    var groupedItems: [(String, [ConsumerEntity])] {
-        Dictionary(grouping: allGeneratorConsumers, by: { $0.priorityType.description })
-            .sorted(by: { $0.key < $1.key })
+    private func filteredItems(for category: ConsumerPriorityType) -> [ConsumerEntity] {
+        return allGeneratorConsumers.filter { $0.priorityType == category.rawValue }
     }
-    
-    
-    private var test: [ConsumerEntity] {
-        allGeneratorConsumers.filter { consumer in
-            return consumer.priorityType == ConsumerPriorityType.main.rawValue
-        }
-    }
-    
 
     var body: some View {
         NavigationView {
             List {
-                ConsumersSectionView(consumersList: $mainConsumersList)
-                ConsumersSectionView(consumersList: $secondaryConsumersList)
-//                ConsumersSectionView(consumersList: $test)
-//                ForEach(ConsumerPriorityType.allCases, id: \.self) { itemPriorityType in
-//                    let consumersWithThisPriority = allGeneratorConsumers.filter { consumer in
-//                        return consumer.priorityType == itemPriorityType.rawValue
-//                    }
-//                    
-//                    let thisPriorityTypeConsumersTotalConsumption = consumersWithThisPriority.filter { $0.isActive }.map { $0.consumption * Float($0.quantity) }.reduce(0, +)
-//
-//                    Section(content: {
-//                        ForEach(consumersWithThisPriority, id: \.self) { consumerItem in
-//                            NavigationLink {
-//                                ConsumerView(consumer: consumerItem)
-//                            } label: {
-//                                ConsumerListItemView(consumer: consumerItem)
-//                            }
-//                            .swipeActions(edge: .leading) {
-//                                Button(action: {
-//                                    toggleItemActiveStatus(consumer: consumerItem)
-//                                }) {
-//                                    consumerItem.isActive ? Label("Activate", systemImage: "x.circle") : Label("Deactivate", systemImage: "checkmark.circle.fill")
-//                                }
-//                                .tint(consumerItem.isActive ? .red : .green)
-//                            }
-//                            .swipeActions(edge: .trailing) {
-//                                Button(action: {
-//                                    deleteItem(consumer: consumerItem)
-//                                }) {
-//                                    Label("Delete", systemImage: "trash")
-//                                }
-//                                .tint(.red)
-//                            }
-//                        }
-////                        .onDelete(perform: {
-////                            deleteItemsInBulk(
-////                        })
-//                        .onMove(perform: moveItems)
-//                    }, header: {
-//                        Text("\(itemPriorityType.description) item\(consumersWithThisPriority.count > 1 ? "s" : "")")
-//                    }, footer: {
-//                        Text("Total: \(String(format: "%.2f", thisPriorityTypeConsumersTotalConsumption)) Watt")
-//                    })
-//                }
+                ForEach(ConsumerPriorityType.allCases, id: \.self) { filteredConsumersGroup in
+                    let consumersInGroup = filteredItems(for: filteredConsumersGroup)
+
+                    Section(content: {
+                        ForEach(consumersInGroup, id: \.self) { consumerItem in
+                            NavigationLink {
+                                ConsumerView(consumer: consumerItem)
+                            } label: {
+                                ConsumerListItemView(consumer: consumerItem)
+                            }
+                            .swipeActions(edge: .leading) {
+                                Button(action: {
+                                    toggleItemActiveStatus(consumer: consumerItem)
+                                }) {
+                                    consumerItem.isActive ? Label("Activate", systemImage: "x.circle") : Label("Deactivate", systemImage: "checkmark.circle.fill")
+                                }
+                                .tint(consumerItem.isActive ? .red : .green)
+                            }
+                            .swipeActions(edge: .trailing) {
+                                Button(action: {
+                                    deleteItem(consumer: consumerItem)
+                                }) {
+                                    Label("Delete", systemImage: "trash")
+                                }
+                                .tint(.red)
+                            }
+                        }
+                    }, header: {
+                        Text("\(filteredConsumersGroup.description) item\(consumersInGroup.count > 1 ? "s" : "")")
+                    }, footer: {
+                        var consumersTotalConsumption: Double {
+                            consumersInGroup.filter { $0.isActive }.map { $0.consumption * Double($0.quantity) }.reduce(0, +)
+                        }
+                        Text("Total: \(consumersTotalConsumption, specifier: "%.2f")Watt")
+                    })
+                }
+                
                 Section(content: {
                     HStack {
                         Text("My capacity")
@@ -143,16 +106,6 @@ struct ContentView: View {
             }
             Text("Select an item")
         }
-//        .onAppear {
-//            mainConsumersList = mainConsumers
-//            secondaryConsumersList = secondaryConsumers
-//        }
-        .onReceive(contextObserver.$didChange) { _ in
-            updateMainConsumersList()
-        }
-//        .onChange(of: allGeneratorConsumers, perform: { _ in
-//            mainConsumersList = mainConsumers
-//        })
     }
 
     private func addINewtem(priority: ConsumerPriorityType) {
@@ -204,16 +157,9 @@ struct ContentView: View {
             persistenceController.saveContext()
         }
     }
-    
-    private func updateMainConsumersList() {
-        print("updagin mains")
-        mainConsumersList = allGeneratorConsumers.filter { consumer in
-            consumer.priorityType == ConsumerPriorityType.main.rawValue
-        }
-    }
 }
 
 #Preview {
     @Environment(\.managedObjectContext) var viewContext
-    return ContentView(context: viewContext).environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
+    return ContentView().environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
 }
