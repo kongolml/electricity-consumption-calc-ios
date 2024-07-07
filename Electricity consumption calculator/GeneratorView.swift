@@ -32,7 +32,7 @@ struct GeneratorView: View {
     }
 
     var body: some View {
-        NavigationView {
+        NavigationStack {
             List {
                 ForEach(ConsumerPriorityType.allCases, id: \.self) { filteredConsumersGroup in
                     let consumersInGroup = filteredItems(for: filteredConsumersGroup)
@@ -48,7 +48,7 @@ struct GeneratorView: View {
                                 Button(action: {
                                     toggleItemActiveStatus(consumer: consumerItem)
                                 }) {
-                                    consumerItem.isActive ? Label("Activate", systemImage: "x.circle") : Label("Deactivate", systemImage: "checkmark.circle.fill")
+                                    consumerItem.isActive ? Label("Dectivate", systemImage: "bolt.slash") : Label("Activate", systemImage: "powercord")
                                 }
                                 .tint(consumerItem.isActive ? .red : .green)
                             }
@@ -125,9 +125,7 @@ struct GeneratorView: View {
                     }
                 }
             }
-            .navigationTitle("\(generator.name) consumers")
-
-            Text("Select an item")
+            .navigationTitle(generator.name)
         }
     }
 

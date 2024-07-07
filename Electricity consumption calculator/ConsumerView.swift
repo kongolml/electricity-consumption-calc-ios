@@ -54,11 +54,12 @@ struct ConsumerView: View {
                     }
                 }
             }
-            .navigationTitle(consumer.name)
             .onDisappear {
                 saveChanges()
             }
         }
+        .navigationTitle(consumer.name)
+        .navigationBarTitleDisplayMode(.inline)
     }
     
     private func saveChanges() {

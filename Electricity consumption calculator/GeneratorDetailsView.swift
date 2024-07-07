@@ -21,9 +21,10 @@ struct GeneratorDetailsView: View {
                     TextField("Name", text: $generator.name)
                     EnergyInput(entityProperty: $generator.capacity, placeholder: "Capacity")
                 })
-                .navigationTitle(generator.name)
             }
         }
+        .navigationTitle(generator.name)
+        .navigationBarTitleDisplayMode(.inline)
         .onDisappear {
             saveChanges()
         }
