@@ -2,7 +2,7 @@
 //  ConsumerEntity+CoreDataProperties.swift
 //  Electricity consumption calculator
 //
-//  Created by Kostiatyn Golosov on 06.07.2024.
+//  Created by Kostiatyn Golosov on 07.07.2024.
 //
 //
 
@@ -24,6 +24,7 @@ extension ConsumerEntity {
     @NSManaged public var priorityType: Int16
     @NSManaged public var quantity: Int16
     @NSManaged public var timeCreated: Date?
+    @NSManaged public var relationship: GeneratorEntity?
 
 }
 

@@ -14,15 +14,11 @@ class PersistenceController: ObservableObject {
         let result = PersistenceController(inMemory: true)
         let viewContext = result.container.viewContext
         for index in 0..<10 {
-            let newItem = ConsumerEntity(context: viewContext)
-            newItem.id = UUID()
-            newItem.priorityType = Int16(index % 2) + 1
-            newItem.name = "New item \(index + 1)"
-            newItem.timeCreated = Date()
-            newItem.consumption = Double(25.0) //[10.0, 50.0, 100.0, 250.0, 500.0].randomElement() ?? 25
-            newItem.quantity = [1,2,3,5].randomElement() ?? 1
-            newItem.isActive = Bool.random()
+            let dummyConsumerEntity = ConsumerEntity.createMock(context: viewContext)
         }
+
+        let dummyGeneratorEntity = GeneratorEntity.createMock(context: viewContext)
+
         do {
             try viewContext.save()
         } catch {
@@ -58,6 +54,23 @@ class PersistenceController: ObservableObject {
             }
         })
         container.viewContext.automaticallyMergesChangesFromParent = true
+    }
+    
+    func fetchOrCreateDefaultGeneratorEntity() -> GeneratorEntity {
+        let fetchRequest: NSFetchRequest<GeneratorEntity> = GeneratorEntity.fetchRequest()
+
+        do {
+            let results = try container.viewContext.fetch(fetchRequest)
+            if let existingEntity = results.first {
+                return existingEntity
+            } else {
+                let newEntity = GeneratorEntity(context: container.viewContext)
+                // Set default values for newEntity here if needed
+                return newEntity
+            }
+        } catch {
+            fatalError("Error fetching GeneratorEntity: \(error.localizedDescription)")
+        }
     }
     
     func saveContext() {

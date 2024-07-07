@@ -1,5 +1,5 @@
 //
-//  ContentView.swift
+//  GeneratorView.swift
 //  Electricity consumption calculator
 //
 //  Created by Kostiatyn Golosov on 04.07.2024.
@@ -8,24 +8,29 @@
 import SwiftUI
 import CoreData
 
-struct ContentView: View {
+struct GeneratorView: View {
 //    TODO: remove this to normal place:
-    @State var myCapacity: Double = 500
+//    @State var myCapacity: Double = 500
     
     @Environment(\.managedObjectContext) private var viewContext
     @EnvironmentObject var persistenceController: PersistenceController
+
+//    @State var generatorEntity: GeneratorEntity?
+    @ObservedObject var generator: GeneratorEntity
 
     @FetchRequest(
         sortDescriptors: [NSSortDescriptor(keyPath: \ConsumerEntity.orderInGroup, ascending: true)],
         animation: .default)
     private var allGeneratorConsumers: FetchedResults<ConsumerEntity>
     
+//    @ObservedObject var generatorEntity: GeneratorEntity
+    
     var totalConsumption: Double {
         return allGeneratorConsumers.filter { $0.isActive }.map { $0.consumption * Double($0.quantity) }.reduce(0, +)
     }
     
     var leftCapacity: Double {
-        myCapacity - totalConsumption
+        generator.capacity - totalConsumption
     }
     
     private func filteredItems(for category: ConsumerPriorityType) -> [ConsumerEntity] {
@@ -74,16 +79,34 @@ struct ContentView: View {
                 
                 Section(content: {
                     HStack {
-                        Text("My capacity")
-                        TextField("420", value: $myCapacity, format: FloatingPointFormatStyle())
-                        Text("Watt")
+                        Text("Total capacity")
+                        Spacer()
+                        Text("\(convertEnergyDoubleToNiceFormat(value: generator.capacity)) Watt")
+                            .foregroundColor(.gray)
                     }
-                    Text("Total consumption \(String(format: "%.2f", totalConsumption)) Watt")
-                    Text("Left capacity \(String(format: "%.2f", leftCapacity)) Watt")
+                    HStack {
+                        Text("Total consumption")
+                        Spacer()
+                        Text("\(convertEnergyDoubleToNiceFormat(value: totalConsumption)) Watt")
+                            .foregroundColor(.gray)
+                    }
+                    HStack {
+                        Text("Left capacity")
+                        Spacer()
+                        Text("\(convertEnergyDoubleToNiceFormat(value: leftCapacity)) Watt")
+                            .foregroundColor(.gray)
+                    }
                 })
             }
             .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
+                ToolbarItem(placement: .topBarLeading) {
+                    NavigationLink {
+                        GeneratorDetailsView(generator: generator)
+                    } label: {
+                        Label("Edit generator", systemImage: "gear")
+                    }
+                }
+                ToolbarItem(placement: .topBarTrailing) {
                     EditButton()
                 }
                 ToolbarItem {
@@ -104,6 +127,8 @@ struct ContentView: View {
                     }
                 }
             }
+            .navigationTitle(generator.name)
+
             Text("Select an item")
         }
     }
@@ -161,5 +186,8 @@ struct ContentView: View {
 
 #Preview {
     @Environment(\.managedObjectContext) var viewContext
-    return ContentView().environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
+
+    let dummyGenerator = GeneratorEntity.createMock(context: viewContext)
+
+    return GeneratorView(generator: dummyGenerator).environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
 }

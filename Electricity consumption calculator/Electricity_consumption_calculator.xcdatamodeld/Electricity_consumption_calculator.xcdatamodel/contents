@@ -9,5 +9,11 @@
         <attribute name="priorityType" attributeType="Integer 16" defaultValueString="1" usesScalarValueType="YES"/>
         <attribute name="quantity" attributeType="Integer 16" defaultValueString="1" usesScalarValueType="YES"/>
         <attribute name="timeCreated" attributeType="Date" usesScalarValueType="NO"/>
+        <relationship name="relationship" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="GeneratorEntity"/>
+    </entity>
+    <entity name="GeneratorEntity" representedClassName="GeneratorEntity" syncable="YES">
+        <attribute name="capacity" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="id" attributeType="UUID" usesScalarValueType="NO"/>
+        <attribute name="name" attributeType="String" defaultValueString="My generator"/>
     </entity>
 </model>

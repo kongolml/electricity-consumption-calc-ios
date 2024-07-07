@@ -15,15 +15,6 @@ struct ConsumerView: View {
 
     @State var showDeleteConfirmationAlert: Bool = false
     @State private var preferredConsumptionUnit: ConsumptionUnits = .watt
-    
-    // Configuring the NumberFormatter for float values
-    private var floatNumberFormatter: NumberFormatter {
-        let formatter = NumberFormatter()
-        formatter.numberStyle = .none
-        formatter.minimumFractionDigits = 0
-        formatter.maximumFractionDigits = 4
-        return formatter
-    }
 
     var body: some View {
         NavigationStack {
@@ -31,31 +22,7 @@ struct ConsumerView: View {
                 Section {
                     TextField("Name", text: $consumer.name)
                     HStack {
-                        TextField("Consumption", value: Binding(
-                            get: {
-                                consumer.consumption * preferredConsumptionUnit.conversionFactor
-                            },
-                            set: { newValue in
-                                consumer.consumption = newValue / preferredConsumptionUnit.conversionFactor
-                                
-                            }
-                        ), formatter: floatNumberFormatter)
-                        .keyboardType(.decimalPad)
-                        .onChange(of: consumer.consumption, {
-                            print(consumer)
-                        })
-                        
-                        Menu {
-                            ForEach(ConsumptionUnits.allCases) { consumptionUnit in
-                                Button(action: {
-                                    preferredConsumptionUnit = consumptionUnit
-                                }) {
-                                    Text(consumptionUnit.name)
-                                }
-                            }
-                        } label: {
-                            Text(preferredConsumptionUnit.name)
-                        }
+                        EnergyInput(entityProperty: $consumer.consumption, placeholder: "Consumption")
                     }
                     HStack {
                         TextField("Quantity", value: $consumer.quantity, formatter: NumberFormatter())

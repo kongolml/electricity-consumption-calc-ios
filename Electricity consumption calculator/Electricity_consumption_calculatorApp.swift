@@ -10,12 +10,27 @@ import SwiftUI
 @main
 struct Electricity_consumption_calculatorApp: App {
     let persistenceController = PersistenceController.shared
+    @State private var defaultGenerator: GeneratorEntity?
 
     var body: some Scene {
         WindowGroup {
-            ContentView()
-                .environment(\.managedObjectContext, persistenceController.container.viewContext)
-                .environmentObject(persistenceController)
+            if let generator = defaultGenerator {
+                GeneratorView(generator: generator)
+                    .environment(\.managedObjectContext, persistenceController.container.viewContext)
+                    .environmentObject(persistenceController)
+                    .onAppear {
+                        self.loadDefaultGenerator()
+                    }
+            } else {
+                ProgressView("Loading")
+                    .onAppear {
+                        self.loadDefaultGenerator()
+                    }
+            }
         }
+    }
+    
+    private func loadDefaultGenerator() {
+        defaultGenerator = persistenceController.fetchOrCreateDefaultGeneratorEntity()
     }
 }

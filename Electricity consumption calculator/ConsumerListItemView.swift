@@ -15,7 +15,7 @@ struct ConsumerListItemView: View {
         HStack {
             Text("\(consumer.name) (\(consumer.orderInGroup))")
             Spacer()
-            Text("\(String(consumer.consumptionNice)) Watt")
+            Text("\(convertEnergyDoubleToNiceFormat(value: consumer.consumption)) Watt")
             Text("x\(String(consumer.quantity))")
         }
         .opacity(consumer.isActive ? 1.0 : 0.5)

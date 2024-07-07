@@ -33,14 +33,4 @@ extension ConsumerEntity {
         newConsumer.orderInGroup = 1
         return newConsumer
     }
-    
-    var consumptionNice: String {
-        let formatter = NumberFormatter()
-        formatter.numberStyle = .decimal
-        formatter.maximumFractionDigits = 2
-        formatter.minimumFractionDigits = 0
-        formatter.usesGroupingSeparator = false
-        
-        return formatter.string(from: consumption as NSNumber) ?? ""
-    }
 }
