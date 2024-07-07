@@ -9,21 +9,15 @@ import SwiftUI
 import CoreData
 
 struct GeneratorView: View {
-//    TODO: remove this to normal place:
-//    @State var myCapacity: Double = 500
-    
     @Environment(\.managedObjectContext) private var viewContext
     @EnvironmentObject var persistenceController: PersistenceController
 
-//    @State var generatorEntity: GeneratorEntity?
     @ObservedObject var generator: GeneratorEntity
 
     @FetchRequest(
         sortDescriptors: [NSSortDescriptor(keyPath: \ConsumerEntity.orderInGroup, ascending: true)],
         animation: .default)
     private var allGeneratorConsumers: FetchedResults<ConsumerEntity>
-    
-//    @ObservedObject var generatorEntity: GeneratorEntity
     
     var totalConsumption: Double {
         return allGeneratorConsumers.filter { $0.isActive }.map { $0.consumption * Double($0.quantity) }.reduce(0, +)
@@ -67,13 +61,17 @@ struct GeneratorView: View {
                                 .tint(.red)
                             }
                         }
+//                        .onDelete(perform: deleteItemsInBulk)
+                        .onMove { indices, newOffset in
+                            moveItems(from: indices, to: newOffset, in: filteredConsumersGroup)
+                        }
                     }, header: {
                         Text("\(filteredConsumersGroup.description) item\(consumersInGroup.count > 1 ? "s" : "")")
                     }, footer: {
                         var consumersTotalConsumption: Double {
                             consumersInGroup.filter { $0.isActive }.map { $0.consumption * Double($0.quantity) }.reduce(0, +)
                         }
-                        Text("Total: \(consumersTotalConsumption, specifier: "%.2f")Watt")
+                        Text("Total: \(convertEnergyDoubleToNiceFormat(value: consumersTotalConsumption)) Watt")
                     })
                 }
                 
@@ -127,7 +125,7 @@ struct GeneratorView: View {
                     }
                 }
             }
-            .navigationTitle(generator.name)
+            .navigationTitle("\(generator.name) consumers")
 
             Text("Select an item")
         }
@@ -160,23 +158,23 @@ struct GeneratorView: View {
         }
     }
     
-    private func deleteItemsInBulk(offsets: IndexSet) {
-        viewContext.perform {
+//    private func deleteItemsInBulk(offsets: IndexSet) {
+//        viewContext.perform {
 //            offsets.map { consumersList[$0] }.forEach { consumer in
 //                viewContext.delete(consumer)
 //            }
-            
-            persistenceController.saveContext()
-        }
-    }
-    
-    private func moveItems(from source: IndexSet, to destination: Int) {
-//        var revisedItems = consumersList.map { $0 }
-//        revisedItems.move(fromOffsets: source, toOffset: destination)
-//
-//        for reverseIndex in stride(from: revisedItems.count - 1, through: 0, by: -1) {
-//            revisedItems[reverseIndex].orderInGroup = Int16(reverseIndex)
+//            
+//            persistenceController.saveContext()
 //        }
+//    }
+    
+    private func moveItems(from source: IndexSet, to destination: Int, in priorityTypeGroup: ConsumerPriorityType) {
+        var revisedItemsFromGroup = allGeneratorConsumers.map { $0 }.filter { $0.priorityType == priorityTypeGroup.rawValue }
+        revisedItemsFromGroup.move(fromOffsets: source, toOffset: destination)
+
+        for reverseIndex in stride(from: revisedItemsFromGroup.count - 1, through: 0, by: -1) {
+            revisedItemsFromGroup[reverseIndex].orderInGroup = Int16(reverseIndex)
+        }
 
         viewContext.perform {
             persistenceController.saveContext()
