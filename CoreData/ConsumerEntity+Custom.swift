@@ -13,7 +13,7 @@ extension ConsumerEntity {
         super.awakeFromInsert()
 
         self.id = UUID()
-        self.name = "New Item"
+        self.name = NSLocalizedString("new_consumer_item_name", comment: "")
         self.consumption = 0
         self.priorityType = 1
         self.isActive = true
@@ -24,7 +24,7 @@ extension ConsumerEntity {
     public static func createMock(context: NSManagedObjectContext) -> ConsumerEntity {
         let newConsumer = ConsumerEntity(context: context)
         newConsumer.id = UUID()
-        newConsumer.name = "Mock Consumer"
+        newConsumer.name = NSLocalizedString("new_mock_consumer_item_name", comment: "")
         newConsumer.timeCreated = Date()
         newConsumer.priorityType = Int16.random(in: 1...2)
         newConsumer.consumption = 100.0 //Double.random(in: 10.0...500.0)

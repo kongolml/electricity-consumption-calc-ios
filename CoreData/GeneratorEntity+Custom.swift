@@ -13,14 +13,14 @@ extension GeneratorEntity {
         super.awakeFromInsert()
 
         self.id = UUID()
-        self.name = "My generator"
+        self.name = NSLocalizedString("new_generator_item_name", comment: "")
         self.capacity = 1000
     }
 
     public static func createMock(context: NSManagedObjectContext) -> GeneratorEntity {
         let newGenerator = GeneratorEntity(context: context)
         newGenerator.id = UUID()
-        newGenerator.name = "Mock Generator"
+        newGenerator.name = NSLocalizedString("new_mock_generator_item_name", comment: "")
         newGenerator.capacity = 1000
         return newGenerator
     }

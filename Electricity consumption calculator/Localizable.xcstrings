@@ -323,6 +323,70 @@
         }
       }
     },
+    "new_consumer_item_name" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "New consumer"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Новий споживач"
+          }
+        }
+      }
+    },
+    "new_generator_item_name" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "My generator"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Мій генератор"
+          }
+        }
+      }
+    },
+    "new_mock_consumer_item_name" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mocked consumer"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Замоканий споживач"
+          }
+        }
+      }
+    },
+    "new_mock_generator_item_name" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mocked generator"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Замоканий генератор"
+          }
+        }
+      }
+    },
     "No consumers yet" : {
       "localizations" : {
         "en" : {

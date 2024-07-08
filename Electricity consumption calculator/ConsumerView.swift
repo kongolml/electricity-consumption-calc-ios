@@ -59,7 +59,7 @@ struct ConsumerView: View {
             }
         }
         .navigationTitle(consumer.name)
-        .navigationBarTitleDisplayMode(.inline)
+//        .navigationBarTitleDisplayMode(.inline)
     }
     
     private func saveChanges() {
