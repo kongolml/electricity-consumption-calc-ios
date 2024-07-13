@@ -7,6 +7,8 @@
 
 import SwiftUI
 import CoreData
+import GoogleSignIn
+import GoogleSignInSwift
 
 struct GeneratorView: View {
     @Environment(\.managedObjectContext) private var viewContext
@@ -34,6 +36,11 @@ struct GeneratorView: View {
     var body: some View {
         NavigationStack {
             List {
+                GoogleSignInButton(action: handleSignInButton)
+                Button("Sign out google") {
+                    signOutGoogle()
+                }
+
                 if (allGeneratorConsumers.count == 0) {
                     Text("No consumers yet")
                 }
@@ -190,7 +197,67 @@ struct GeneratorView: View {
             persistenceController.saveContext()
         }
     }
+    
+    func handleSignInButton() {
+      GIDSignIn.sharedInstance.signIn(
+        withPresenting: getRootViewController()) { signInResult, error in
+            guard error == nil else { return }
+                guard let signInResult = signInResult else { return }
+
+                signInResult.user.refreshTokensIfNeeded { user, error in
+                    guard error == nil else { return }
+                    guard let user = user else { return }
+
+                    let idToken = user.idToken
+                    // Send ID token to backend (example below).
+                    if (idToken?.tokenString != nil) {
+                        tokenSignInExample(idToken: idToken!.tokenString)
+                    }
+                }
+        }
+//      )
+        print("handleSignInButton handleSignInButton handleSignInButton handleSignInButton")
+    }
+    
+    func tokenSignInExample(idToken: String) {
+        guard let authData = try? JSONEncoder().encode(["idToken": idToken]) else {
+            return
+        }
+        let url = URL(string: "https://electriciy-consumptions.localbackend:8888/api/auth/")!
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+
+        let task = URLSession.shared.uploadTask(with: request, from: authData) { data, response, error in
+            // Handle response from your backend.
+            print("here is data")
+            debugPrint(data)
+            print("here is response")
+            debugPrint(response)
+        }
+        task.resume()
+    }
+    
+    func signOutGoogle() {
+        GIDSignIn.sharedInstance.signOut()
+    }
 }
+
+extension View {
+    func getRootViewController() -> UIViewController {
+        guard let screen = UIApplication.shared.connectedScenes.first as? UIWindowScene else {
+            return .init()
+        }
+
+        guard let root = screen.windows.first?.rootViewController else {
+            return .init()
+        }
+        
+
+        return root
+    }
+}
+
 
 #Preview {
     @Environment(\.managedObjectContext) var viewContext
