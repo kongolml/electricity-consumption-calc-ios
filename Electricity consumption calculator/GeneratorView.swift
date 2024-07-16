@@ -11,6 +11,9 @@ import GoogleSignIn
 import GoogleSignInSwift
 
 struct GeneratorView: View {
+    let authMiddleWare = AuthMiddleware()
+    let keychain = KeychainToolbox()
+    
     @Environment(\.managedObjectContext) private var viewContext
     @EnvironmentObject var persistenceController: PersistenceController
 
@@ -211,7 +214,9 @@ struct GeneratorView: View {
                     let idToken = user.idToken
                     // Send ID token to backend (example below).
                     if (idToken?.tokenString != nil) {
-                        tokenSignInExample(idToken: idToken!.tokenString)
+                        authorizeOnApiUsingGoogleToken(idToken: idToken!.tokenString)
+                        let keychain = KeychainToolbox()
+                        keychain.setGoogleIdToken(value: idToken!.tokenString)
                     }
                 }
         }
@@ -219,23 +224,20 @@ struct GeneratorView: View {
         print("handleSignInButton handleSignInButton handleSignInButton handleSignInButton")
     }
     
-    func tokenSignInExample(idToken: String) {
-        guard let authData = try? JSONEncoder().encode(["idToken": idToken]) else {
+    func authorizeOnApiUsingGoogleToken(idToken: String) {
+        guard !idToken.isEmpty else {
             return
         }
-        let url = URL(string: "https://electriciy-consumptions.localbackend:8888/api/auth/")!
-        var request = URLRequest(url: url)
-        request.httpMethod = "POST"
-        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
 
-        let task = URLSession.shared.uploadTask(with: request, from: authData) { data, response, error in
-            // Handle response from your backend.
-            print("here is data")
-            debugPrint(data)
+        authMiddleWare.signInWithGoogleToken(idToken: idToken) { accesTokens, error  in
             print("here is response")
-            debugPrint(response)
+            
+            if let error = error {
+                debugPrint(error)
+            } else if let accesTokens = accesTokens {
+                keychain.setUserApiToken(newToken: accesTokens.accessToken)
+            }
         }
-        task.resume()
     }
     
     func signOutGoogle() {
