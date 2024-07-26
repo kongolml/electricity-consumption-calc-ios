@@ -236,6 +236,7 @@ struct GeneratorView: View {
                 debugPrint(error)
             } else if let accesTokens = accesTokens {
                 keychain.setUserApiToken(newToken: accesTokens.accessToken)
+                print(accesTokens.accessToken)
             }
         }
     }

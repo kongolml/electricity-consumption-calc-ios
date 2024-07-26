@@ -61,7 +61,7 @@ enum AuthRouter: URLRequestConvertible {
         
         switch self {
         case .google(let token):
-            print("the toekn is \(token)")
+//            print("the toekn is \(token)")
             request = try JSONParameterEncoder().encode(token, into: request)
             //        case let .login(loginCredentials):
             //            request = try JSONParameterEncoder().encode(loginCredentials, into: request)

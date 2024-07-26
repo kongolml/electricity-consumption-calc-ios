@@ -50,6 +50,10 @@ class KeychainToolbox {
         setItem(value: newToken, key: .userAccessTokenApi)
     }
     
+    func getUserApiToken() -> String? {
+        return "TODO: HARDCODEDE TOKEN IS USER, GET REAL ONE"
+    }
+    
 //    
 //    func clearItem(key: KeychainKeys) {
 //        do {
