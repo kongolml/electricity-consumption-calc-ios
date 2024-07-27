@@ -12,6 +12,7 @@ import GoogleSignInSwift
 
 struct GeneratorView: View {
     let authMiddleWare = AuthMiddleware()
+    let generatorMiddleware = GeneratorMiddleware()
     let keychain = KeychainToolbox()
     
     @Environment(\.managedObjectContext) private var viewContext
@@ -39,6 +40,11 @@ struct GeneratorView: View {
     var body: some View {
         NavigationStack {
             List {
+//                Button("test") {
+//                    generatorMiddleware.getGenerator(generatorId: "66985674c1bd91723a0eb11c") { response,arg  in
+//                        debugPrint(response)
+//                    }
+//                }
                 GoogleSignInButton(action: handleSignInButton)
                 Button("Sign out google") {
                     signOutGoogle()

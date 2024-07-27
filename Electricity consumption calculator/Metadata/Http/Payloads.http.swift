@@ -18,7 +18,7 @@ struct GeneratorHttpPayload: Encodable {
     let consumers: [Int]? // TODO: fix type here, maybe inherit from parent?
 }
 
-struct ConsumerHttpPayload: Encodable {
+struct ConsumerHttpPayload: Encodable, Decodable {
     let name: String?
     let consumption: Double?
     let isActive: Bool?

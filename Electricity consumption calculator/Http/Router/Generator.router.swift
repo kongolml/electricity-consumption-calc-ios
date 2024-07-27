@@ -9,18 +9,18 @@ import Foundation
 import Alamofire
 
 enum GeneratorRouter: URLRequestConvertible {
-    case ls, getById(id: String), delete(id: String), patch(id: String, updatedGenerator: GeneratorHttpPayload), create(newGenerator: GeneratorHttpPayload)
+    case getUserGenerators, getById(generatorId: String), delete(id: String), patch(id: String, updatedGenerator: GeneratorHttpPayload), create(newGenerator: GeneratorHttpPayload)
     
     var path: String {
         let routeBaseUrl = "generator"
         
         switch self {
-        case .ls:
+        case .getUserGenerators:
             return "\(routeBaseUrl)/ls"
-        case .getById(id: let id),
-                .delete(id: let id),
-                .patch(let id, _):
-            return "\(routeBaseUrl)/\(id)"
+        case .getById(let generatorId),
+                .delete(let generatorId),
+                .patch(let generatorId, _):
+            return "\(routeBaseUrl)/\(generatorId)"
         case .create:
             return "\(routeBaseUrl)/new"
         }
@@ -28,9 +28,9 @@ enum GeneratorRouter: URLRequestConvertible {
         
     var method: HTTPMethod {
         switch self {
-        case .ls:
+        case .getUserGenerators:
             return .get
-        case .getById(id: _):
+        case .getById(generatorId: _):
             return .get
         case .delete(id: _):
             return .delete
@@ -53,7 +53,7 @@ enum GeneratorRouter: URLRequestConvertible {
         var headers = HTTPHeaders()
         
         switch self {
-        case .ls,
+        case .getUserGenerators,
                 .create,
                 .delete,
                 .patch,
@@ -78,7 +78,7 @@ enum GeneratorRouter: URLRequestConvertible {
             request = try JSONParameterEncoder().encode(updatedGeneratorPayload, into: request)
         case .delete,
                 .getById,
-                .ls:
+                .getUserGenerators:
             break
         }
         

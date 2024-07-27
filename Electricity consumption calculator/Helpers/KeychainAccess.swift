@@ -51,7 +51,10 @@ class KeychainToolbox {
     }
     
     func getUserApiToken() -> String? {
-        return "TODO: HARDCODEDE TOKEN IS USER, GET REAL ONE"
+        let accessToken = try? keychain.getString(KeychainKeys.userAccessTokenApi.rawValue)
+                
+        return accessToken
+//        return "TODO: HARDCODEDE TOKEN IS USER, GET REAL ONE"
     }
     
 //    

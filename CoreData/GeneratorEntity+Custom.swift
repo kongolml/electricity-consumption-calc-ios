@@ -15,6 +15,8 @@ extension GeneratorEntity {
         self.id = UUID()
         self.name = NSLocalizedString("new_generator_item_name", comment: "")
         self.capacity = 1000
+//        self.consumers = []
+        self.updatedAt = Date()
     }
 
     public static func createMock(context: NSManagedObjectContext) -> GeneratorEntity {

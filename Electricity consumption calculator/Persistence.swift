@@ -61,7 +61,7 @@ class PersistenceController: ObservableObject {
 
         do {
             let results = try container.viewContext.fetch(fetchRequest)
-            if let existingEntity = results.first {
+            if let existingEntity = results.last {
                 return existingEntity
             } else {
                 let newEntity = GeneratorEntity(context: container.viewContext)
@@ -115,5 +115,47 @@ class PersistenceController: ObservableObject {
     func deleteItem(consumer: ConsumerEntity) {
         container.viewContext.delete(consumer)
         saveContext()
+    }
+        
+//    TODO: refactor this, this was taked from internet as a proof-of-concept
+    func saveGeneratorsToCoreData(generators: [GeneratorFromServer]) {
+        let context = container.viewContext
+
+        context.perform {
+            for generator in generators {
+                let fetchRequest: NSFetchRequest<GeneratorEntity> = GeneratorEntity.fetchRequest()
+                fetchRequest.predicate = NSPredicate(format: "dbid == %@", generator.id)
+
+                if let existingGenerator = try? context.fetch(fetchRequest).first {
+                    // Conflict resolution based on updatedAt
+                    if generator.updatedAt > existingGenerator.updatedAt {
+                        self.updateGeneratorEntity(existingGenerator, with: generator)
+                    }
+                } else {
+                    // Insert new generator
+                    self.createGeneratorEntity(with: generator, context: context)
+                }
+            }
+            
+            do {
+                try context.save()
+            } catch {
+                print("Failed to save context: \(error)")
+            }
+        }
+    }
+    
+    func createGeneratorEntity(with generatorFromServer: GeneratorFromServer, context: NSManagedObjectContext) {
+        let newGenerator = GeneratorEntity(context: context)
+        newGenerator.dbid = generatorFromServer.id
+        newGenerator.name = generatorFromServer.name
+        newGenerator.updatedAt = generatorFromServer.updatedAt
+        // Set other properties
+    }
+    
+    func updateGeneratorEntity(_ entity: GeneratorEntity, with generatorFromServer: GeneratorFromServer) {
+        entity.name = generatorFromServer.name
+        entity.updatedAt = generatorFromServer.updatedAt
+        // Update other properties
     }
 }
