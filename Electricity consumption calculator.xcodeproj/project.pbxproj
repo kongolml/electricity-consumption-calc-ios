@@ -37,6 +37,7 @@
 		1191E5C62C56970E001F9D64 /* ConsumerEntity+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1191E5C42C56970E001F9D64 /* ConsumerEntity+CoreDataProperties.swift */; };
 		1191E5C92C569958001F9D64 /* GeneratorEntity+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1191E5C72C569958001F9D64 /* GeneratorEntity+CoreDataClass.swift */; };
 		1191E5CA2C569958001F9D64 /* GeneratorEntity+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1191E5C82C569958001F9D64 /* GeneratorEntity+CoreDataProperties.swift */; };
+		1191E5CC2C56C2C1001F9D64 /* SyncManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1191E5CB2C56C2C1001F9D64 /* SyncManager.swift */; };
 		11C30FE02C3720A300E43720 /* Electricity_consumption_calculatorApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11C30FDF2C3720A300E43720 /* Electricity_consumption_calculatorApp.swift */; };
 		11C30FE72C3720A500E43720 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 11C30FE62C3720A500E43720 /* Preview Assets.xcassets */; };
 		11C30FE92C3720A500E43720 /* Persistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11C30FE82C3720A500E43720 /* Persistence.swift */; };
@@ -76,6 +77,7 @@
 		1191E5C42C56970E001F9D64 /* ConsumerEntity+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ConsumerEntity+CoreDataProperties.swift"; sourceTree = SOURCE_ROOT; };
 		1191E5C72C569958001F9D64 /* GeneratorEntity+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "GeneratorEntity+CoreDataClass.swift"; sourceTree = SOURCE_ROOT; };
 		1191E5C82C569958001F9D64 /* GeneratorEntity+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "GeneratorEntity+CoreDataProperties.swift"; sourceTree = SOURCE_ROOT; };
+		1191E5CB2C56C2C1001F9D64 /* SyncManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncManager.swift; sourceTree = "<group>"; };
 		11C30FDC2C3720A300E43720 /* Electricity consumption calculator.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Electricity consumption calculator.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		11C30FDF2C3720A300E43720 /* Electricity_consumption_calculatorApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Electricity_consumption_calculatorApp.swift; sourceTree = "<group>"; };
 		11C30FE12C3720A300E43720 /* GeneratorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeneratorView.swift; sourceTree = "<group>"; };
@@ -211,6 +213,7 @@
 				11C30FEA2C3720A600E43720 /* Electricity_consumption_calculator.xcdatamodeld */,
 				11C30FE52C3720A500E43720 /* Preview Content */,
 				1183602A2C3F143F00E97115 /* AppDelegate.swift */,
+				1191E5CB2C56C2C1001F9D64 /* SyncManager.swift */,
 			);
 			path = "Electricity consumption calculator";
 			sourceTree = "<group>";
@@ -317,6 +320,7 @@
 			files = (
 				11C30FE92C3720A500E43720 /* Persistence.swift in Sources */,
 				1183602B2C3F143F00E97115 /* AppDelegate.swift in Sources */,
+				1191E5CC2C56C2C1001F9D64 /* SyncManager.swift in Sources */,
 				1109E2FD2C3B2004003DE2AB /* Formatters.swift in Sources */,
 				1109E2F72C3B0D3D003DE2AB /* GeneratorEntity+Custom.swift in Sources */,
 				114BFF292C54664100C2685A /* Generator.metadata.swift in Sources */,

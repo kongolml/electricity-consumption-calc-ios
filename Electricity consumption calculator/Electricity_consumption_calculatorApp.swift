@@ -13,6 +13,7 @@ struct Electricity_consumption_calculatorApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
 
     let persistenceController = PersistenceController.shared
+    let syncManager = SyncManager.shared
     @State private var defaultGenerator: GeneratorEntity?
 //    @State private var generatorToUse
         
@@ -62,15 +63,27 @@ struct Electricity_consumption_calculatorApp: App {
     private func loadData() {
 //        TODO: move this logic away from here
         if (keychain.getUserApiToken() != nil) {
-            generatorMiddleware.getUserGenerators(completion: { userGenerators, error  in
-                if (userGenerators != nil) {
-                    if (!userGenerators!.isEmpty) {
-    //                    sync core data and data from server:
-//                        persistenceController.saveGeneratorsToCoreData(generators: userGenerators!)
-                    } else {
-                        loadDefaultGenerator()
-                    }
+            generatorMiddleware.getUserGenerators(completion: { userGeneratorsFromServer, error  in
+                guard let userGeneratorsFromServer = userGeneratorsFromServer else {
+                    loadDefaultGenerator()
+                    return
                 }
+
+                syncManager.handleGeneratorsListFromServer(generatorsFromServer: userGeneratorsFromServer, completion: { generatorToUse in
+                    defaultGenerator = generatorToUse
+                })
+                
+//                if (userGeneratorsFromServer.isEmpty) {
+//                    loadDefaultGenerator()
+//                } else {
+//                    let firstGeneratorFromServer = userGeneratorsFromServer.first
+//                    defaultGenerator = GeneratorEntity(context: persistenceController.container.viewContext)
+//                    
+//                    if let defaultGenerator = defaultGenerator, let firstGeneratorFromServer = firstGeneratorFromServer {
+//                        persistenceController.updateGeneratorEntity(defaultGenerator, with: firstGeneratorFromServer)
+//                        persistenceController.saveContext()
+//                    }
+//                }
                 
                 if (error != nil) {
                     loadDefaultGenerator()

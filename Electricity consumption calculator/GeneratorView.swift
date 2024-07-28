@@ -14,6 +14,7 @@ struct GeneratorView: View {
     let authMiddleWare = AuthMiddleware()
     let generatorMiddleware = GeneratorMiddleware()
     let keychain = KeychainToolbox()
+    let syncManager = SyncManager.shared
     
     @Environment(\.managedObjectContext) private var viewContext
     @EnvironmentObject var persistenceController: PersistenceController
@@ -30,15 +31,7 @@ struct GeneratorView: View {
             predicate: NSPredicate(format: "generator == %@", generator),
             animation: .default
         )
-        
-        debugPrint(_allGeneratorConsumers)
     }
-
-//    @FetchRequest(
-//        sortDescriptors: [NSSortDescriptor(keyPath: \ConsumerEntity.orderInGroup, ascending: true)],
-//        predicate: NSPredicate(format: "generator == %@", generator),
-//        animation: .default)
-//    private var allGeneratorConsumers: FetchedResults<ConsumerEntity>
     
     var totalConsumption: Double {
         return allGeneratorConsumers.filter { $0.isActive }.map { $0.consumption * Double($0.quantity) }.reduce(0, +)
@@ -169,6 +162,20 @@ struct GeneratorView: View {
                 }
             }
             .navigationTitle(generator.name)
+//            .onAppear {
+//                syncManager.syncLocalAndRemoteGenerator(generatorFromServer: <#T##GeneratorFromServer#>, localGenerator: generator)
+//            }
+            .onReceive(allGeneratorConsumers.publisher.collect()) { consumers in
+                        if !consumers.isEmpty {
+                            test()
+                        }
+                    }
+        }
+    }
+    
+    func test() {
+        if !allGeneratorConsumers.isEmpty {
+            syncManager.pushLocalGeneratorConsumers(generatorDbId: generator.dbid!, localGeneratorConsumers: allGeneratorConsumers.map { $0 })
         }
     }
 

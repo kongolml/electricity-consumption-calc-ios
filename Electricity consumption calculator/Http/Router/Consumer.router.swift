@@ -16,7 +16,7 @@ enum ConsumerRouter: URLRequestConvertible {
         
         switch self {
         case .create(let generatorId, _):
-            return "\(routeBaseUrl)/\(generatorId)"
+            return "\(routeBaseUrl)/\(generatorId)/consumer/new"
         case .update(let generatorId, let consumerID, _),
                 .delete(let generatorId, let consumerID):
             return "\(routeBaseUrl)/\(generatorId)/consumer/\(consumerID)"
