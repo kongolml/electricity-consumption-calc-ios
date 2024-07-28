@@ -41,7 +41,7 @@ class GeneratorMiddleware {
         AlamofireService.sharedSession.request(GeneratorRouter.getUserGenerators).validate().responseDecodable(of: [GeneratorFromServer].self, decoder: decoder) { response in
             switch response.result {
             case .success(let generatorsList):
-                debugPrint(generatorsList)
+//                debugPrint(generatorsList)
                 completion(generatorsList, nil)
             case .failure(let error):
                 debugPrint(error)

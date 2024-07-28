@@ -2,7 +2,7 @@
 //  GeneratorEntity+CoreDataClass.swift
 //  Electricity consumption calculator
 //
-//  Created by Kostiatyn Golosov on 07.07.2024.
+//  Created by Kostiatyn Golosov on 28.07.2024.
 //
 //
 

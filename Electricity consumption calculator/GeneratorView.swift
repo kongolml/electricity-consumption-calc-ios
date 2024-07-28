@@ -19,11 +19,26 @@ struct GeneratorView: View {
     @EnvironmentObject var persistenceController: PersistenceController
 
     @ObservedObject var generator: GeneratorEntity
+    @FetchRequest private var allGeneratorConsumers: FetchedResults<ConsumerEntity>
 
-    @FetchRequest(
-        sortDescriptors: [NSSortDescriptor(keyPath: \ConsumerEntity.orderInGroup, ascending: true)],
-        animation: .default)
-    private var allGeneratorConsumers: FetchedResults<ConsumerEntity>
+    init(generator: GeneratorEntity) {
+        self.generator = generator
+        
+        // Initializing the fetch request with the appropriate parameters
+        _allGeneratorConsumers = FetchRequest<ConsumerEntity>(
+            sortDescriptors: [NSSortDescriptor(keyPath: \ConsumerEntity.orderInGroup, ascending: true)],
+            predicate: NSPredicate(format: "generator == %@", generator),
+            animation: .default
+        )
+        
+        debugPrint(_allGeneratorConsumers)
+    }
+
+//    @FetchRequest(
+//        sortDescriptors: [NSSortDescriptor(keyPath: \ConsumerEntity.orderInGroup, ascending: true)],
+//        predicate: NSPredicate(format: "generator == %@", generator),
+//        animation: .default)
+//    private var allGeneratorConsumers: FetchedResults<ConsumerEntity>
     
     var totalConsumption: Double {
         return allGeneratorConsumers.filter { $0.isActive }.map { $0.consumption * Double($0.quantity) }.reduce(0, +)

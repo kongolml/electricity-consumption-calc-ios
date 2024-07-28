@@ -13,7 +13,7 @@ struct ConsumerListItemView: View {
 
     var body: some View {
         HStack {
-            Text(consumer.name)
+            Text(consumer.name ?? "dfadfagga")
             Spacer()
             Text("\(convertEnergyDoubleToNiceFormat(value: consumer.consumption)) Watt")
             Text("x\(String(consumer.quantity))")

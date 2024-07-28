@@ -66,7 +66,8 @@ struct Electricity_consumption_calculatorApp: App {
                 if (userGenerators != nil) {
                     if (!userGenerators!.isEmpty) {
     //                    sync core data and data from server:
-                        persistenceController.saveGeneratorsToCoreData(generators: userGenerators!)
+//                        persistenceController.saveGeneratorsToCoreData(generators: userGenerators!)
+                    } else {
                         loadDefaultGenerator()
                     }
                 }

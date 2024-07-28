@@ -34,9 +34,21 @@ class PersistenceController: ObservableObject {
 
     init(inMemory: Bool = false) {
         container = NSPersistentContainer(name: "Electricity_consumption_calculator")
+        
+//        TODO: optimize it?
         if inMemory {
-            container.persistentStoreDescriptions.first!.url = URL(fileURLWithPath: "/dev/null")
+            let description = NSPersistentStoreDescription()
+            description.url = URL(fileURLWithPath: "/dev/null")
+            container.persistentStoreDescriptions = [description]
+        } else {
+            let description = NSPersistentStoreDescription()
+            let storeURL = NSPersistentContainer.defaultDirectoryURL().appendingPathComponent("Electricity_consumption_calculator.sqlite")
+            description.url = storeURL
+            description.shouldInferMappingModelAutomatically = true
+            description.shouldMigrateStoreAutomatically = true
+            container.persistentStoreDescriptions = [description]
         }
+
         container.loadPersistentStores(completionHandler: { (storeDescription, error) in
             if let error = error as NSError? {
                 // Replace this implementation with code to handle the error appropriately.
@@ -52,16 +64,71 @@ class PersistenceController: ObservableObject {
                  */
                 fatalError("Unresolved error \(error), \(error.userInfo)")
             }
+            
+            self.setDefaultValuesForNewAttributesForConsumers()
+//            self.setDefaultValuesForNewAttributesForGenerators()
         })
         container.viewContext.automaticallyMergesChangesFromParent = true
     }
+    
+    private func setDefaultValuesForNewAttributesForConsumers() {
+        let context = container.viewContext
+        let fetchRequestConsumers: NSFetchRequest<ConsumerEntity> = ConsumerEntity.fetchRequest()
+        
+        do {
+            let consumers = try context.fetch(fetchRequestConsumers)
+            let defaultGenerator = self.fetchOrCreateDefaultGeneratorEntity()
+
+            for consumer in consumers {
+                if consumer.updatedAt == nil {
+                    consumer.updatedAt = Date() // Set a default value to current date
+                }
+                if consumer.generator == nil {
+                    consumer.generator = defaultGenerator
+                }
+            }
+            try context.save()
+        } catch {
+            print("Failed to set default values: \(error)")
+        }
+    }
+    
+//    private func setDefaultValuesForNewAttributesForGenerators() {
+//        let context = container.viewContext
+//        let fetchRequestGenerators: NSFetchRequest<GeneratorEntity> = GeneratorEntity.fetchRequest()
+//        let fetchRequestConsumers: NSFetchRequest<ConsumerEntity> = ConsumerEntity.fetchRequest()
+//        
+//        do {
+//            let generators = try context.fetch(fetchRequestGenerators)
+//            let allConsumers = try context.fetch(fetchRequestConsumers)
+////            let defaultGenerator = self.fetchOrCreateDefaultGeneratorEntity()
+//            let originalFirstGenerator = generators.first
+//
+////            if ((originalFirstGenerator?.consumers) == nil) {
+////                originalFirstGenerator?.consumers = allConsumers
+////            }
+//
+////            for generator in generators {
+////                if generator.updatedAt == nil {
+////                    generator.updatedAt = Date() // Set a default value to current date
+////                }
+////                
+////                if generator.consumers == nil {
+////                    generator.consumers = defaultGenerator
+////                }
+////            }
+//            try context.save()
+//        } catch {
+//            print("Failed to set default values: \(error)")
+//        }
+//    }
     
     func fetchOrCreateDefaultGeneratorEntity() -> GeneratorEntity {
         let fetchRequest: NSFetchRequest<GeneratorEntity> = GeneratorEntity.fetchRequest()
 
         do {
             let results = try container.viewContext.fetch(fetchRequest)
-            if let existingEntity = results.last {
+            if let existingEntity = results.first {
                 return existingEntity
             } else {
                 let newEntity = GeneratorEntity(context: container.viewContext)

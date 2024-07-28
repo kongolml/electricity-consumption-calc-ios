@@ -11,8 +11,6 @@
 		1109E2EC2C39E2F9003DE2AB /* ConsumerEntity+Custom.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1109E2EB2C39E2F9003DE2AB /* ConsumerEntity+Custom.swift */; };
 		1109E2ED2C39E608003DE2AB /* Electricity_consumption_calculator.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 11C30FEA2C3720A600E43720 /* Electricity_consumption_calculator.xcdatamodeld */; };
 		1109E2F12C3B0AA9003DE2AB /* GeneratorDetailsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1109E2F02C3B0AA9003DE2AB /* GeneratorDetailsView.swift */; };
-		1109E2F42C3B0D2B003DE2AB /* GeneratorEntity+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1109E2F22C3B0D2B003DE2AB /* GeneratorEntity+CoreDataClass.swift */; };
-		1109E2F52C3B0D2B003DE2AB /* GeneratorEntity+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1109E2F32C3B0D2B003DE2AB /* GeneratorEntity+CoreDataProperties.swift */; };
 		1109E2F72C3B0D3D003DE2AB /* GeneratorEntity+Custom.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1109E2F62C3B0D3D003DE2AB /* GeneratorEntity+Custom.swift */; };
 		1109E2FD2C3B2004003DE2AB /* Formatters.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1109E2FC2C3B2004003DE2AB /* Formatters.swift */; };
 		1109E3002C3B218C003DE2AB /* EnergyInput.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1109E2FF2C3B218C003DE2AB /* EnergyInput.swift */; };
@@ -35,12 +33,14 @@
 		118360222C3DEEDC00E97115 /* GoogleSignIn in Frameworks */ = {isa = PBXBuildFile; productRef = 118360212C3DEEDC00E97115 /* GoogleSignIn */; };
 		118360242C3DEEDC00E97115 /* GoogleSignInSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 118360232C3DEEDC00E97115 /* GoogleSignInSwift */; };
 		1183602B2C3F143F00E97115 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1183602A2C3F143F00E97115 /* AppDelegate.swift */; };
+		1191E5C52C56970E001F9D64 /* ConsumerEntity+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1191E5C32C56970E001F9D64 /* ConsumerEntity+CoreDataClass.swift */; };
+		1191E5C62C56970E001F9D64 /* ConsumerEntity+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1191E5C42C56970E001F9D64 /* ConsumerEntity+CoreDataProperties.swift */; };
+		1191E5C92C569958001F9D64 /* GeneratorEntity+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1191E5C72C569958001F9D64 /* GeneratorEntity+CoreDataClass.swift */; };
+		1191E5CA2C569958001F9D64 /* GeneratorEntity+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1191E5C82C569958001F9D64 /* GeneratorEntity+CoreDataProperties.swift */; };
 		11C30FE02C3720A300E43720 /* Electricity_consumption_calculatorApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11C30FDF2C3720A300E43720 /* Electricity_consumption_calculatorApp.swift */; };
 		11C30FE72C3720A500E43720 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 11C30FE62C3720A500E43720 /* Preview Assets.xcassets */; };
 		11C30FE92C3720A500E43720 /* Persistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11C30FE82C3720A500E43720 /* Persistence.swift */; };
 		11C30FF32C3720FE00E43720 /* ConsumerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11C30FF22C3720FE00E43720 /* ConsumerView.swift */; };
-		11C30FF62C37237100E43720 /* ConsumerEntity+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11C30FF42C37237100E43720 /* ConsumerEntity+CoreDataClass.swift */; };
-		11C30FF72C37237100E43720 /* ConsumerEntity+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11C30FF52C37237100E43720 /* ConsumerEntity+CoreDataProperties.swift */; };
 		11C30FFA2C3724DF00E43720 /* Consumer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11C30FF92C3724DF00E43720 /* Consumer.swift */; };
 		11C30FFC2C37282600E43720 /* ConsumerListItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11C30FFB2C37282600E43720 /* ConsumerListItemView.swift */; };
 		11C30FFF2C37389500E43720 /* GeneratorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11C30FE12C3720A300E43720 /* GeneratorView.swift */; };
@@ -51,8 +51,6 @@
 		1109E2E62C39D71A003DE2AB /* Electricity_consumption_calculator 3.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Electricity_consumption_calculator 3.xcdatamodel"; sourceTree = "<group>"; };
 		1109E2EB2C39E2F9003DE2AB /* ConsumerEntity+Custom.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ConsumerEntity+Custom.swift"; sourceTree = "<group>"; };
 		1109E2F02C3B0AA9003DE2AB /* GeneratorDetailsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeneratorDetailsView.swift; sourceTree = "<group>"; };
-		1109E2F22C3B0D2B003DE2AB /* GeneratorEntity+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "GeneratorEntity+CoreDataClass.swift"; sourceTree = "<group>"; };
-		1109E2F32C3B0D2B003DE2AB /* GeneratorEntity+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "GeneratorEntity+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		1109E2F62C3B0D3D003DE2AB /* GeneratorEntity+Custom.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "GeneratorEntity+Custom.swift"; sourceTree = "<group>"; };
 		1109E2FC2C3B2004003DE2AB /* Formatters.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Formatters.swift; sourceTree = "<group>"; };
 		1109E2FF2C3B218C003DE2AB /* EnergyInput.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnergyInput.swift; sourceTree = "<group>"; };
@@ -73,6 +71,11 @@
 		114BFF2A2C553AF300C2685A /* Electricity_consumption_calculator_v4.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Electricity_consumption_calculator_v4.xcdatamodel; sourceTree = "<group>"; };
 		118360272C3F0A3E00E97115 /* Electricity-consumption-calculator-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "Electricity-consumption-calculator-Info.plist"; sourceTree = SOURCE_ROOT; };
 		1183602A2C3F143F00E97115 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		1191E5BA2C568773001F9D64 /* Electricity_consumption_calculator_v5.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Electricity_consumption_calculator_v5.xcdatamodel; sourceTree = "<group>"; };
+		1191E5C32C56970E001F9D64 /* ConsumerEntity+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ConsumerEntity+CoreDataClass.swift"; sourceTree = SOURCE_ROOT; };
+		1191E5C42C56970E001F9D64 /* ConsumerEntity+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ConsumerEntity+CoreDataProperties.swift"; sourceTree = SOURCE_ROOT; };
+		1191E5C72C569958001F9D64 /* GeneratorEntity+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "GeneratorEntity+CoreDataClass.swift"; sourceTree = SOURCE_ROOT; };
+		1191E5C82C569958001F9D64 /* GeneratorEntity+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "GeneratorEntity+CoreDataProperties.swift"; sourceTree = SOURCE_ROOT; };
 		11C30FDC2C3720A300E43720 /* Electricity consumption calculator.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Electricity consumption calculator.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		11C30FDF2C3720A300E43720 /* Electricity_consumption_calculatorApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Electricity_consumption_calculatorApp.swift; sourceTree = "<group>"; };
 		11C30FE12C3720A300E43720 /* GeneratorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeneratorView.swift; sourceTree = "<group>"; };
@@ -80,8 +83,6 @@
 		11C30FE82C3720A500E43720 /* Persistence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Persistence.swift; sourceTree = "<group>"; };
 		11C30FEB2C3720A600E43720 /* Electricity_consumption_calculator.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Electricity_consumption_calculator.xcdatamodel; sourceTree = "<group>"; };
 		11C30FF22C3720FE00E43720 /* ConsumerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConsumerView.swift; sourceTree = "<group>"; };
-		11C30FF42C37237100E43720 /* ConsumerEntity+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ConsumerEntity+CoreDataClass.swift"; sourceTree = "<group>"; };
-		11C30FF52C37237100E43720 /* ConsumerEntity+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ConsumerEntity+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		11C30FF92C3724DF00E43720 /* Consumer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Consumer.swift; sourceTree = "<group>"; };
 		11C30FFB2C37282600E43720 /* ConsumerListItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConsumerListItemView.swift; sourceTree = "<group>"; };
 		11C30FFD2C37305C00E43720 /* Electricity_consumption_calculator 2.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Electricity_consumption_calculator 2.xcdatamodel"; sourceTree = "<group>"; };
@@ -105,11 +106,11 @@
 		1109E2FA2C3B0E8D003DE2AB /* CoreData */ = {
 			isa = PBXGroup;
 			children = (
-				1109E2F22C3B0D2B003DE2AB /* GeneratorEntity+CoreDataClass.swift */,
-				1109E2F32C3B0D2B003DE2AB /* GeneratorEntity+CoreDataProperties.swift */,
+				1191E5C72C569958001F9D64 /* GeneratorEntity+CoreDataClass.swift */,
+				1191E5C82C569958001F9D64 /* GeneratorEntity+CoreDataProperties.swift */,
+				1191E5C32C56970E001F9D64 /* ConsumerEntity+CoreDataClass.swift */,
+				1191E5C42C56970E001F9D64 /* ConsumerEntity+CoreDataProperties.swift */,
 				1109E2F62C3B0D3D003DE2AB /* GeneratorEntity+Custom.swift */,
-				11C30FF42C37237100E43720 /* ConsumerEntity+CoreDataClass.swift */,
-				11C30FF52C37237100E43720 /* ConsumerEntity+CoreDataProperties.swift */,
 				1109E2EB2C39E2F9003DE2AB /* ConsumerEntity+Custom.swift */,
 			);
 			path = CoreData;
@@ -315,17 +316,16 @@
 			buildActionMask = 2147483647;
 			files = (
 				11C30FE92C3720A500E43720 /* Persistence.swift in Sources */,
-				1109E2F42C3B0D2B003DE2AB /* GeneratorEntity+CoreDataClass.swift in Sources */,
 				1183602B2C3F143F00E97115 /* AppDelegate.swift in Sources */,
 				1109E2FD2C3B2004003DE2AB /* Formatters.swift in Sources */,
 				1109E2F72C3B0D3D003DE2AB /* GeneratorEntity+Custom.swift in Sources */,
 				114BFF292C54664100C2685A /* Generator.metadata.swift in Sources */,
-				1109E2F52C3B0D2B003DE2AB /* GeneratorEntity+CoreDataProperties.swift in Sources */,
 				11C30FE02C3720A300E43720 /* Electricity_consumption_calculatorApp.swift in Sources */,
 				11C30FF32C3720FE00E43720 /* ConsumerView.swift in Sources */,
 				114BFF252C54646200C2685A /* Consumer.middleware.swift in Sources */,
-				11C30FF62C37237100E43720 /* ConsumerEntity+CoreDataClass.swift in Sources */,
 				11C30FFA2C3724DF00E43720 /* Consumer.swift in Sources */,
+				1191E5C92C569958001F9D64 /* GeneratorEntity+CoreDataClass.swift in Sources */,
+				1191E5CA2C569958001F9D64 /* GeneratorEntity+CoreDataProperties.swift in Sources */,
 				112A33F32C45E79400920FBF /* Auth.middleware.swift in Sources */,
 				114BFF232C545EFA00C2685A /* Consumer.router.swift in Sources */,
 				11C30FFF2C37389500E43720 /* GeneratorView.swift in Sources */,
@@ -334,6 +334,8 @@
 				112A33EB2C456C3A00920FBF /* KeychainAccess.swift in Sources */,
 				112A33FA2C45EAD400920FBF /* Auth.metadata.swift in Sources */,
 				114BFF212C52E69C00C2685A /* Payloads.http.swift in Sources */,
+				1191E5C52C56970E001F9D64 /* ConsumerEntity+CoreDataClass.swift in Sources */,
+				1191E5C62C56970E001F9D64 /* ConsumerEntity+CoreDataProperties.swift in Sources */,
 				1109E2ED2C39E608003DE2AB /* Electricity_consumption_calculator.xcdatamodeld in Sources */,
 				1109E3022C3B261B003DE2AB /* Helpers.swift in Sources */,
 				1109E2EC2C39E2F9003DE2AB /* ConsumerEntity+Custom.swift in Sources */,
@@ -341,7 +343,6 @@
 				11C30FFC2C37282600E43720 /* ConsumerListItemView.swift in Sources */,
 				114BFF272C5464D400C2685A /* Generator.middleware.swift in Sources */,
 				1108C3252C488F6900393AF3 /* Generator.router.swift in Sources */,
-				11C30FF72C37237100E43720 /* ConsumerEntity+CoreDataProperties.swift in Sources */,
 				112A33F02C45E6BE00920FBF /* HttpConfig.swift in Sources */,
 				112A33F72C45E84700920FBF /* Auth.router.swift in Sources */,
 			);
@@ -608,12 +609,13 @@
 		11C30FEA2C3720A600E43720 /* Electricity_consumption_calculator.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
+				1191E5BA2C568773001F9D64 /* Electricity_consumption_calculator_v5.xcdatamodel */,
 				114BFF2A2C553AF300C2685A /* Electricity_consumption_calculator_v4.xcdatamodel */,
 				1109E2E62C39D71A003DE2AB /* Electricity_consumption_calculator 3.xcdatamodel */,
 				11C30FFD2C37305C00E43720 /* Electricity_consumption_calculator 2.xcdatamodel */,
 				11C30FEB2C3720A600E43720 /* Electricity_consumption_calculator.xcdatamodel */,
 			);
-			currentVersion = 11C30FEB2C3720A600E43720 /* Electricity_consumption_calculator.xcdatamodel */;
+			currentVersion = 1191E5BA2C568773001F9D64 /* Electricity_consumption_calculator_v5.xcdatamodel */;
 			path = Electricity_consumption_calculator.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;
