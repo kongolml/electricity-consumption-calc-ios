@@ -21,6 +21,9 @@ struct GeneratorView: View {
 
     @ObservedObject var generator: GeneratorEntity
     @FetchRequest private var allGeneratorConsumers: FetchedResults<ConsumerEntity>
+//    @State private var allGeneratorConsumers: [ConsumerEntity] = []
+    
+    @State private var generatorConsumersLoaded = false
 
     init(generator: GeneratorEntity) {
         self.generator = generator
@@ -31,6 +34,25 @@ struct GeneratorView: View {
             predicate: NSPredicate(format: "generator == %@", generator),
             animation: .default
         )
+    }
+    
+    func testGEtDAta() {
+        DispatchQueue.global().async {
+//            syncManager.syncLocalGeneratorWithRemote(localGenerator: generator, completion: { updatedGenerator in
+//                DispatchQueue.main.async {
+//                    self.generatorConsumersLoaded = true
+//                    self.allGeneratorConsumers = self.persistenceController.getGeneratorConsumers(generator: updatedGenerator)
+//                }
+//            })
+//            syncManager.getGeneratorConsumers(generatorEntity: generator, completion: { consumers in
+//                
+//                DispatchQueue.main.async {
+//                    self.generatorConsumersLoaded = true
+//                    self.allGeneratorConsumers.append(contentsOf: consumers)
+//                    print(self.allGeneratorConsumers)
+//                }
+//            })
+        }
     }
     
     var totalConsumption: Double {
@@ -47,137 +69,141 @@ struct GeneratorView: View {
 
     var body: some View {
         NavigationStack {
-            List {
-//                Button("test") {
-//                    generatorMiddleware.getGenerator(generatorId: "66985674c1bd91723a0eb11c") { response,arg  in
-//                        debugPrint(response)
+            
+            if !allGeneratorConsumers.isEmpty {
+                List {
+    //                Button("test") {
+    //                    generatorMiddleware.getGenerator(generatorId: "66985674c1bd91723a0eb11c") { response,arg  in
+    //                        debugPrint(response)
+    //                    }
+    //                }
+                    GoogleSignInButton(action: handleSignInButton)
+                    Button("Sign out google") {
+                        signOutGoogle()
+                    }
+
+                    if (allGeneratorConsumers.count == 0) {
+                        Text("No consumers yet")
+                    }
+                    
+                    if (allGeneratorConsumers.count > 0) {
+                        ForEach(ConsumerPriorityType.allCases, id: \.self) { filteredConsumersGroup in
+                            let consumersInGroup = filteredItems(for: filteredConsumersGroup)
+                            
+                            Section(content: {
+                                ForEach(consumersInGroup, id: \.self) { consumerItem in
+                                    NavigationLink {
+                                        ConsumerView(consumer: consumerItem)
+                                    } label: {
+                                        ConsumerListItemView(consumer: consumerItem)
+                                    }
+                                    .swipeActions(edge: .leading) {
+                                        Button(action: {
+                                            toggleItemActiveStatus(consumer: consumerItem)
+                                        }) {
+                                            consumerItem.isActive ? Label("Dectivate", systemImage: "bolt.slash") : Label("Activate", systemImage: "powercord")
+                                        }
+                                        .tint(consumerItem.isActive ? .red : .green)
+                                    }
+                                    .swipeActions(edge: .trailing) {
+                                        Button(action: {
+                                            deleteItem(consumer: consumerItem)
+                                        }) {
+                                            Label("Delete", systemImage: "trash")
+                                        }
+                                        .tint(.red)
+                                    }
+                                }
+                                //                        .onDelete(perform: deleteItemsInBulk)
+                                .onMove { indices, newOffset in
+                                    moveItems(from: indices, to: newOffset, in: filteredConsumersGroup)
+                                }
+                            }, header: {
+                                if consumersInGroup.count > 1 {
+                                    Text("\(filteredConsumersGroup.namePlural) consumers")
+                                } else {
+                                    Text("\(filteredConsumersGroup.name) consumer")
+                                }
+                            }, footer: {
+                                var consumersTotalConsumption: Double {
+                                    consumersInGroup.filter { $0.isActive }.map { $0.consumption * Double($0.quantity) }.reduce(0, +)
+                                }
+                                Text("Total: \(convertEnergyDoubleToNiceFormat(value: consumersTotalConsumption)) Watt")
+                            })
+                        }
+                    }
+                    
+                    Section(content: {
+                        HStack {
+                            Text("Total capacity")
+                            Spacer()
+                            Text("\(convertEnergyDoubleToNiceFormat(value: generator.capacity)) Watt")
+                                .foregroundColor(.gray)
+                        }
+                        HStack {
+                            Text("Total consumption")
+                            Spacer()
+                            Text("\(convertEnergyDoubleToNiceFormat(value: totalConsumption)) Watt")
+                                .foregroundColor(.gray)
+                        }
+                        HStack {
+                            Text("Left capacity")
+                            Spacer()
+                            Text("\(convertEnergyDoubleToNiceFormat(value: leftCapacity)) Watt")
+                                .foregroundColor(.gray)
+                        }
+                    }, header: {
+                        Text("Summary")
+                    })
+                }
+                .toolbar {
+                    ToolbarItem(placement: .topBarLeading) {
+                        NavigationLink {
+                            GeneratorDetailsView(generator: generator)
+                        } label: {
+                            Label("Edit generator", systemImage: "gear")
+                        }
+                    }
+                    ToolbarItem(placement: .topBarTrailing) {
+                        EditButton()
+                    }
+                    ToolbarItem {
+                        Menu {
+                            Button(action: {
+                                addINewtem(priority: .main)
+                            }) {
+                                Label("Main device", systemImage: "refrigerator")
+                            }
+                            
+                            Button(action: {
+                                addINewtem(priority: .secondary)
+                            }) {
+                                Label("Secondary device", systemImage: "lightbulb.2")
+                            }
+                        } label: {
+                            Label("Add Item", systemImage: "plus")
+                        }
+                    }
+                }
+                .navigationTitle(generator.name)
+//                .onReceive(allGeneratorConsumers.publisher.collect()) { consumers in
+//                    if !consumers.isEmpty {
+//                        test()
 //                    }
 //                }
-                GoogleSignInButton(action: handleSignInButton)
-                Button("Sign out google") {
-                    signOutGoogle()
-                }
-
-                if (allGeneratorConsumers.count == 0) {
-                    Text("No consumers yet")
-                }
-                
-                if (allGeneratorConsumers.count > 0) {
-                    ForEach(ConsumerPriorityType.allCases, id: \.self) { filteredConsumersGroup in
-                        let consumersInGroup = filteredItems(for: filteredConsumersGroup)
-                        
-                        Section(content: {
-                            ForEach(consumersInGroup, id: \.self) { consumerItem in
-                                NavigationLink {
-                                    ConsumerView(consumer: consumerItem)
-                                } label: {
-                                    ConsumerListItemView(consumer: consumerItem)
-                                }
-                                .swipeActions(edge: .leading) {
-                                    Button(action: {
-                                        toggleItemActiveStatus(consumer: consumerItem)
-                                    }) {
-                                        consumerItem.isActive ? Label("Dectivate", systemImage: "bolt.slash") : Label("Activate", systemImage: "powercord")
-                                    }
-                                    .tint(consumerItem.isActive ? .red : .green)
-                                }
-                                .swipeActions(edge: .trailing) {
-                                    Button(action: {
-                                        deleteItem(consumer: consumerItem)
-                                    }) {
-                                        Label("Delete", systemImage: "trash")
-                                    }
-                                    .tint(.red)
-                                }
-                            }
-                            //                        .onDelete(perform: deleteItemsInBulk)
-                            .onMove { indices, newOffset in
-                                moveItems(from: indices, to: newOffset, in: filteredConsumersGroup)
-                            }
-                        }, header: {
-                            if consumersInGroup.count > 1 {
-                                Text("\(filteredConsumersGroup.namePlural) consumers")
-                            } else {
-                                Text("\(filteredConsumersGroup.name) consumer")
-                            }
-                        }, footer: {
-                            var consumersTotalConsumption: Double {
-                                consumersInGroup.filter { $0.isActive }.map { $0.consumption * Double($0.quantity) }.reduce(0, +)
-                            }
-                            Text("Total: \(convertEnergyDoubleToNiceFormat(value: consumersTotalConsumption)) Watt")
-                        })
-                    }
-                }
-                
-                Section(content: {
-                    HStack {
-                        Text("Total capacity")
-                        Spacer()
-                        Text("\(convertEnergyDoubleToNiceFormat(value: generator.capacity)) Watt")
-                            .foregroundColor(.gray)
-                    }
-                    HStack {
-                        Text("Total consumption")
-                        Spacer()
-                        Text("\(convertEnergyDoubleToNiceFormat(value: totalConsumption)) Watt")
-                            .foregroundColor(.gray)
-                    }
-                    HStack {
-                        Text("Left capacity")
-                        Spacer()
-                        Text("\(convertEnergyDoubleToNiceFormat(value: leftCapacity)) Watt")
-                            .foregroundColor(.gray)
-                    }
-                }, header: {
-                    Text("Summary")
-                })
-            }
-            .toolbar {
-                ToolbarItem(placement: .topBarLeading) {
-                    NavigationLink {
-                        GeneratorDetailsView(generator: generator)
-                    } label: {
-                        Label("Edit generator", systemImage: "gear")
-                    }
-                }
-                ToolbarItem(placement: .topBarTrailing) {
-                    EditButton()
-                }
-                ToolbarItem {
-                    Menu {
-                        Button(action: {
-                            addINewtem(priority: .main)
-                        }) {
-                            Label("Main device", systemImage: "refrigerator")
-                        }
-                        
-                        Button(action: {
-                            addINewtem(priority: .secondary)
-                        }) {
-                            Label("Secondary device", systemImage: "lightbulb.2")
-                        }
-                    } label: {
-                        Label("Add Item", systemImage: "plus")
-                    }
+            } else {
+                ProgressView("Loading").onAppear {
+                    testGEtDAta()
                 }
             }
-            .navigationTitle(generator.name)
-//            .onAppear {
-//                syncManager.syncLocalAndRemoteGenerator(generatorFromServer: <#T##GeneratorFromServer#>, localGenerator: generator)
-//            }
-            .onReceive(allGeneratorConsumers.publisher.collect()) { consumers in
-                        if !consumers.isEmpty {
-                            test()
-                        }
-                    }
         }
     }
     
-    func test() {
-        if !allGeneratorConsumers.isEmpty {
-            syncManager.pushLocalGeneratorConsumers(generatorDbId: generator.dbid!, localGeneratorConsumers: allGeneratorConsumers.map { $0 })
-        }
-    }
+//    func test() {
+//        if !allGeneratorConsumers.isEmpty {
+//            syncManager.pushLocalGeneratorConsumers(generatorDbId: generator.dbid!, localGeneratorConsumers: allGeneratorConsumers.map { $0 })
+//        }
+//    }
 
     private func addINewtem(priority: ConsumerPriorityType) {
         viewContext.perform {
@@ -290,10 +316,10 @@ extension View {
 }
 
 
-#Preview {
-    @Environment(\.managedObjectContext) var viewContext
-
-    let dummyGenerator = GeneratorEntity.createMock(context: viewContext)
-
-    return GeneratorView(generator: dummyGenerator).environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
-}
+//#Preview {
+//    @Environment(\.managedObjectContext) var viewContext
+//
+//    let dummyGenerator = GeneratorEntity.createMock(context: viewContext)
+//
+//    return GeneratorView(generator: dummyGenerator).environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
+//}

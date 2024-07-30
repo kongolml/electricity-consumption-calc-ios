@@ -24,9 +24,9 @@ class GeneratorMiddleware {
     func getGeneratorById(generatorId: String, completion: @escaping (GeneratorFromServer?, Error?) -> Void) {
         AlamofireService.sharedSession.request(GeneratorRouter.getById(generatorId: generatorId)).validate().responseDecodable(of: GeneratorFromServer.self) { response in
             switch response.result {
-            case .success(let consumer):
-                debugPrint(consumer)
-                completion(consumer, nil)
+            case .success(let generatorFromServer):
+//                debugPrint(generatorFromServer)
+                completion(generatorFromServer, nil)
             case .failure(let error):
                 debugPrint(error)
                 completion(nil, error)

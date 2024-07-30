@@ -15,7 +15,7 @@ extension GeneratorEntity {
         self.id = UUID()
         self.name = NSLocalizedString("new_generator_item_name", comment: "")
         self.capacity = 1000
-//        self.consumers = []
+//        self.consumers = [ConsumerEntity]
         self.updatedAt = Date()
     }
 

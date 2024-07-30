@@ -67,6 +67,10 @@ class PersistenceController: ObservableObject {
             
             self.setDefaultValuesForNewAttributesForConsumers()
             self.setDefaultValuesForNewAttributesForGenerators()
+            
+            if let storeURL = self.container.persistentStoreCoordinator.persistentStores.first?.url {
+                print("core data sqlite: \(storeURL)")
+            }
         })
         container.viewContext.automaticallyMergesChangesFromParent = true
     }
@@ -109,6 +113,23 @@ class PersistenceController: ObservableObject {
         } catch {
             print("Failed to set default values: \(error)")
         }
+    }
+    
+    func getGeneratorConsumers(generator: GeneratorEntity) -> [ConsumerEntity] {
+//        TODO: should it be fetched here all the time? this function is used in few places, overkill?
+        let fetchRequest: NSFetchRequest<ConsumerEntity> = ConsumerEntity.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "generator == %@", generator)
+        
+        do {
+            let generatorConsumers = try container.viewContext.fetch(fetchRequest)
+            
+            return generatorConsumers
+        } catch {
+            debugPrint(error)
+        }
+        
+//        TODO: do not return empty array
+        return []
     }
     
     func fetchLocalGenerators() -> [GeneratorEntity] {
@@ -189,105 +210,6 @@ class PersistenceController: ObservableObject {
         saveContext()
     }
     
-    func syncLocalAndRemoteGenerator(generatorFromServer: GeneratorFromServer) {
-        let context = container.viewContext
-        
-        do {
-            // Check if the generator already exists
-            let fetchRequest: NSFetchRequest<GeneratorEntity> = GeneratorEntity.fetchRequest()
-            fetchRequest.predicate = NSPredicate(format: "dbid == %@", generatorFromServer.id)
-            let existingGenerators = try context.fetch(fetchRequest)
-            let generatorEntity: GeneratorEntity
-            
-            if let existingGenerator = existingGenerators.first {
-                if generatorFromServer.updatedAt > existingGenerator.updatedAt {
-                    // update local
-                } else {
-                    // update on server
-                }
-            } else {
-                generatorEntity = GeneratorEntity(context: self.container.viewContext)
-                generatorEntity.dbid = generatorFromServer.id
-            }
-        } catch {
-            print("Failed to save context: \(error)")
-        }
-    }
-    
-    func saveGeneratorWithConsumersFromServerToCoreData(generatorFromServer: GeneratorFromServer) {
-        let context = container.viewContext
-        
-        do {
-            // Check if the generator already exists
-            let fetchRequest: NSFetchRequest<GeneratorEntity> = GeneratorEntity.fetchRequest()
-            fetchRequest.predicate = NSPredicate(format: "dbid == %@", generatorFromServer.id)
-            
-            let existingGenerators = try context.fetch(fetchRequest)
-            let generatorEntity: GeneratorEntity
-            
-            if let existingGenerator = existingGenerators.first {
-                // we already have this generator locally
-                if generatorFromServer.updatedAt > existingGenerator.updatedAt {
-                    // received more fresh version from server
-                    generatorEntity = existingGenerator
-//                    self.updateGeneratorEntity(existingGenerator, with: generatorFromServer)
-                } else {
-                    // TODO: save to server, local data is more fresh
-//                    generatorEntity = existingGenerator
-                    return
-                }
-            } else {
-                generatorEntity = GeneratorEntity(context: self.container.viewContext)
-                generatorEntity.dbid = generatorFromServer.id
-            }
-            
-            generatorEntity.name = generatorFromServer.name
-            generatorEntity.capacity = generatorEntity.capacity
-            
-            // Add consumers
-//            for consumer in generatorFromServer.consumers {
-//                let consumerEntity = ConsumerEntity(context: context)
-//                consumerEntity.dbid = consumer.id
-////                consumerEntity.name = consumer.name
-////                consumerEntity.updatedAt = consumer.updatedAt
-////                consumerEntity.orderInGroup = Int16(consumer.orderInGroup)
-//                consumerEntity.generator = generatorEntity
-//            }
-            
-            try context.save()
-        } catch {
-            print("Failed to save context: \(error)")
-        }
-    }
-        
-//    TODO: refactor this, this was taked from internet as a proof-of-concept
-//    func saveGeneratorsToCoreData(generators: [GeneratorFromServer]) {
-//        let context = container.viewContext
-//
-//        context.perform {
-//            for generator in generators {
-//                let fetchRequest: NSFetchRequest<GeneratorEntity> = GeneratorEntity.fetchRequest()
-//                fetchRequest.predicate = NSPredicate(format: "dbid == %@", generator.id)
-//
-//                if let existingGenerator = try? context.fetch(fetchRequest).first {
-//                    // Conflict resolution based on updatedAt
-//                    if generator.updatedAt > existingGenerator.updatedAt {
-//                        self.updateGeneratorEntity(existingGenerator, with: generator)
-//                    }
-//                } else {
-//                    // Insert new generator
-//                    self.createGeneratorEntity(with: generator, context: context)
-//                }
-//            }
-//            
-//            do {
-//                try context.save()
-//            } catch {
-//                print("Failed to save context: \(error)")
-//            }
-//        }
-//    }
-    
     func createGeneratorEntity(with generatorFromServer: GeneratorFromServer, context: NSManagedObjectContext) {
         let newGenerator = GeneratorEntity(context: context)
         newGenerator.dbid = generatorFromServer.id
@@ -296,18 +218,28 @@ class PersistenceController: ObservableObject {
         // Set other properties
     }
     
-    func updateGeneratorEntity(_ entity: GeneratorEntity, with generatorFromServer: GeneratorFromServer) {
-        entity.dbid = generatorFromServer.id
-        entity.name = generatorFromServer.name
-        entity.capacity = generatorFromServer.capacity
-        entity.updatedAt = generatorFromServer.updatedAt
+    func updateGeneratorEntity(_ localGenerator: GeneratorEntity, with generatorFromServer: GeneratorFromServer) {
+        localGenerator.dbid = generatorFromServer.id
+        localGenerator.name = generatorFromServer.name
+        localGenerator.capacity = generatorFromServer.capacity
+        localGenerator.updatedAt = generatorFromServer.updatedAt
         
-//        for consumer in generatorFromServer.consumers {
-//            createConsumerEntityFromServer(with: consumer)
+        // Add consumer to generator's consumers set
+        let consumerEntities = localGenerator.mutableSetValue(forKey: "consumers")
+        for consumer in generatorFromServer.consumers {
+            let consumerEntity = createConsumerEntityFromServer(with: consumer)
+            consumerEntities.add(consumerEntity)
+        }
+        
+//        let consumerEntities = generatorFromServer.consumers.map { consumerData in
+//            return createConsumerEntityFromServer(with: consumerData)
 //        }
+//        // Add consumer to generator's consumers set
+//       let consumers = generator.mutableSetValue(forKey: "consumers")
+//       consumers.add(consumerEntity)
     }
     
-    func createConsumerEntityFromServer(with consumerFromServer: ConsumerFromServer) {
+    func createConsumerEntityFromServer(with consumerFromServer: ConsumerFromServer) -> ConsumerEntity {
         let consumerEntity = ConsumerEntity(context: container.viewContext)
         
 //        TODO: removal handler idea?
@@ -322,7 +254,8 @@ class PersistenceController: ObservableObject {
         consumerEntity.priorityType = Int16(consumerFromServer.priorityType.rawValue)
         consumerEntity.quantity = consumerFromServer.quantity
         consumerEntity.orderInGroup = consumerFromServer.orderInGroup
-        //
+        consumerEntity.updatedAt = consumerFromServer.updatedAt
+
 //        if let name = consumerFromServer.name {
 //            consumerEntity.name = name
 //        }
@@ -344,5 +277,7 @@ class PersistenceController: ObservableObject {
 //        if let orderInGroup = consumerFromServer.orderInGroup {
 //            consumerEntity.orderInGroup = orderInGroup
 //        }
+        
+        return consumerEntity
     }
 }
