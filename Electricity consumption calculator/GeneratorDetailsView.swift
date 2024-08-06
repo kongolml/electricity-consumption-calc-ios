@@ -32,6 +32,7 @@ struct GeneratorDetailsView: View {
     
     private func saveChanges() {
         viewContext.perform {
+            generator.updatedAt = Date()
             persistenceController.saveContext()
         }
     }

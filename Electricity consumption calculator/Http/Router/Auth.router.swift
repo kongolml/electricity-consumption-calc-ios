@@ -39,7 +39,7 @@ enum AuthRouter: URLRequestConvertible {
 //    }
     
     var headers: HTTPHeaders {
-        var headers = HTTPHeaders()
+        let headers = HTTPHeaders()
         
         switch self {
         case .google: break

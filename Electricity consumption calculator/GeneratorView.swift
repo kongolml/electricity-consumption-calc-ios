@@ -21,7 +21,6 @@ struct GeneratorView: View {
 
     @ObservedObject var generator: GeneratorEntity
     @FetchRequest private var allGeneratorConsumers: FetchedResults<ConsumerEntity>
-//    @State private var allGeneratorConsumers: [ConsumerEntity] = []
     
     @State private var generatorConsumersLoaded = false
 
@@ -34,25 +33,6 @@ struct GeneratorView: View {
             predicate: NSPredicate(format: "generator == %@", generator),
             animation: .default
         )
-    }
-    
-    func testGEtDAta() {
-        DispatchQueue.global().async {
-//            syncManager.syncLocalGeneratorWithRemote(localGenerator: generator, completion: { updatedGenerator in
-//                DispatchQueue.main.async {
-//                    self.generatorConsumersLoaded = true
-//                    self.allGeneratorConsumers = self.persistenceController.getGeneratorConsumers(generator: updatedGenerator)
-//                }
-//            })
-//            syncManager.getGeneratorConsumers(generatorEntity: generator, completion: { consumers in
-//                
-//                DispatchQueue.main.async {
-//                    self.generatorConsumersLoaded = true
-//                    self.allGeneratorConsumers.append(contentsOf: consumers)
-//                    print(self.allGeneratorConsumers)
-//                }
-//            })
-        }
     }
     
     var totalConsumption: Double {
@@ -72,11 +52,6 @@ struct GeneratorView: View {
             
             if !allGeneratorConsumers.isEmpty {
                 List {
-    //                Button("test") {
-    //                    generatorMiddleware.getGenerator(generatorId: "66985674c1bd91723a0eb11c") { response,arg  in
-    //                        debugPrint(response)
-    //                    }
-    //                }
                     GoogleSignInButton(action: handleSignInButton)
                     Button("Sign out google") {
                         signOutGoogle()
@@ -156,6 +131,15 @@ struct GeneratorView: View {
                         Text("Summary")
                     })
                 }
+                .refreshable {
+                    syncManager.fetchUserGenerators() { generatorToUse in
+                        DispatchQueue.main.async {
+                            self.generator.name = generatorToUse.name
+                            self.generator.capacity = generatorToUse.capacity
+                            self.generator.consumers = generatorToUse.consumers
+                        }
+                    }
+                }
                 .toolbar {
                     ToolbarItem(placement: .topBarLeading) {
                         NavigationLink {
@@ -186,24 +170,11 @@ struct GeneratorView: View {
                     }
                 }
                 .navigationTitle(generator.name)
-//                .onReceive(allGeneratorConsumers.publisher.collect()) { consumers in
-//                    if !consumers.isEmpty {
-//                        test()
-//                    }
-//                }
             } else {
-                ProgressView("Loading").onAppear {
-                    testGEtDAta()
-                }
+                ProgressView("Loading")
             }
         }
     }
-    
-//    func test() {
-//        if !allGeneratorConsumers.isEmpty {
-//            syncManager.pushLocalGeneratorConsumers(generatorDbId: generator.dbid!, localGeneratorConsumers: allGeneratorConsumers.map { $0 })
-//        }
-//    }
 
     private func addINewtem(priority: ConsumerPriorityType) {
         viewContext.perform {

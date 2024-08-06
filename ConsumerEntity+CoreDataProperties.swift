@@ -24,7 +24,7 @@ extension ConsumerEntity {
     @NSManaged public var priorityType: Int16
     @NSManaged public var quantity: Int16
     @NSManaged public var createdAt: Date?
-    @NSManaged public var updatedAt: Date?
+    @NSManaged public var updatedAt: Date
     @NSManaged public var dbid: String?
     @NSManaged public var generator: GeneratorEntity?
 

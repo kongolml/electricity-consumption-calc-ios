@@ -15,7 +15,6 @@ struct Electricity_consumption_calculatorApp: App {
     let persistenceController = PersistenceController.shared
     let syncManager = SyncManager.shared
     @State private var defaultGenerator: GeneratorEntity?
-//    @State private var generatorToUse
         
     let keychain = KeychainToolbox()
     let generatorMiddleware = GeneratorMiddleware()
@@ -49,48 +48,11 @@ struct Electricity_consumption_calculatorApp: App {
             } else {
                 ProgressView("Loading")
                     .onAppear {
-                        self.loadData()
+                        syncManager.fetchUserGenerators() { generatorToUse in
+                            defaultGenerator = generatorToUse
+                        }
                     }
             }
-        }
-    }
-    
-    private func loadDefaultGenerator() -> Void {
-        defaultGenerator = persistenceController.fetchOrCreateDefaultGeneratorEntity()
-        persistenceController.fetchConsumersOrCreateDefaults()
-    }
-    
-    private func loadData() {
-//        TODO: move this logic away from here
-        if (keychain.getUserApiToken() != nil) {
-            generatorMiddleware.getUserGenerators(completion: { userGeneratorsFromServer, error  in
-                guard let userGeneratorsFromServer = userGeneratorsFromServer else {
-                    loadDefaultGenerator()
-                    return
-                }
-
-                syncManager.handleGeneratorsListFromServer(generatorsFromServer: userGeneratorsFromServer, completion: { generatorToUse in
-                    defaultGenerator = generatorToUse
-                })
-                
-//                if (userGeneratorsFromServer.isEmpty) {
-//                    loadDefaultGenerator()
-//                } else {
-//                    let firstGeneratorFromServer = userGeneratorsFromServer.first
-//                    defaultGenerator = GeneratorEntity(context: persistenceController.container.viewContext)
-//                    
-//                    if let defaultGenerator = defaultGenerator, let firstGeneratorFromServer = firstGeneratorFromServer {
-//                        persistenceController.updateGeneratorEntity(defaultGenerator, with: firstGeneratorFromServer)
-//                        persistenceController.saveContext()
-//                    }
-//                }
-                
-                if (error != nil) {
-                    loadDefaultGenerator()
-                }
-            })
-        } else {
-            loadDefaultGenerator()
         }
     }
 }

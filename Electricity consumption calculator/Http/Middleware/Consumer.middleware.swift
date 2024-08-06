@@ -10,16 +10,14 @@ import Foundation
 class ConsumerMiddleware {
     let keychain = KeychainToolbox()
     
-//    func getGeneratorConsumers() {}
-    
-    func createGeneratorConsumer(for generatorDbId: String, with consumerEntity: ConsumerEntity, completion: @escaping (ConsumerHttpPayload?, Error?) -> Void) {
+    func createGeneratorConsumer(for generatorDbId: String, with consumerEntity: ConsumerEntity, completion: @escaping (ConsumerFromServer?, Error?) -> Void) {
         let decoder = JSONDecoder()
         let dateFormatter = DateFormatter.custom
         decoder.dateDecodingStrategy = .formatted(dateFormatter)
         
         let consumerPayload = ConsumerHttpPayload(from: consumerEntity)
         
-        AlamofireService.sharedSession.request(ConsumerRouter.create(generatorId: generatorDbId, newConsumerPayload: consumerPayload)).validate().responseDecodable(of: ConsumerHttpPayload.self, decoder: decoder) { response in
+        AlamofireService.sharedSession.request(ConsumerRouter.create(generatorId: generatorDbId, newConsumerPayload: consumerPayload)).validate().responseDecodable(of: ConsumerFromServer.self, decoder: decoder) { response in
             switch response.result {
             case .success(let createdConsumer):
                 completion(createdConsumer, nil)

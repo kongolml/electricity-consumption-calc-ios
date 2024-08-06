@@ -23,8 +23,14 @@ struct GeneratorHttpPayload: Encodable {
         self.name = generatorEntity.name
         self.capacity = generatorEntity.capacity
         self.updatedAt = generatorEntity.updatedAt
-        // TODO: PASS CONSUMERS!!!!
-        self.consumers = []
+        
+        // TODO: PASS CONSIMERS!!!! ??
+        // Convert ConsumerEntity instances to ConsumerHttpPayload instances
+       if let consumerEntities = generatorEntity.consumers?.allObjects as? [ConsumerEntity] {
+           self.consumers = consumerEntities.map { ConsumerHttpPayload(from: $0) }
+       } else {
+           self.consumers = nil
+       }
         self.createdAt = generatorEntity.createdAt
     }
 }

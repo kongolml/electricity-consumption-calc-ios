@@ -12,6 +12,7 @@ import CoreData
 class SyncManager {
     static let shared = SyncManager()
     
+    private let keychain = KeychainToolbox()
     private let generatorMiddleware = GeneratorMiddleware()
     private let consumerMiddleware = ConsumerMiddleware()
     private let persistenceController = PersistenceController.shared
@@ -28,22 +29,11 @@ class SyncManager {
             }
         }, receiveValue: { createdGenerator in
             self.persistenceController.updateGeneratorEntity(localGenerator, with: createdGenerator)
-            
             self.persistenceController.saveContext()
             
             comletion(localGenerator)
         })
         //.store(in: &cancellables)
-
-//        generatorMiddleware.addNewGenerator(newGenerator: localGenerator, completion: { createdGenerator, error in
-//            guard let createdGenerator = createdGenerator else {
-//                return
-//            }
-//            
-//            self.persistenceController.updateGeneratorEntity(localGenerator, with: createdGenerator)
-//            
-//            self.persistenceController.saveContext()
-//        })
     }
     
     func handleGeneratorsListFromServer(generatorsFromServer: [GeneratorFromServer], completion: ((GeneratorEntity) -> Void)? = nil) {
@@ -54,6 +44,7 @@ class SyncManager {
                 completion?(generator)
             })
         } else {
+//            TODO: what if local will have more that one !!!
             let localGenerators = persistenceController.fetchLocalGenerators()
             
             // Create a dictionary for quick lookup
@@ -64,40 +55,23 @@ class SyncManager {
             
             // Iterate through Core Data objects
             for localGenerator in localGenerators {
-                if localGenerator.dbid != nil {
-                    if let serverItem = generatorsFromServerDict[localGenerator.dbid!] {
+                if let generatorDbId = localGenerator.dbid {
+                    if let serverItem = generatorsFromServerDict[generatorDbId] {
                         syncLocalAndRemoteGenerator(generatorFromServer: serverItem, localGenerator: localGenerator, completion: { generator in
                             completion?(generator)
                         })
                     }
                 } else {
                     // local generator, which was not saved to server
-//                    pushLocalGeneratorToServer(localGenerator: localGenerator, comletion: { generator in
-//                        completion?(generator)
-//                    })
+                    pushLocalGeneratorToServer(localGenerator: localGenerator, comletion: { generator in
+                        completion?(generator)
+                    })
                 }
             }
         }
     }
     
     func syncLocalAndRemoteGenerator(generatorFromServer: GeneratorFromServer, localGenerator: GeneratorEntity, completion: ((GeneratorEntity) -> Void)? = nil) {
-        if let consumersSet = localGenerator.consumers as? Set<ConsumerEntity> {
-            // Convert Set<ConsumerEntity> to Array<ConsumerEntity>
-            let consumersArray = Array(consumersSet)
-
-            let consumersWithoutDbid = consumersArray.filter { consumer in
-                return consumer.dbid == nil
-            }
-            
-            guard let generatorDbId = localGenerator.dbid else {
-                return
-            }
-            
-            if !consumersWithoutDbid.isEmpty {
-                pushLocalGeneratorConsumers(generatorDbId: generatorDbId, localGeneratorConsumers: consumersWithoutDbid)
-            }
-        }
-
         if (generatorFromServer.updatedAt == localGenerator.updatedAt) {
             print("ok  local and external generators have the same udpatedAt")
             completion?(localGenerator)
@@ -107,34 +81,51 @@ class SyncManager {
         if generatorFromServer.updatedAt > localGenerator.updatedAt {
             // update local
             persistenceController.updateGeneratorEntity(localGenerator, with: generatorFromServer)
-            
             persistenceController.saveContext()
             print("ok updated local generator ientity")
             
             completion?(localGenerator)
         } else if (generatorFromServer.updatedAt < localGenerator.updatedAt) {
             // update on server
-            // TODO: PASS CONSUMERS!!!!!!
             let patchPayload = GeneratorHttpPayload(from: localGenerator)
             generatorMiddleware.updateGenerator(generatorId: generatorFromServer.id, updatedGenerator: patchPayload, completion: { savedGenerator, error in
                 if savedGenerator != nil {
                     print("OK UPDATED")
 
                     self.persistenceController.updateGeneratorEntity(localGenerator, with: savedGenerator!)
-                    
                     self.persistenceController.saveContext()
                     
                     completion?(localGenerator)
                 }
             })
         }
+
+        // this will update generator updatedAt on server, but here in memory we still have "previous" generator instance
+        pushLocalGeneratorConsumers(localGenerator: localGenerator)
     }
     
-    func pushLocalGeneratorConsumers(generatorDbId: String, localGeneratorConsumers: [ConsumerEntity]) {
-        for consumer in localGeneratorConsumers {
-            consumerMiddleware.createGeneratorConsumer(for: generatorDbId, with: consumer, completion: { consumerFromServer, error in
-                print("pushLocalGeneratorConsumers made a callback and its not handlede!!!")
-            })
+    func pushLocalGeneratorConsumers(localGenerator: GeneratorEntity) {
+        guard let generatorDbId = localGenerator.dbid else {
+            return
+        }
+        
+        if let consumersSet = localGenerator.consumers as? Set<ConsumerEntity> {
+            let consumersWithoutDbid = consumersSet.filter { consumer in
+                return consumer.dbid == nil || consumer.dbid?.isEmpty == true
+            }
+            
+            if !consumersWithoutDbid.isEmpty, let generatorDbId = localGenerator.dbid {
+//                pushLocalGeneratorConsumers(localGenerator: localGenerator)
+                // TODO: make it in one batch, not in loop - !!!!!
+                for consumer in consumersWithoutDbid {
+                    consumerMiddleware.createGeneratorConsumer(for: generatorDbId, with: consumer, completion: { consumerFromServer, error in
+                        if let consumerFromServer = consumerFromServer {
+                            self.persistenceController.updateConsumerEntity(consumer, with: consumerFromServer)
+                            self.persistenceController.saveContext()
+                        }
+                    })
+                }
+            }
         }
     }
     
@@ -187,30 +178,47 @@ class SyncManager {
         }
     }
     
-    /**
-     Will update decide which generator is more recent (local or from server) and synch them
-     */
-    func syncLocalGeneratorWithRemote(localGenerator: GeneratorEntity, completion: ((GeneratorEntity) -> Void)? = nil) {
-        guard let dbId = localGenerator.dbid else {
-            return
-        }
+    func fetchUserGenerators(completion: ((GeneratorEntity) -> Void)? = nil) {
+//        TODO: move this logic away from here
+        if (keychain.getUserApiToken() != nil) {
+            generatorMiddleware.getUserGenerators(completion: { userGeneratorsFromServer, error  in
+                guard let userGeneratorsFromServer = userGeneratorsFromServer else {
+                    let defaultGenerator = self.loadDefaultGenerator()
+                    completion?(defaultGenerator)
+                    return
+                }
 
-        generatorMiddleware.getGeneratorById(generatorId: dbId, completion: { generatorFromServer, error in
-            if let generatorFromServer = generatorFromServer {
-                self.syncLocalAndRemoteGenerator(generatorFromServer: generatorFromServer, localGenerator: localGenerator)
-            }
-            
-            if let generatorFromServer = generatorFromServer, generatorFromServer.updatedAt > localGenerator.updatedAt {
-                self.persistenceController.updateGeneratorEntity(localGenerator, with: generatorFromServer)
-                self.persistenceController.saveContext()
-            }
-            
-            completion?(localGenerator)
-            
-            // TODO: handle error here, its important
-            if error != nil {
+                self.handleGeneratorsListFromServer(generatorsFromServer: userGeneratorsFromServer, completion: { generatorToUse in
+                    completion?(generatorToUse)
+                })
                 
-            }
-        })
+//                if (userGeneratorsFromServer.isEmpty) {
+//                    loadDefaultGenerator()
+//                } else {
+//                    let firstGeneratorFromServer = userGeneratorsFromServer.first
+//                    defaultGenerator = GeneratorEntity(context: persistenceController.container.viewContext)
+//
+//                    if let defaultGenerator = defaultGenerator, let firstGeneratorFromServer = firstGeneratorFromServer {
+//                        persistenceController.updateGeneratorEntity(defaultGenerator, with: firstGeneratorFromServer)
+//                        persistenceController.saveContext()
+//                    }
+//                }
+                
+                if (error != nil) {
+                    let defaultGenerator = self.loadDefaultGenerator()
+                    completion?(defaultGenerator)
+                }
+            })
+        } else {
+            let defaultGenerator = self.loadDefaultGenerator()
+            completion?(defaultGenerator)
+        }
+    }
+    
+    private func loadDefaultGenerator() -> GeneratorEntity {
+        let defaultGenerator = persistenceController.fetchOrCreateDefaultGeneratorEntity()
+        persistenceController.fetchConsumersOrCreateDefaults()
+        
+        return defaultGenerator
     }
 }

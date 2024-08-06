@@ -23,22 +23,6 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "829E63A2-9365-4E15-B3F6-EDFBCE0C3B6D"
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Electricity consumption calculator/Electricity_consumption_calculatorApp.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "59"
-            endingLineNumber = "59"
-            landmarkName = "loadDefaultGenerator()"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
             uuid = "679B4415-9381-4230-AEDF-27AB0C8CA378"
             shouldBeEnabled = "No"
             ignoreCount = "0"
@@ -94,8 +78,8 @@
             filePath = "Electricity consumption calculator/SyncManager.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "75"
-            endingLineNumber = "75"
+            startingLineNumber = "66"
+            endingLineNumber = "66"
             landmarkName = "handleGeneratorsListFromServer(generatorsFromServer:completion:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -104,14 +88,14 @@
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
             uuid = "32464986-4E53-4B5E-B4CC-78BA3AD28C09"
-            shouldBeEnabled = "No"
+            shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Electricity consumption calculator/SyncManager.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "107"
-            endingLineNumber = "107"
+            startingLineNumber = "81"
+            endingLineNumber = "81"
             landmarkName = "syncLocalAndRemoteGenerator(generatorFromServer:localGenerator:completion:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -126,8 +110,8 @@
             filePath = "Electricity consumption calculator/SyncManager.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "67"
-            endingLineNumber = "67"
+            startingLineNumber = "58"
+            endingLineNumber = "58"
             landmarkName = "handleGeneratorsListFromServer(generatorsFromServer:completion:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -142,8 +126,8 @@
             filePath = "Electricity consumption calculator/SyncManager.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "70"
-            endingLineNumber = "70"
+            startingLineNumber = "61"
+            endingLineNumber = "61"
             landmarkName = "handleGeneratorsListFromServer(generatorsFromServer:completion:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -158,8 +142,8 @@
             filePath = "Electricity consumption calculator/SyncManager.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "114"
-            endingLineNumber = "114"
+            startingLineNumber = "87"
+            endingLineNumber = "87"
             landmarkName = "syncLocalAndRemoteGenerator(generatorFromServer:localGenerator:completion:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -174,8 +158,8 @@
             filePath = "Electricity consumption calculator/SyncManager.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "119"
-            endingLineNumber = "119"
+            startingLineNumber = "91"
+            endingLineNumber = "91"
             landmarkName = "syncLocalAndRemoteGenerator(generatorFromServer:localGenerator:completion:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -190,41 +174,9 @@
             filePath = "Electricity consumption calculator/SyncManager.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "120"
-            endingLineNumber = "120"
+            startingLineNumber = "92"
+            endingLineNumber = "92"
             landmarkName = "syncLocalAndRemoteGenerator(generatorFromServer:localGenerator:completion:)"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "ED06D05D-F751-49C3-875D-9FBFA6CBF653"
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Electricity consumption calculator/GeneratorView.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "203"
-            endingLineNumber = "203"
-            landmarkName = "GeneratorView"
-            landmarkType = "14">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "2AAA7C29-1259-422D-8346-EF334CC059B9"
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Electricity consumption calculator/SyncManager.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "135"
-            endingLineNumber = "135"
-            landmarkName = "pushLocalGeneratorConsumers(generatorDbId:localGeneratorConsumers:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -238,8 +190,8 @@
             filePath = "Electricity consumption calculator/Http/Middleware/Consumer.middleware.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "24"
-            endingLineNumber = "24"
+            startingLineNumber = "22"
+            endingLineNumber = "22"
             landmarkName = "createGeneratorConsumer(for:with:completion:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -254,8 +206,8 @@
             filePath = "Electricity consumption calculator/Http/Middleware/Consumer.middleware.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "23"
-            endingLineNumber = "23"
+            startingLineNumber = "21"
+            endingLineNumber = "21"
             landmarkName = "createGeneratorConsumer(for:with:completion:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -270,8 +222,8 @@
             filePath = "Electricity consumption calculator/SyncManager.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "160"
-            endingLineNumber = "160"
+            startingLineNumber = "151"
+            endingLineNumber = "151"
             landmarkName = "getGeneratorConsumers(generatorEntity:completion:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -302,8 +254,8 @@
             filePath = "Electricity consumption calculator/Metadata/Http/Payloads.http.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "89"
-            endingLineNumber = "89"
+            startingLineNumber = "95"
+            endingLineNumber = "95"
             landmarkName = "init(from:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -318,8 +270,8 @@
             filePath = "Electricity consumption calculator/Metadata/Http/Payloads.http.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "90"
-            endingLineNumber = "90"
+            startingLineNumber = "96"
+            endingLineNumber = "96"
             landmarkName = "init(from:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -334,8 +286,8 @@
             filePath = "Electricity consumption calculator/Metadata/Http/Payloads.http.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "93"
-            endingLineNumber = "93"
+            startingLineNumber = "99"
+            endingLineNumber = "99"
             landmarkName = "init(from:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -350,105 +302,9 @@
             filePath = "Electricity consumption calculator/SyncManager.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "173"
-            endingLineNumber = "173"
+            startingLineNumber = "164"
+            endingLineNumber = "164"
             landmarkName = "getGeneratorConsumers(generatorEntity:completion:)"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "535F3E2E-58AA-4D77-8AB0-1C9D2077C466"
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Electricity consumption calculator/GeneratorView.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "49"
-            endingLineNumber = "49"
-            landmarkName = "testGEtDAta()"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "1770CC18-BB97-448A-A164-0773E73F0306"
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Electricity consumption calculator/GeneratorView.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "50"
-            endingLineNumber = "50"
-            landmarkName = "testGEtDAta()"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "1095025C-186A-4D69-A31E-E8361AE2B7CD"
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Electricity consumption calculator/GeneratorView.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "47"
-            endingLineNumber = "47"
-            landmarkName = "testGEtDAta()"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "BD1B08FB-8336-4446-A487-7B298BF7355A"
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Electricity consumption calculator/GeneratorView.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "196"
-            endingLineNumber = "196"
-            landmarkName = "body"
-            landmarkType = "24">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "F268AF54-309B-49BA-8A83-020ED92C8801"
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Electricity consumption calculator/Electricity_consumption_calculatorApp.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "65"
-            endingLineNumber = "65"
-            landmarkName = "loadData()"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "FD6852D4-44E2-47D6-AACF-84032FB4A914"
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Electricity consumption calculator/Electricity_consumption_calculatorApp.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "67"
-            endingLineNumber = "67"
-            landmarkName = "loadData()"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -462,25 +318,9 @@
             filePath = "Electricity consumption calculator/SyncManager.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "66"
-            endingLineNumber = "66"
+            startingLineNumber = "57"
+            endingLineNumber = "57"
             landmarkName = "handleGeneratorsListFromServer(generatorsFromServer:completion:)"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "BB4AC31F-23D8-412F-A995-FF3E4866E9BD"
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Electricity consumption calculator/Electricity_consumption_calculatorApp.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "73"
-            endingLineNumber = "73"
-            landmarkName = "loadData()"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -494,8 +334,8 @@
             filePath = "Electricity consumption calculator/SyncManager.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "101"
-            endingLineNumber = "101"
+            startingLineNumber = "75"
+            endingLineNumber = "75"
             landmarkName = "syncLocalAndRemoteGenerator(generatorFromServer:localGenerator:completion:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -510,8 +350,8 @@
             filePath = "Electricity consumption calculator/SyncManager.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "50"
-            endingLineNumber = "50"
+            startingLineNumber = "40"
+            endingLineNumber = "40"
             landmarkName = "handleGeneratorsListFromServer(generatorsFromServer:completion:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -526,10 +366,164 @@
             filePath = "Electricity consumption calculator/GeneratorView.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "32"
-            endingLineNumber = "32"
+            startingLineNumber = "31"
+            endingLineNumber = "31"
             landmarkName = "init(generator:)"
             landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "826E354F-9F5F-49D9-B1F2-324E585372D1"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Electricity consumption calculator/SyncManager.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "60"
+            endingLineNumber = "60"
+            landmarkName = "handleGeneratorsListFromServer(generatorsFromServer:completion:)"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "826E354F-9F5F-49D9-B1F2-324E585372D1 - 528afa0dc0a67473"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "Electricity_consumption_calculator.SyncManager.handleGeneratorsListFromServer(generatorsFromServer: Swift.Array&lt;Electricity_consumption_calculator.GeneratorFromServer&gt;, completion: Swift.Optional&lt;(Electricity_consumption_calculator.GeneratorEntity) -&gt; ()&gt;) -&gt; ()"
+                  moduleName = "Electricity consumption calculator"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/kostiatyngolosov/Desktop/work/Electricity%20consumption%20calculator/Electricity%20consumption%20calculator/SyncManager.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "60"
+                  endingLineNumber = "60">
+               </Location>
+               <Location
+                  uuid = "826E354F-9F5F-49D9-B1F2-324E585372D1 - d311227c0cb3c45"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #2 (Electricity_consumption_calculator.GeneratorEntity) -&gt; () in Electricity_consumption_calculator.SyncManager.handleGeneratorsListFromServer(generatorsFromServer: Swift.Array&lt;Electricity_consumption_calculator.GeneratorFromServer&gt;, completion: Swift.Optional&lt;(Electricity_consumption_calculator.GeneratorEntity) -&gt; ()&gt;) -&gt; ()"
+                  moduleName = "Electricity consumption calculator"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/kostiatyngolosov/Desktop/work/Electricity%20consumption%20calculator/Electricity%20consumption%20calculator/SyncManager.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "61"
+                  endingLineNumber = "61">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "20A24060-7F56-4051-A8A8-EB96F6778D0C"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Electricity consumption calculator/Persistence.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "222"
+            endingLineNumber = "222"
+            landmarkName = "updateGeneratorEntity(_:with:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "98523DE6-3803-4FAE-BDDE-EBD773822B83"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Electricity consumption calculator/SyncManager.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "95"
+            endingLineNumber = "95"
+            landmarkName = "syncLocalAndRemoteGenerator(generatorFromServer:localGenerator:completion:)"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "98523DE6-3803-4FAE-BDDE-EBD773822B83 - 7f1b670f58ac3b4d"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "Electricity_consumption_calculator.SyncManager.syncLocalAndRemoteGenerator(generatorFromServer: Electricity_consumption_calculator.GeneratorFromServer, localGenerator: Electricity_consumption_calculator.GeneratorEntity, completion: Swift.Optional&lt;(Electricity_consumption_calculator.GeneratorEntity) -&gt; ()&gt;) -&gt; ()"
+                  moduleName = "Electricity consumption calculator"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/kostiatyngolosov/Desktop/work/Electricity%20consumption%20calculator/Electricity%20consumption%20calculator/SyncManager.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "95"
+                  endingLineNumber = "95">
+               </Location>
+               <Location
+                  uuid = "98523DE6-3803-4FAE-BDDE-EBD773822B83 - bd8f8d0c6009dbc9"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 (Swift.Optional&lt;Electricity_consumption_calculator.GeneratorFromServer&gt;, Swift.Optional&lt;Swift.Error&gt;) -&gt; () in Electricity_consumption_calculator.SyncManager.syncLocalAndRemoteGenerator(generatorFromServer: Electricity_consumption_calculator.GeneratorFromServer, localGenerator: Electricity_consumption_calculator.GeneratorEntity, completion: Swift.Optional&lt;(Electricity_consumption_calculator.GeneratorEntity) -&gt; ()&gt;) -&gt; ()"
+                  moduleName = "Electricity consumption calculator"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/kostiatyngolosov/Desktop/work/Electricity%20consumption%20calculator/Electricity%20consumption%20calculator/SyncManager.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "96"
+                  endingLineNumber = "96">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "296840DF-BBA7-4CB4-9F92-666F52D9489D"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Electricity consumption calculator/SyncManager.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "122"
+            endingLineNumber = "122"
+            landmarkName = "pushLocalGeneratorConsumers(localGenerator:)"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "296840DF-BBA7-4CB4-9F92-666F52D9489D - 28857bb1e90ccc8f"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "Electricity_consumption_calculator.SyncManager.pushLocalGeneratorConsumers(localGenerator: Electricity_consumption_calculator.GeneratorEntity) -&gt; ()"
+                  moduleName = "Electricity consumption calculator"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/kostiatyngolosov/Desktop/work/Electricity%20consumption%20calculator/Electricity%20consumption%20calculator/SyncManager.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "122"
+                  endingLineNumber = "122">
+               </Location>
+               <Location
+                  uuid = "296840DF-BBA7-4CB4-9F92-666F52D9489D - c1e4f1aa19d40e5"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #2 (Swift.Optional&lt;Electricity_consumption_calculator.ConsumerFromServer&gt;, Swift.Optional&lt;Swift.Error&gt;) -&gt; () in Electricity_consumption_calculator.SyncManager.pushLocalGeneratorConsumers(localGenerator: Electricity_consumption_calculator.GeneratorEntity) -&gt; ()"
+                  moduleName = "Electricity consumption calculator"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/kostiatyngolosov/Desktop/work/Electricity%20consumption%20calculator/Electricity%20consumption%20calculator/SyncManager.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "123"
+                  endingLineNumber = "123">
+               </Location>
+            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>
