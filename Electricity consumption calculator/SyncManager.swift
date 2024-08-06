@@ -107,11 +107,6 @@ class SyncManager {
     func syncGeneratorConsumers(localGenerator: GeneratorEntity, generatorFromServer: GeneratorFromServer) {
         // this will update generator updatedAt on server, but here in memory we still have "previous" generator instance
         pushLocalGeneratorConsumers(localGenerator: localGenerator)
-            
-        // this will synch generator consumers between server and local data
-//        self.persistenceController.updateGeneratorEntity(localGenerator, with: generatorFromServer)
-//        self.persistenceController.saveContext()
-        
         
         // Add consumer to generator's consumers set
         let consumerEntities = localGenerator.mutableSetValue(forKey: "consumers")
@@ -125,6 +120,7 @@ class SyncManager {
 
         for consumerFromServer in generatorFromServer.consumers {
             // TODO: check for perfrmance loop inside loop
+            // TODO: improve, its being called multiple times !!!
             for entity in consumerEntities {
                 if let localConsumer = entity as? ConsumerEntity {
                     if localConsumersDbIds.contains(consumerFromServer.id) {
@@ -140,6 +136,8 @@ class SyncManager {
                 }
             }
         }
+        
+        self.persistenceController.saveContext()
     }
     
     func updateConsumerEntity(_ localConsumer: ConsumerEntity, with consumerFromServer: ConsumerFromServer, generatorDbId: String) {

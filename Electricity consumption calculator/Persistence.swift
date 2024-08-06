@@ -223,34 +223,6 @@ class PersistenceController: ObservableObject {
         localGenerator.name = generatorFromServer.name
         localGenerator.capacity = generatorFromServer.capacity
         localGenerator.updatedAt = generatorFromServer.updatedAt
-        
-//        // Add consumer to generator's consumers set
-//        let consumerEntities = localGenerator.mutableSetValue(forKey: "consumers")
-//        let localConsumersDbIds = consumerEntities.compactMap { entity -> String? in
-//            guard let consumerEntity = entity as? ConsumerEntity, let localDbid = consumerEntity.dbid else {
-//                return nil
-//            }
-//
-//            return localDbid
-//        }
-//
-//        for consumerFromServer in generatorFromServer.consumers {
-//            // TODO: check for perfrmance loop inside loop
-//            for entity in consumerEntities {
-//                if let localConsumer = entity as? ConsumerEntity {
-//                    if localConsumersDbIds.contains(consumerFromServer.id) {
-//                        // update local consumer if needed
-//                        if let localConsumerWithThisServerId = consumerEntities.compactMap({ $0 as? ConsumerEntity }).first(where: { $0.dbid == consumerFromServer.id }) {
-//                            updateConsumerEntity(localConsumerWithThisServerId, with: consumerFromServer)
-//                        }
-//                    } else {
-//                        // create new local consumer for generator from server items
-//                        let consumerEntity = createConsumerEntityFromServer(with: consumerFromServer)
-//                        consumerEntities.add(consumerEntity)
-//                    }
-//                }
-//            }
-//        }
     }
     
     func createConsumerEntityFromServer(with consumerFromServer: ConsumerFromServer) -> ConsumerEntity {
@@ -272,29 +244,4 @@ class PersistenceController: ObservableObject {
         
         return consumerEntity
     }
-    
-//    func updateConsumerEntity(_ localConsumer: ConsumerEntity, with consumerFromServer: ConsumerFromServer) {
-//        if localConsumer.updatedAt == consumerFromServer.updatedAt {
-//            print("ok  local and external consumers have the same udpatedAt")
-//            return
-//        }
-//        
-//        if localConsumer.updatedAt < consumerFromServer.updatedAt {
-//            localConsumer.dbid = consumerFromServer.id
-//            localConsumer.name = consumerFromServer.name
-//            localConsumer.consumption = consumerFromServer.consumption
-//            localConsumer.isActive = consumerFromServer.isActive
-//            localConsumer.orderInGroup = consumerFromServer.orderInGroup
-//            
-//            if let priorityType = PriorityType(rawValue: consumerFromServer.priorityType.rawValue) {
-//                localConsumer.priorityType = Int16(priorityType.rawValue)
-//            }
-//            
-//            localConsumer.quantity = consumerFromServer.quantity
-//            localConsumer.updatedAt = consumerFromServer.updatedAt
-//        } else if localConsumer.updatedAt > consumerFromServer.updatedAt {
-//            // TODO: implement this !!!!
-//            print(" NOT YET IMPLEMENTED IN updateConsumerEntity")
-//        }
-//    }
 }
