@@ -26,7 +26,7 @@ extension ConsumerEntity {
     @NSManaged public var createdAt: Date?
     @NSManaged public var updatedAt: Date
     @NSManaged public var dbid: String?
-    @NSManaged public var generator: GeneratorEntity?
+    @NSManaged public var generator: GeneratorEntity
 
 }
 
