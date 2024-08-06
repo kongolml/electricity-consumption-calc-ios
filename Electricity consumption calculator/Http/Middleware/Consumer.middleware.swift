@@ -28,7 +28,28 @@ class ConsumerMiddleware {
         }
     }
     
-    func updateGeneratorConsumer() {}
+    func updateGeneratorConsumer(generatorDbId: String, with consumerEntity: ConsumerEntity, completion: @escaping (ConsumerFromServer?, Error?) -> Void) {
+        guard let consumerDbId = consumerEntity.dbid else {
+            return
+        }
+
+        // TODO: make it in bulk
+        let decoder = JSONDecoder()
+        let dateFormatter = DateFormatter.custom
+        decoder.dateDecodingStrategy = .formatted(dateFormatter)
+        
+        let consumerPayload = ConsumerHttpPayload(from: consumerEntity)
+    
+        AlamofireService.sharedSession.request(ConsumerRouter.update(generatorId: generatorDbId, consumerDbID: consumerDbId, updatedConsumerPayload: consumerPayload)).validate().responseDecodable(of: ConsumerFromServer.self, decoder: decoder) { response in
+            switch response.result {
+            case .success(let updatedConsumer):
+                completion(updatedConsumer, nil)
+            case .failure(let error):
+                debugPrint(error)
+                completion(nil, error)
+            }
+        }
+    }
     
     func deleteGeneratorConsumer() {}
     

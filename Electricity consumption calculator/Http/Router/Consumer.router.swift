@@ -9,7 +9,7 @@ import Foundation
 import Alamofire
 
 enum ConsumerRouter: URLRequestConvertible {
-    case create(generatorId: String, newConsumerPayload: ConsumerHttpPayload), update(generatorId: String, consumerID: String, updatedConsumerPayload: ConsumerHttpPayload), delete(generatorId: String, consumerID: String)
+    case create(generatorId: String, newConsumerPayload: ConsumerHttpPayload), update(generatorId: String, consumerDbID: String, updatedConsumerPayload: ConsumerHttpPayload), delete(generatorId: String, consumerID: String)
     
     var path: String {
         let routeBaseUrl = "generator"
@@ -17,9 +17,9 @@ enum ConsumerRouter: URLRequestConvertible {
         switch self {
         case .create(let generatorId, _):
             return "\(routeBaseUrl)/\(generatorId)/consumer/new"
-        case .update(let generatorId, let consumerID, _),
-                .delete(let generatorId, let consumerID):
-            return "\(routeBaseUrl)/\(generatorId)/consumer/\(consumerID)"
+        case .update(let generatorId, let consumerDbID, _),
+                .delete(let generatorId, let consumerDbID):
+            return "\(routeBaseUrl)/\(generatorId)/consumer/\(consumerDbID)"
         }
     }
         

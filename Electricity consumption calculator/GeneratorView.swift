@@ -132,7 +132,7 @@ struct GeneratorView: View {
                     })
                 }
                 .refreshable {
-                    syncManager.fetchUserGenerators() { generatorToUse in
+                    await syncManager.fetchUserGenerators() { generatorToUse in
                         DispatchQueue.main.async {
                             self.generator.name = generatorToUse.name
                             self.generator.capacity = generatorToUse.capacity
