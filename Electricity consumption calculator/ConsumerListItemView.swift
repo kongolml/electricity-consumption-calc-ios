@@ -24,8 +24,9 @@ struct ConsumerListItemView: View {
 
 #Preview {
     let context = PersistenceController.preview.container.viewContext
+    let defaultGenerator = PersistenceController.shared.fetchOrCreateDefaultGeneratorEntity()
 
-    let dummyConsumer = ConsumerEntity.createMock(context: context)
+    let dummyConsumer = ConsumerEntity.createMock(context: context, for: defaultGenerator)
 
     return ConsumerListItemView(consumer: dummyConsumer)
 }

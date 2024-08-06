@@ -64,6 +64,7 @@ struct ConsumerView: View {
     
     private func saveChanges() {
         viewContext.perform {
+            consumer.updatedAt = Date()
             persistenceController.saveContext()
         }
     }

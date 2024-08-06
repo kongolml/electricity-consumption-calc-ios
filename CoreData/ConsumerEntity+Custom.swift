@@ -21,7 +21,7 @@ extension ConsumerEntity {
         self.createdAt = Date()
     }
     
-    public static func createMock(context: NSManagedObjectContext) -> ConsumerEntity {
+    public static func createMock(context: NSManagedObjectContext, for generator: GeneratorEntity) -> ConsumerEntity {
         let newConsumer = ConsumerEntity(context: context)
         newConsumer.id = UUID()
         newConsumer.name = NSLocalizedString("new_mock_consumer_item_name", comment: "")
@@ -31,6 +31,7 @@ extension ConsumerEntity {
         newConsumer.quantity = Int16.random(in: 1...5)
         newConsumer.isActive = Bool.random()
         newConsumer.orderInGroup = 0
+        newConsumer.generator = generator
         return newConsumer
     }
 }

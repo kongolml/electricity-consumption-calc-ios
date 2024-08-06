@@ -13,11 +13,11 @@ class PersistenceController: ObservableObject {
     static var preview: PersistenceController = {
         let result = PersistenceController(inMemory: true)
         let viewContext = result.container.viewContext
-        for index in 0..<10 {
-            let dummyConsumerEntity = ConsumerEntity.createMock(context: viewContext)
-        }
-
+        
         let dummyGeneratorEntity = GeneratorEntity.createMock(context: viewContext)
+        for index in 0..<10 {
+            let dummyConsumerEntity = ConsumerEntity.createMock(context: viewContext, for: dummyGeneratorEntity)
+        }
 
         do {
             try viewContext.save()
@@ -116,9 +116,13 @@ class PersistenceController: ObservableObject {
     }
     
     func getGeneratorConsumers(generator: GeneratorEntity) -> [ConsumerEntity] {
+//        TODO: REMOVE THIS, ITS ONLY FOR DEBUGGING/DEVELOMENT
+//        container.viewContext.refreshAllObjects()
+        
 //        TODO: should it be fetched here all the time? this function is used in few places, overkill?
         let fetchRequest: NSFetchRequest<ConsumerEntity> = ConsumerEntity.fetchRequest()
         fetchRequest.predicate = NSPredicate(format: "generator == %@", generator)
+        fetchRequest.relationshipKeyPathsForPrefetching = ["consumers"]
         
         do {
             let generatorConsumers = try container.viewContext.fetch(fetchRequest)
@@ -174,14 +178,15 @@ class PersistenceController: ObservableObject {
             if let existingConsumer = results.first {
                 return existingConsumer
             } else {
-                let newConsumerMain = ConsumerEntity.createMock(context: container.viewContext)
+                let defaultGenerator = self.fetchOrCreateDefaultGeneratorEntity()
+                let newConsumerMain = ConsumerEntity.createMock(context: container.viewContext, for: defaultGenerator)
                 // Set default values for newEntity here if needed
                 newConsumerMain.priorityType = ConsumerPriorityType.main.rawValue
                 newConsumerMain.quantity = 1
                 newConsumerMain.name = NSLocalizedString("defaul_value_fridge", comment: "")
                 newConsumerMain.isActive = true
                 
-                let newConsumerSecondary = ConsumerEntity.createMock(context: container.viewContext)
+                let newConsumerSecondary = ConsumerEntity.createMock(context: container.viewContext, for: defaultGenerator)
                 newConsumerSecondary.priorityType = ConsumerPriorityType.secondary.rawValue
                 newConsumerSecondary.name = NSLocalizedString("defaul_value_backlight", comment: "")
                 newConsumerSecondary.isActive = true
@@ -210,8 +215,8 @@ class PersistenceController: ObservableObject {
         saveContext()
     }
     
-    func createGeneratorEntity(with generatorFromServer: GeneratorFromServer, context: NSManagedObjectContext) {
-        let newGenerator = GeneratorEntity(context: context)
+    func createGeneratorEntity(with generatorFromServer: GeneratorFromServer) {
+        let newGenerator = GeneratorEntity(context: container.viewContext)
         newGenerator.dbid = generatorFromServer.id
         newGenerator.name = generatorFromServer.name
         newGenerator.updatedAt = generatorFromServer.updatedAt
@@ -225,7 +230,7 @@ class PersistenceController: ObservableObject {
         localGenerator.updatedAt = generatorFromServer.updatedAt
     }
     
-    func createConsumerEntityFromServer(with consumerFromServer: ConsumerFromServer) -> ConsumerEntity {
+    func createConsumerEntityFromServer(with consumerFromServer: ConsumerFromServer, for generator: GeneratorEntity) -> ConsumerEntity {
         let consumerEntity = ConsumerEntity(context: container.viewContext)
         
 //        TODO: removal handler idea?
@@ -241,6 +246,8 @@ class PersistenceController: ObservableObject {
         consumerEntity.quantity = consumerFromServer.quantity
         consumerEntity.orderInGroup = consumerFromServer.orderInGroup
         consumerEntity.updatedAt = consumerFromServer.updatedAt
+        // TODO: add generator !!! ??
+        consumerEntity.generator = generator
         
         return consumerEntity
     }

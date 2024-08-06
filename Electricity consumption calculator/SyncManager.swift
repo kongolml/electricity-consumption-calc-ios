@@ -109,31 +109,25 @@ class SyncManager {
         pushLocalGeneratorConsumers(localGenerator: localGenerator)
         
         // Add consumer to generator's consumers set
-        let consumerEntities = localGenerator.mutableSetValue(forKey: "consumers")
-        let localConsumersDbIds = consumerEntities.compactMap { entity -> String? in
-            guard let consumerEntity = entity as? ConsumerEntity, let localDbid = consumerEntity.dbid else {
-                return nil
-            }
-
-            return localDbid
+        let consumerEntities = persistenceController.getGeneratorConsumers(generator: localGenerator)
+        let localConsumersDbIds = consumerEntities.compactMap { consumer in
+            return consumer.dbid
         }
 
         for consumerFromServer in generatorFromServer.consumers {
             // TODO: check for perfrmance loop inside loop
             // TODO: improve, its being called multiple times !!!
-            for entity in consumerEntities {
-                if let localConsumer = entity as? ConsumerEntity {
-                    if localConsumersDbIds.contains(consumerFromServer.id) {
-                        // update local consumer if needed
-                        if let localConsumerWithThisServerId = consumerEntities.compactMap({ $0 as? ConsumerEntity }).first(where: { $0.dbid == consumerFromServer.id }) {
-                            updateConsumerEntity(localConsumerWithThisServerId, with: consumerFromServer, generatorDbId: generatorFromServer.id)
-                        }
-                    } else {
-                        // create new local consumer for generator from server items
-                        let consumerEntity = self.persistenceController.createConsumerEntityFromServer(with: consumerFromServer)
-                        consumerEntities.add(consumerEntity)
-                    }
+            if localConsumersDbIds.contains(consumerFromServer.id) {
+                // update from server
+                if let localConsumerWithThisServerId = consumerEntities.first(where: { $0.dbid == consumerFromServer.id }) {
+                    // update local consumer if needed
+                    updateConsumerEntity(localConsumerWithThisServerId, with: consumerFromServer, generatorDbId: generatorFromServer.id)
                 }
+            } else {
+                // pull create from server
+                // create new local consumer for generator from server items
+                let consumerEntity = self.persistenceController.createConsumerEntityFromServer(with: consumerFromServer, for: localGenerator)
+                persistenceController.saveContext()
             }
         }
         
@@ -192,54 +186,54 @@ class SyncManager {
         }
     }
     
-    /**
-     This will get local and remote items and sych them, after it will return list of most recent items: ConsumerEntity
-     */
-    func getGeneratorConsumers(generatorEntity: GeneratorEntity, completion: (([ConsumerEntity]) -> Void)? = nil) {
-        var isServerDataMoreRecent = false
-        
-        let dispatchGroup = DispatchGroup()
-        var generatorConsumersFromServer: [ConsumerFromServer] = []
-        var localGeneratorConsumers: [ConsumerEntity] = []
-        var combinedConsumers: [ConsumerEntity] = []
-
-        // get data from server
-        if let generatorDbId = generatorEntity.dbid {
-            dispatchGroup.enter()
-            generatorMiddleware.getGeneratorById(generatorId: generatorDbId, completion: { generatorFromServer, error in
-                if let generatorFromServer = generatorFromServer {
-                    isServerDataMoreRecent = generatorFromServer.updatedAt > generatorEntity.updatedAt
-                }
-                
-                if let generatorFromServer = generatorFromServer, !generatorFromServer.consumers.isEmpty {
-                    generatorConsumersFromServer = generatorFromServer.consumers
-                }
-                
-                dispatchGroup.leave()
-            })
-        }
-        
-        // Enter the dispatch group for the local data fetch
-        dispatchGroup.enter()
-        // Perform the local data fetch
-        DispatchQueue.global().async {
-            localGeneratorConsumers = self.persistenceController.getGeneratorConsumers(generator: generatorEntity)
-            combinedConsumers.append(contentsOf: localGeneratorConsumers)
-            // Leave the dispatch group after the local data fetch is done
-            dispatchGroup.leave()
-        }
-        
-        // Notify when both tasks are finished
-        dispatchGroup.notify(queue: .main) {
-            // combine it, update, serve
-            for consumer in generatorConsumersFromServer {
-                let newConsumerEntity = self.persistenceController.createConsumerEntityFromServer(with: consumer)
-                combinedConsumers.append(newConsumerEntity)
-            }
-            
-            completion?(combinedConsumers)
-        }
-    }
+//    /**
+//     This will get local and remote items and sych them, after it will return list of most recent items: ConsumerEntity
+//     */
+//    func getGeneratorConsumers(generatorEntity: GeneratorEntity, completion: (([ConsumerEntity]) -> Void)? = nil) {
+//        var isServerDataMoreRecent = false
+//        
+//        let dispatchGroup = DispatchGroup()
+//        var generatorConsumersFromServer: [ConsumerFromServer] = []
+//        var localGeneratorConsumers: [ConsumerEntity] = []
+//        var combinedConsumers: [ConsumerEntity] = []
+//
+//        // get data from server
+//        if let generatorDbId = generatorEntity.dbid {
+//            dispatchGroup.enter()
+//            generatorMiddleware.getGeneratorById(generatorId: generatorDbId, completion: { generatorFromServer, error in
+//                if let generatorFromServer = generatorFromServer {
+//                    isServerDataMoreRecent = generatorFromServer.updatedAt > generatorEntity.updatedAt
+//                }
+//                
+//                if let generatorFromServer = generatorFromServer, !generatorFromServer.consumers.isEmpty {
+//                    generatorConsumersFromServer = generatorFromServer.consumers
+//                }
+//                
+//                dispatchGroup.leave()
+//            })
+//        }
+//        
+//        // Enter the dispatch group for the local data fetch
+//        dispatchGroup.enter()
+//        // Perform the local data fetch
+//        DispatchQueue.global().async {
+//            localGeneratorConsumers = self.persistenceController.getGeneratorConsumers(generator: generatorEntity)
+//            combinedConsumers.append(contentsOf: localGeneratorConsumers)
+//            // Leave the dispatch group after the local data fetch is done
+//            dispatchGroup.leave()
+//        }
+//        
+//        // Notify when both tasks are finished
+//        dispatchGroup.notify(queue: .main) {
+//            // combine it, update, serve
+//            for consumer in generatorConsumersFromServer {
+//                let newConsumerEntity = self.persistenceController.createConsumerEntityFromServer(with: consumer)
+//                combinedConsumers.append(newConsumerEntity)
+//            }
+//            
+//            completion?(combinedConsumers)
+//        }
+//    }
     
     func fetchUserGenerators(completion: ((GeneratorEntity) -> Void)? = nil) {
         if (keychain.getUserApiToken() != nil) {
