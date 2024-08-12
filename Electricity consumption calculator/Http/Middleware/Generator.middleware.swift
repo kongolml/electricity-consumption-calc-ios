@@ -34,19 +34,37 @@ class GeneratorMiddleware {
         }
     }
     
-    func getUserGenerators(completion: @escaping ([GeneratorFromServer]?, Error?) -> Void) {
+//    func getUserGenerators(completion: @escaping ([GeneratorFromServer]?, Error?) -> Void) {
+//        let decoder = JSONDecoder()
+//        let dateFormatter = DateFormatter.custom
+//        decoder.dateDecodingStrategy = .formatted(dateFormatter)
+//        
+//        AlamofireService.sharedSession.request(GeneratorRouter.getUserGenerators).validate().responseDecodable(of: [GeneratorFromServer].self, decoder: decoder) { response in
+//            switch response.result {
+//            case .success(let generatorsList):
+////                debugPrint(generatorsList)
+//                completion(generatorsList, nil)
+//            case .failure(let error):
+//                debugPrint(error)
+//                completion(nil, error)
+//            }
+//        }
+//    }
+    
+    func `getUserGenerators`() -> Future<[GeneratorFromServer], Error> {
         let decoder = JSONDecoder()
         let dateFormatter = DateFormatter.custom
         decoder.dateDecodingStrategy = .formatted(dateFormatter)
         
-        AlamofireService.sharedSession.request(GeneratorRouter.getUserGenerators).validate().responseDecodable(of: [GeneratorFromServer].self, decoder: decoder) { response in
-            switch response.result {
-            case .success(let generatorsList):
-//                debugPrint(generatorsList)
-                completion(generatorsList, nil)
-            case .failure(let error):
-                debugPrint(error)
-                completion(nil, error)
+        return Future<[GeneratorFromServer], Error> { promise in
+            AlamofireService.sharedSession.request(GeneratorRouter.getUserGenerators).validate().responseDecodable(of: [GeneratorFromServer].self, decoder: decoder) { response in
+                switch response.result {
+                case .success(let generatorsList):
+                    promise(.success(generatorsList))
+                case .failure(let error):
+                    debugPrint(error)
+                    promise(.failure(error))
+                }
             }
         }
     }

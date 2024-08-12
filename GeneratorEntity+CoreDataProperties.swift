@@ -18,7 +18,7 @@ extension GeneratorEntity {
 
     @NSManaged public var capacity: Double
     @NSManaged public var dbid: String?
-    @NSManaged public var id: UUID?
+    @NSManaged public var id: UUID
     @NSManaged public var name: String
     @NSManaged public var updatedAt: Date
     @NSManaged public var createdAt: Date

@@ -16,31 +16,45 @@ struct GeneratorView: View {
     let keychain = KeychainToolbox()
     let syncManager = SyncManager.shared
     
+    @StateObject private var generatorViewModel: GeneratorViewModel
+    
+    @State private var path: [ConsumerEntity] = []
+//    @State private var path = NavigationPath()
     @Environment(\.managedObjectContext) private var viewContext
     @EnvironmentObject var persistenceController: PersistenceController
 
-    @ObservedObject var generator: GeneratorEntity
-    @FetchRequest private var allGeneratorConsumers: FetchedResults<ConsumerEntity>
+//    @ObservedObject var generator: GeneratorEntity
+//    @FetchRequest private var allGeneratorConsumers: FetchedResults<ConsumerEntity>
+    @State private var allGeneratorConsumers: [ConsumerEntity] = []
     
     @State private var generatorConsumersLoaded = false
+    
+    let generatorId: String
 
-    init(generator: GeneratorEntity) {
-        self.generator = generator
+    init(generatorId: String) {
+//        self.generator = generator
         
         // Initializing the fetch request with the appropriate parameters
-        _allGeneratorConsumers = FetchRequest<ConsumerEntity>(
-            sortDescriptors: [NSSortDescriptor(keyPath: \ConsumerEntity.orderInGroup, ascending: true)],
-            predicate: NSPredicate(format: "generator == %@", generator),
-            animation: .default
-        )
+//        _allGeneratorConsumers = FetchRequest<ConsumerEntity>(
+//            sortDescriptors: [NSSortDescriptor(keyPath: \ConsumerEntity.orderInGroup, ascending: true)],
+//            predicate: NSPredicate(format: "generator == %@", generator),
+//            animation: .default
+//        )
+        
+        self.generatorId = generatorId
+        
+        let model = GeneratorViewModel(context: PersistenceController.shared.container.viewContext)
+        _generatorViewModel = StateObject(wrappedValue: model)
     }
     
     var totalConsumption: Double {
-        return allGeneratorConsumers.filter { $0.isActive }.map { $0.consumption * Double($0.quantity) }.reduce(0, +)
+        return 6969696.420
+//        return allGeneratorConsumers.filter { $0.isActive }.map { $0.consumption * Double($0.quantity) }.reduce(0, +)
     }
     
     var leftCapacity: Double {
-        generator.capacity - totalConsumption
+//        generator.capacity - totalConsumption
+        return 66666666666.420
     }
     
     private func filteredItems(for category: ConsumerPriorityType) -> [ConsumerEntity] {
@@ -48,28 +62,23 @@ struct GeneratorView: View {
     }
 
     var body: some View {
-        NavigationStack {
-            
-            if !allGeneratorConsumers.isEmpty {
+        NavigationStack(path: $path) {
+            if let currentGenerator = generatorViewModel.currentGenerator {
                 List {
                     GoogleSignInButton(action: handleSignInButton)
                     Button("Sign out google") {
                         signOutGoogle()
                     }
-
-                    if (allGeneratorConsumers.count == 0) {
-                        Text("No consumers yet")
-                    }
                     
-                    if (allGeneratorConsumers.count > 0) {
+                    if allGeneratorConsumers.isEmpty {
+                        Text("No consumers yet")
+                    } else {
                         ForEach(ConsumerPriorityType.allCases, id: \.self) { filteredConsumersGroup in
                             let consumersInGroup = filteredItems(for: filteredConsumersGroup)
                             
                             Section(content: {
                                 ForEach(consumersInGroup, id: \.self) { consumerItem in
-                                    NavigationLink {
-                                        ConsumerView(consumer: consumerItem)
-                                    } label: {
+                                    NavigationLink(value: consumerItem) {
                                         ConsumerListItemView(consumer: consumerItem)
                                     }
                                     .swipeActions(edge: .leading) {
@@ -89,7 +98,7 @@ struct GeneratorView: View {
                                         .tint(.red)
                                     }
                                 }
-                                //                        .onDelete(perform: deleteItemsInBulk)
+        //                            .onDelete(perform: deleteItemsInBulk)
                                 .onMove { indices, newOffset in
                                     moveItems(from: indices, to: newOffset, in: filteredConsumersGroup)
                                 }
@@ -112,7 +121,7 @@ struct GeneratorView: View {
                         HStack {
                             Text("Total capacity")
                             Spacer()
-                            Text("\(convertEnergyDoubleToNiceFormat(value: generator.capacity)) Watt")
+                            Text("\(convertEnergyDoubleToNiceFormat(value: currentGenerator.capacity)) Watt")
                                 .foregroundColor(.gray)
                         }
                         HStack {
@@ -131,19 +140,10 @@ struct GeneratorView: View {
                         Text("Summary")
                     })
                 }
-                .refreshable {
-                    syncManager.fetchUserGenerators() { generatorToUse in
-                        DispatchQueue.main.async {
-                            self.generator.name = generatorToUse.name
-                            self.generator.capacity = generatorToUse.capacity
-                            self.generator.consumers = generatorToUse.consumers
-                        }
-                    }
-                }
                 .toolbar {
                     ToolbarItem(placement: .topBarLeading) {
                         NavigationLink {
-                            GeneratorDetailsView(generator: generator)
+                            GeneratorDetailsView(generator: currentGenerator)
                         } label: {
                             Label("Edit generator", systemImage: "gear")
                         }
@@ -169,22 +169,164 @@ struct GeneratorView: View {
                         }
                     }
                 }
-                .navigationTitle(generator.name)
+                .navigationTitle(currentGenerator.name)
+                .navigationDestination(for: ConsumerEntity.self) { consumer in
+//                    ConsumerView(consumer: consumer)
+//                        .environment(\.managedObjectContext, viewContext)
+//                        .environmentObject(persistenceController)
+                    VStack {
+                                        Text("olala")
+                                    }
+                }
+                .refreshable {
+//                    syncManager.fetchUserGenerators() { generatorToUse in
+//                        DispatchQueue.main.async {
+//                            self.generator.name = generatorToUse.name
+//                            self.generator.capacity = generatorToUse.capacity
+//                            self.generator.consumers = generatorToUse.consumers
+//                        }
+//                    }
+                    generatorViewModel.loadGeneratorById(generatorId)
+                }
             } else {
-                ProgressView("Loading")
+                ProgressView("Loading").onAppear {
+                    generatorViewModel.loadGeneratorById(generatorId)
+                }
+            }
+            
+//            if !allGeneratorConsumers.isEmpty {
+//                List {
+//                    GoogleSignInButton(action: handleSignInButton)
+//                    Button("Sign out google") {
+//                        signOutGoogle()
+//                    }
+
+//                    if (allGeneratorConsumers.isEmpty) {
+//                        Text("No consumers yet")
+//                    } else {
+//                        ForEach(ConsumerPriorityType.allCases, id: \.self) { filteredConsumersGroup in
+//                            let consumersInGroup = filteredItems(for: filteredConsumersGroup)
+//                            
+//                            Section(content: {
+//                                ForEach(consumersInGroup, id: \.self) { consumerItem in
+//                                    NavigationLink(value: consumerItem) {
+//                                        ConsumerListItemView(consumer: consumerItem)
+//                                    }
+////                                    NavigationLink(destination: ConsumerView(consumer: consumerItem), isActive: $isActive) {
+////                                        ConsumerListItemView(consumer: consumerItem)
+////                                    }
+////                                    NavigationLink {
+////                                        ConsumerView(consumer: consumerItem)
+////                                    } label: {
+////                                        ConsumerListItemView(consumer: consumerItem)
+////                                    }
+//                                    .swipeActions(edge: .leading) {
+//                                        Button(action: {
+//                                            toggleItemActiveStatus(consumer: consumerItem)
+//                                        }) {
+//                                            consumerItem.isActive ? Label("Dectivate", systemImage: "bolt.slash") : Label("Activate", systemImage: "powercord")
+//                                        }
+//                                        .tint(consumerItem.isActive ? .red : .green)
+//                                    }
+//                                    .swipeActions(edge: .trailing) {
+//                                        Button(action: {
+//                                            deleteItem(consumer: consumerItem)
+//                                        }) {
+//                                            Label("Delete", systemImage: "trash")
+//                                        }
+//                                        .tint(.red)
+//                                    }
+//                                }
+//                                //                        .onDelete(perform: deleteItemsInBulk)
+//                                .onMove { indices, newOffset in
+//                                    moveItems(from: indices, to: newOffset, in: filteredConsumersGroup)
+//                                }
+//                            }, header: {
+//                                if consumersInGroup.count > 1 {
+//                                    Text("\(filteredConsumersGroup.namePlural) consumers")
+//                                } else {
+//                                    Text("\(filteredConsumersGroup.name) consumer")
+//                                }
+//                            }, footer: {
+//                                var consumersTotalConsumption: Double {
+//                                    consumersInGroup.filter { $0.isActive }.map { $0.consumption * Double($0.quantity) }.reduce(0, +)
+//                                }
+//                                Text("Total: \(convertEnergyDoubleToNiceFormat(value: consumersTotalConsumption)) Watt")
+//                            })
+//                        }
+//                    }
+                    
+//                    Section(content: {
+//                        HStack {
+//                            Text("Total capacity")
+//                            Spacer()
+//                            Text("\(convertEnergyDoubleToNiceFormat(value: generatorViewModel.currentGenerator.capacity)) Watt")
+//                                .foregroundColor(.gray)
+//                        }
+//                        HStack {
+//                            Text("Total consumption")
+//                            Spacer()
+//                            Text("\(convertEnergyDoubleToNiceFormat(value: totalConsumption)) Watt")
+//                                .foregroundColor(.gray)
+//                        }
+//                        HStack {
+//                            Text("Left capacity")
+//                            Spacer()
+//                            Text("\(convertEnergyDoubleToNiceFormat(value: leftCapacity)) Watt")
+//                                .foregroundColor(.gray)
+//                        }
+//                    }, header: {
+//                        Text("Summary")
+//                    })
+                }
+//                .navigationDestination(for: ConsumerEntity.self) { consumer in
+//                    ConsumerView(consumer: consumer)
+//                        .environment(\.managedObjectContext, viewContext)
+//                        .environmentObject(persistenceController)
+////                    VStack {
+////                                        Text("olala")
+////                                    }
+//                }
+//                .refreshable {
+//                    syncManager.fetchUserGenerators() { generatorToUse in
+//                        DispatchQueue.main.async {
+//                            self.generator.name = generatorToUse.name
+//                            self.generator.capacity = generatorToUse.capacity
+//                            self.generator.consumers = generatorToUse.consumers
+//                        }
+//                    }
+//                }
+//            } else {
+//                ProgressView("Loading").onAppear {
+//                    generatorViewModel.loadGeneratorById(generatorId)
+//                }
+//            }
+//        }
+        .onChange(of: generatorViewModel.currentGenerator) {
+//                    if let currentGenerator = currentGenerator {
+////                        performAction(with: generator)
+//                        print("GET CONSUEMRS LIST")
+//                    }
+            print("GET CONSUEMRS LIST")
+            if let currentGenerator = generatorViewModel.currentGenerator {
+                allGeneratorConsumers = persistenceController.getGeneratorConsumers(generator: currentGenerator)
             }
         }
     }
 
     private func addINewtem(priority: ConsumerPriorityType) {
-        viewContext.perform {
-            withAnimation {
-                let newItem = ConsumerEntity(context: viewContext)
-                newItem.priorityType = priority.rawValue
-                
-                persistenceController.saveContext()
-            }
-        }
+//        viewContext.perform {
+//            withAnimation {
+//                let newItem = persistenceController.createLocalConsumer(for: generatorViewModel.currentGenerator)
+//                newItem.priorityType = priority.rawValue
+//                
+////                persistenceController.saveContext()
+//                
+//                DispatchQueue.main.async {
+//                                    path.append(newItem)
+//                                }
+//            }
+//        }
     }
     
     private func toggleItemActiveStatus(consumer: ConsumerEntity) {

@@ -16,92 +16,191 @@ class SyncManager {
     private let generatorMiddleware = GeneratorMiddleware()
     private let consumerMiddleware = ConsumerMiddleware()
     private let persistenceController = PersistenceController.shared
+    private var cancellables: Set<AnyCancellable> = []
     
     private init() {}
     
-    func pushLocalGeneratorToServer(localGenerator: GeneratorEntity, comletion: @escaping (GeneratorEntity) -> Void) {
-        generatorMiddleware.addNewGenerator(newGenerator: localGenerator).receive(on: DispatchQueue.main).sink(receiveCompletion: { completion in
-            switch completion {
-            case .finished:
-                break // Handle finished if needed
-            case .failure(let error):
-                debugPrint(error.localizedDescription)
-            }
-        }, receiveValue: { createdGenerator in
-            self.persistenceController.updateGeneratorEntity(localGenerator, with: createdGenerator)
-            self.persistenceController.saveContext()
-            
-            comletion(localGenerator)
-        })
-        //.store(in: &cancellables)
+    func pushLocalGeneratorToServer(localGenerator: GeneratorEntity/*, comletion: @escaping (GeneratorEntity) -> Void*/) -> Future<GeneratorEntity, Error> {
+        return Future { promise in
+            self.generatorMiddleware.addNewGenerator(newGenerator: localGenerator)
+                .receive(on: DispatchQueue.main)
+                .sink(receiveCompletion: { completion in
+                    switch completion {
+                    case .finished:
+                        break // Handle finished if needed
+                    case .failure(let error):
+                        debugPrint(error.localizedDescription)
+                        promise(.failure(error))
+                    }
+                }, receiveValue: { createdGenerator in
+                    self.persistenceController.updateGeneratorEntity(localGenerator, with: createdGenerator)
+                    self.persistenceController.saveContext()
+                    
+                    promise(.success(localGenerator))
+                })
+                //.store(in: &cancellables)
+        }
     }
     
-    func handleGeneratorsListFromServer(generatorsFromServer: [GeneratorFromServer], completion: ((GeneratorEntity) -> Void)? = nil) {
-        if generatorsFromServer.isEmpty {
-            let defaultGenerator = persistenceController.fetchOrCreateDefaultGeneratorEntity()
+    func handleGeneratorsListFromServer(generatorsFromServer: [GeneratorFromServer]) -> Future<[GeneratorEntity], Error> {
+        return Future { promise in
+            if generatorsFromServer.isEmpty {
+                let defaultGenerator = self.persistenceController.fetchOrCreateDefaultGeneratorEntity()
 
-            pushLocalGeneratorToServer(localGenerator: defaultGenerator, comletion: { generator in
-                completion?(generator)
-            })
-        } else {
-//            TODO: what if local will have more that one !!!
-            let localGenerators = persistenceController.fetchLocalGenerators()
+                self.pushLocalGeneratorToServer(localGenerator: defaultGenerator)
+                    .receive(on: DispatchQueue.main)
+                    .sink(receiveCompletion: { completion in
+                        switch completion {
+                        case .finished:
+                            break // Handle finished if needed
+                        case .failure(let error):
+                            debugPrint(error.localizedDescription)
+                            promise(.failure(error))
+                        }
+                    }, receiveValue: { uploadedGenerator in
+                        promise(.success([uploadedGenerator]))
+                    })
+            } else {
+    //            TODO: what if local will have more that one !!!
+                let localGenerators = self.persistenceController.fetchLocalGenerators()
+                self.mergeLocalAndRemoteGenerators(localGenerators: localGenerators, remoteGenerators: generatorsFromServer)
+            }
+        }
             
+            
+            
+//        if generatorsFromServer.isEmpty {
+//            let defaultGenerator = persistenceController.fetchOrCreateDefaultGeneratorEntity()
+//
+//            pushLocalGeneratorToServer(localGenerator: defaultGenerator, comletion: { generator in
+//                completion?(generator)
+//            })
+//        } else {
+////            TODO: what if local will have more that one !!!
+//            let localGenerators = persistenceController.fetchLocalGenerators()
+//            
+//            mergeLocalAndRemoteGenerators(localGenerators: localGenerators, remoteGenerators: generatorsFromServer)
+            
+//            // Create a dictionary for quick lookup
+//            var generatorsFromServerDict = [String: GeneratorFromServer]()
+//            for generator in generatorsFromServer {
+//                generatorsFromServerDict[generator.id] = generator
+//            }
+//            
+//            // Iterate through Core Data objects
+//            for localGenerator in localGenerators {
+//                if let generatorDbId = localGenerator.dbid {
+//                    if let serverItem = generatorsFromServerDict[generatorDbId] {
+//                        syncLocalAndRemoteGenerator(generatorFromServer: serverItem, localGenerator: localGenerator, completion: { generator in
+//                            completion?(generator)
+//                        })
+//                    }
+//                } else {
+//                    // local generator, which was not saved to server
+//                    pushLocalGeneratorToServer(localGenerator: localGenerator, comletion: { generator in
+//                        completion?(generator)
+//                    })
+//                }
+//            }
+        
+    }
+    
+    /**
+     Will sync local and remote generators and return local generators list with latest changes
+     */
+    func mergeLocalAndRemoteGenerators(localGenerators: [GeneratorEntity], remoteGenerators: [GeneratorFromServer]) -> AnyPublisher<[GeneratorEntity], Error> {
+//        return Future<Void, Never> { promise in
             // Create a dictionary for quick lookup
             var generatorsFromServerDict = [String: GeneratorFromServer]()
-            for generator in generatorsFromServer {
+            for generator in remoteGenerators {
                 generatorsFromServerDict[generator.id] = generator
             }
+            var syncRequests: [AnyPublisher<GeneratorEntity, Error>] = []
             
             // Iterate through Core Data objects
             for localGenerator in localGenerators {
                 if let generatorDbId = localGenerator.dbid {
                     if let serverItem = generatorsFromServerDict[generatorDbId] {
-                        syncLocalAndRemoteGenerator(generatorFromServer: serverItem, localGenerator: localGenerator, completion: { generator in
-                            completion?(generator)
-                        })
+                        let requestToSyncGeneratos = self.syncLocalAndRemoteGenerator(generatorFromServer: serverItem, localGenerator: localGenerator).eraseToAnyPublisher()
+                        syncRequests.append(requestToSyncGeneratos)
                     }
                 } else {
                     // local generator, which was not saved to server
-                    pushLocalGeneratorToServer(localGenerator: localGenerator, comletion: { generator in
-                        completion?(generator)
-                    })
+//                    pushLocalGeneratorToServer(localGenerator: localGenerator)
+                    let requestToSyncGeneratos = self.pushLocalGeneratorToServer(localGenerator: localGenerator).eraseToAnyPublisher()
+                    syncRequests.append(requestToSyncGeneratos)
                 }
             }
+            
+            // Using zip to combine all requests
+//            return Publishers.ZipMany(syncRequests)
+//                .eraseToAnyPublisher()
+        return zipPublishers(syncRequests)
+            .map { syncedGenerators in
+                // After syncing, replace the corresponding local generators with the synced ones
+                var updatedLocalGenerators = localGenerators
+                for syncedGenerator in syncedGenerators {
+                    if let index = updatedLocalGenerators.firstIndex(where: { $0.dbid == syncedGenerator.dbid }) {
+                        updatedLocalGenerators[index] = syncedGenerator
+                    } else {
+                        updatedLocalGenerators.append(syncedGenerator)
+                    }
+                }
+                return updatedLocalGenerators
+            }
+            .eraseToAnyPublisher()
+//        }
+    }
+            
+    // Helper function to zip an array of publishers into a single publisher
+    private func zipPublishers<T>(_ publishers: [AnyPublisher<T, Error>]) -> AnyPublisher<[T], Error> {
+        guard let first = publishers.first else {
+            // If there are no publishers, return an empty array
+            return Just([]).setFailureType(to: Error.self).eraseToAnyPublisher()
+        }
+        
+        return publishers.dropFirst().reduce(first.map { [$0] }.eraseToAnyPublisher()) { combined, next in
+            combined
+                .zip(next) { (results, nextResult) in
+                    return results + [nextResult]
+                }
+                .eraseToAnyPublisher()
         }
     }
     
-    func syncLocalAndRemoteGenerator(generatorFromServer: GeneratorFromServer, localGenerator: GeneratorEntity, completion: ((GeneratorEntity) -> Void)? = nil) {
-        if (generatorFromServer.updatedAt == localGenerator.updatedAt) {
-            print("ok  local and external generators have the same udpatedAt")
-            syncGeneratorConsumers(localGenerator: localGenerator, generatorFromServer: generatorFromServer)
-            completion?(localGenerator)
-            return
-        }
+    func syncLocalAndRemoteGenerator(generatorFromServer: GeneratorFromServer, localGenerator: GeneratorEntity) -> Future<GeneratorEntity, Error> {
+        return Future<GeneratorEntity, Error> { promise in
+            if (generatorFromServer.updatedAt == localGenerator.updatedAt) {
+                print("ok  local and external generators have the same udpatedAt")
+                self.syncGeneratorConsumers(localGenerator: localGenerator, generatorFromServer: generatorFromServer)
+                promise(.success(localGenerator))
+                return
+            }
 
-        if generatorFromServer.updatedAt > localGenerator.updatedAt {
-            // update local
-            persistenceController.updateGeneratorEntity(localGenerator, with: generatorFromServer)
-            persistenceController.saveContext()
-            print("ok updated local generator ientity")
+            if generatorFromServer.updatedAt > localGenerator.updatedAt {
+                // update local
+                self.persistenceController.updateGeneratorEntity(localGenerator, with: generatorFromServer)
+                self.persistenceController.saveContext()
+                print("ok updated local generator ientity")
+                
+                promise(.success(localGenerator))
+            } else if (generatorFromServer.updatedAt < localGenerator.updatedAt) {
+                // update on server
+                let patchPayload = GeneratorHttpPayload(from: localGenerator)
+                self.generatorMiddleware.updateGenerator(generatorId: generatorFromServer.id, updatedGenerator: patchPayload, completion: { savedGenerator, error in
+                    if savedGenerator != nil {
+                        print("OK UPDATED")
+
+                        self.persistenceController.updateGeneratorEntity(localGenerator, with: savedGenerator!)
+                        self.persistenceController.saveContext()
+                        
+                        promise(.success(localGenerator))
+                    }
+                })
+            }
             
-            completion?(localGenerator)
-        } else if (generatorFromServer.updatedAt < localGenerator.updatedAt) {
-            // update on server
-            let patchPayload = GeneratorHttpPayload(from: localGenerator)
-            generatorMiddleware.updateGenerator(generatorId: generatorFromServer.id, updatedGenerator: patchPayload, completion: { savedGenerator, error in
-                if savedGenerator != nil {
-                    print("OK UPDATED")
-
-                    self.persistenceController.updateGeneratorEntity(localGenerator, with: savedGenerator!)
-                    self.persistenceController.saveContext()
-                    
-                    completion?(localGenerator)
-                }
-            })
+            self.syncGeneratorConsumers(localGenerator: localGenerator, generatorFromServer: generatorFromServer)
         }
-
-        syncGeneratorConsumers(localGenerator: localGenerator, generatorFromServer: generatorFromServer)
     }
     
     func syncGeneratorConsumers(localGenerator: GeneratorEntity, generatorFromServer: GeneratorFromServer) {
@@ -235,34 +334,176 @@ class SyncManager {
 //        }
 //    }
     
-    func fetchUserGenerators(completion: ((GeneratorEntity) -> Void)? = nil) {
-        if (keychain.getUserApiToken() != nil) {
-            generatorMiddleware.getUserGenerators(completion: { userGeneratorsFromServer, error  in
-                guard let userGeneratorsFromServer = userGeneratorsFromServer?.first else {
-                    let defaultGenerator = self.loadDefaultGenerator()
-                    completion?(defaultGenerator)
-                    return
-                }
-
-                self.handleGeneratorsListFromServer(generatorsFromServer: [userGeneratorsFromServer], completion: { generatorToUse in
-                    completion?(generatorToUse)
+    func getGeneratorToUse(completion: ((GeneratorEntity) -> Void)? = nil) {
+        if keychain.getUserApiToken() == nil {
+            self.getGeneratorsFromCoreData()
+                .receive(on: DispatchQueue.main)
+                .sink(receiveCompletion: { completion in
+                    if case let .failure(error) = completion {
+                        print("Failed to fetch items: \(error)")
+                    }
+                }, receiveValue: { generatorsFromCoreData in
+                    guard let defaultLocalGenerator = generatorsFromCoreData.first else {
+//                        self.currentGenerator = userGenerator
+                        return
+                    }
+                    completion?(defaultLocalGenerator)
                 })
-                
-                if (error != nil) {
-                    let defaultGenerator = self.loadDefaultGenerator()
-                    completion?(defaultGenerator)
-                }
-            })
+                .store(in: &cancellables)
         } else {
-            let defaultGenerator = self.loadDefaultGenerator()
-            completion?(defaultGenerator)
+            Publishers.Zip(getGeneratorsFromCoreData(), fetchUserGenerators())
+                .flatMap { coreDataGenerators, serverGenerators in
+                    // The flatMap operator is used because `mergeLocalAndRemoteGenerators` returns a publisher
+                    self.mergeLocalAndRemoteGenerators(localGenerators: coreDataGenerators, remoteGenerators: serverGenerators)
+                }
+                .receive(on: DispatchQueue.main)
+                .sink(receiveCompletion: { completion2 in
+                    if case let .failure(error) = completion2 {
+                        print("Failed to fetch items: \(error)")
+                        
+                        self.getGeneratorsFromCoreData()
+                            .receive(on: DispatchQueue.main)
+                            .sink(receiveCompletion: { completion in
+                                if case let .failure(error) = completion {
+                                    print("Failed to fetch items: \(error)")
+                                }
+                            }, receiveValue: { generatorsFromCoreData in
+                                guard let defaultLocalGenerator = generatorsFromCoreData.first else {
+            //                        self.currentGenerator = userGenerator
+                                    return
+                                }
+                                completion?(defaultLocalGenerator)
+                            })
+                            .store(in: &self.cancellables)
+                    }
+                }, receiveValue: { mergedGeneratorsList in
+                    print(mergedGeneratorsList)
+                    guard let userGeneratorToUse = mergedGeneratorsList.first else {
+                        return
+                    }
+                    
+                    completion?(userGeneratorToUse)
+                })
+                .store(in: &cancellables)
+//            if (keychain.getUserApiToken() != nil) {
+//                generatorMiddleware.getUserGenerators(completion: { userGeneratorsFromServer, error  in
+//                    guard let userGeneratorsFromServer = userGeneratorsFromServer?.first else {
+//                        let defaultGenerator = self.loadDefaultGenerator()
+//                        completion?(defaultGenerator)
+//                        return
+//                    }
+//    
+//                    self.handleGeneratorsListFromServer(generatorsFromServer: [userGeneratorsFromServer], completion: { generatorToUse in
+//                        completion?(generatorToUse)
+//                    })
+//    
+//                    if (error != nil) {
+//                        let defaultGenerator = self.loadDefaultGenerator()
+//                        completion?(defaultGenerator)
+//                    }
+//                })
+//            } else {
+//                let defaultGenerator = self.loadDefaultGenerator()
+//                completion?(defaultGenerator)
+//            }
         }
     }
     
-    private func loadDefaultGenerator() -> GeneratorEntity {
-        let defaultGenerator = persistenceController.fetchOrCreateDefaultGeneratorEntity()
-        persistenceController.fetchConsumersOrCreateDefaults()
-        
-        return defaultGenerator
+//    private func getCurrentGenerator() {
+//        Publishers.Zip(getGeneratorsFromCoreData(), fetchUserGenerators())
+//            .flatMap { coreDataGenerators, serverGenerators in
+//                // The flatMap operator is used because `mergeLocalAndRemoteGenerators` returns a publisher
+////                self.syncManager.handleGeneratorsListFromServer(generatorsFromServer: serverGenerators, completion: { generator in
+////
+////                })
+//                self.syncManager.mergeLocalAndRemoteGenerators(localGenerators: coreDataGenerators, remoteGenerators: serverGenerators)
+////                return (coreDataGenerators, serverGenerators)
+//            }
+//            .receive(on: DispatchQueue.main)
+//            .sink(receiveCompletion: { completion in
+//                if case let .failure(error) = completion {
+//                    print("Failed to fetch items: \(error)")
+//                }
+//            }, receiveValue: { mergedGeneratorsList in
+//                print(mergedGeneratorsList)
+////                guard let userGenerator = mergedGeneratorsList.first else {
+////                    self.currentGenerator = userGenerator
+////                    return
+////                }
+//            })
+//            .store(in: &cancellables)
+//    }
+    
+    func getGeneratorsFromCoreData() -> AnyPublisher<[GeneratorEntity], Error> {
+        Future { promise in
+            let localGenerators = self.persistenceController.fetchLocalGenerators()
+            
+            guard let firstDefaultGenerator = localGenerators.first else {
+                let error = NSError(domain: "com.yourapp.syncManager.swift", code: 1002, userInfo: [NSLocalizedDescriptionKey: "Errored in syncManager:getGeneratorsFromCoreData - no local generators found?"])
+                promise(.failure(error))
+                return
+            }
+
+            promise(.success([firstDefaultGenerator]))
+        }
+        .eraseToAnyPublisher()
     }
+    
+    func fetchUserGenerators() -> Future<[GeneratorFromServer], Error> {
+        return Future { promise in
+            self.generatorMiddleware.getUserGenerators()
+                .receive(on: DispatchQueue.main)
+                .sink(receiveCompletion: { completion in
+                    switch completion {
+                    case .failure(let error):
+                        debugPrint("Failed to load generators in GeneratorViewModel: \(error.localizedDescription)")
+                        promise(.failure(error))
+                    case .finished:
+                        break
+                    }
+                }, receiveValue: { generatorsFromServer in
+                    guard let firstUserGenerator = generatorsFromServer.first else {
+                        promise(.success([]))
+                        return
+                    }
+                    
+                    let arrayOfRemoteGenerators = [firstUserGenerator]
+                    promise(.success(arrayOfRemoteGenerators))
+                })
+                .store(in: &self.cancellables)
+        }
+    }
+    
+    func getGeneratorById(_ id: String, context: NSManagedObjectContext) -> AnyPublisher<GeneratorEntity?, Error> {
+        return Future<GeneratorEntity?, Error> { promise in
+            let fetchRequest: NSFetchRequest<GeneratorEntity> = GeneratorEntity.fetchRequest()
+            fetchRequest.predicate = NSPredicate(format: "id == %@", id)
+            fetchRequest.fetchLimit = 1
+
+            do {
+                let generators = try context.fetch(fetchRequest)
+                if let generator = generators.first {
+                    promise(.success(generator))
+                } else {
+                    // If not found, you might want to fetch from the server and update Core Data
+                    // Or return nil if you handle the absence in the view
+                    promise(.success(nil))
+                }
+            } catch {
+                promise(.failure(error))
+            }
+        }
+        .eraseToAnyPublisher()
+    }
+    
+    func fetchGeneratorConsumers(generator: GeneratorEntity) -> [ConsumerEntity] {
+        return persistenceController.getGeneratorConsumers(generator: generator)
+    }
+    
+//    private func loadDefaultGenerator() -> GeneratorEntity {
+//        let defaultGenerator = persistenceController.fetchOrCreateDefaultGeneratorEntity()
+//        persistenceController.fetchConsumersOrCreateDefaults()
+//        
+//        return defaultGenerator
+//    }
 }

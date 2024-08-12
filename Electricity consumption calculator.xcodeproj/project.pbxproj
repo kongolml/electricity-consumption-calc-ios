@@ -30,6 +30,7 @@
 		114BFF252C54646200C2685A /* Consumer.middleware.swift in Sources */ = {isa = PBXBuildFile; fileRef = 114BFF242C54646200C2685A /* Consumer.middleware.swift */; };
 		114BFF272C5464D400C2685A /* Generator.middleware.swift in Sources */ = {isa = PBXBuildFile; fileRef = 114BFF262C5464D400C2685A /* Generator.middleware.swift */; };
 		114BFF292C54664100C2685A /* Generator.metadata.swift in Sources */ = {isa = PBXBuildFile; fileRef = 114BFF282C54664100C2685A /* Generator.metadata.swift */; };
+		115FCA412C65602C0023981F /* Generator.viewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 115FCA402C65602B0023981F /* Generator.viewModel.swift */; };
 		118360222C3DEEDC00E97115 /* GoogleSignIn in Frameworks */ = {isa = PBXBuildFile; productRef = 118360212C3DEEDC00E97115 /* GoogleSignIn */; };
 		118360242C3DEEDC00E97115 /* GoogleSignInSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 118360232C3DEEDC00E97115 /* GoogleSignInSwift */; };
 		1183602B2C3F143F00E97115 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1183602A2C3F143F00E97115 /* AppDelegate.swift */; };
@@ -70,6 +71,7 @@
 		114BFF262C5464D400C2685A /* Generator.middleware.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Generator.middleware.swift; sourceTree = "<group>"; };
 		114BFF282C54664100C2685A /* Generator.metadata.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Generator.metadata.swift; sourceTree = "<group>"; };
 		114BFF2A2C553AF300C2685A /* Electricity_consumption_calculator_v4.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Electricity_consumption_calculator_v4.xcdatamodel; sourceTree = "<group>"; };
+		115FCA402C65602B0023981F /* Generator.viewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Generator.viewModel.swift; sourceTree = "<group>"; };
 		118360272C3F0A3E00E97115 /* Electricity-consumption-calculator-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "Electricity-consumption-calculator-Info.plist"; sourceTree = SOURCE_ROOT; };
 		1183602A2C3F143F00E97115 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		1191E5BA2C568773001F9D64 /* Electricity_consumption_calculator_v5.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Electricity_consumption_calculator_v5.xcdatamodel; sourceTree = "<group>"; };
@@ -176,6 +178,14 @@
 			path = Http;
 			sourceTree = "<group>";
 		};
+		115FCA3F2C655F6C0023981F /* ViewModels */ = {
+			isa = PBXGroup;
+			children = (
+				115FCA402C65602B0023981F /* Generator.viewModel.swift */,
+			);
+			path = ViewModels;
+			sourceTree = "<group>";
+		};
 		11C30FD32C3720A300E43720 = {
 			isa = PBXGroup;
 			children = (
@@ -196,6 +206,7 @@
 		11C30FDE2C3720A300E43720 /* Electricity consumption calculator */ = {
 			isa = PBXGroup;
 			children = (
+				115FCA3F2C655F6C0023981F /* ViewModels */,
 				112A33F42C45E82900920FBF /* Http */,
 				118360272C3F0A3E00E97115 /* Electricity-consumption-calculator-Info.plist */,
 				1109E2FE2C3B2172003DE2AB /* Components */,
@@ -324,6 +335,7 @@
 				1109E2FD2C3B2004003DE2AB /* Formatters.swift in Sources */,
 				1109E2F72C3B0D3D003DE2AB /* GeneratorEntity+Custom.swift in Sources */,
 				114BFF292C54664100C2685A /* Generator.metadata.swift in Sources */,
+				115FCA412C65602C0023981F /* Generator.viewModel.swift in Sources */,
 				11C30FE02C3720A300E43720 /* Electricity_consumption_calculatorApp.swift in Sources */,
 				11C30FF32C3720FE00E43720 /* ConsumerView.swift in Sources */,
 				114BFF252C54646200C2685A /* Consumer.middleware.swift in Sources */,

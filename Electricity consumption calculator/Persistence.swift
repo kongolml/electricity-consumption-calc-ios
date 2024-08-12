@@ -231,7 +231,7 @@ class PersistenceController: ObservableObject {
     }
     
     func createConsumerEntityFromServer(with consumerFromServer: ConsumerFromServer, for generator: GeneratorEntity) -> ConsumerEntity {
-        let consumerEntity = ConsumerEntity(context: container.viewContext)
+        let consumerEntity = createLocalConsumer(for: generator)
         
 //        TODO: removal handler idea?
 //        if consumerFromServer.isDeleted {
@@ -247,6 +247,13 @@ class PersistenceController: ObservableObject {
         consumerEntity.orderInGroup = consumerFromServer.orderInGroup
         consumerEntity.updatedAt = consumerFromServer.updatedAt
         // TODO: add generator !!! ??
+        consumerEntity.generator = generator
+        
+        return consumerEntity
+    }
+    
+    func createLocalConsumer(for generator: GeneratorEntity) -> ConsumerEntity {
+        let consumerEntity = ConsumerEntity(context: container.viewContext)
         consumerEntity.generator = generator
         
         return consumerEntity

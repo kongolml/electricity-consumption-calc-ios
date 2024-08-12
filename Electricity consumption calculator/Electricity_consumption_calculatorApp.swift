@@ -15,14 +15,12 @@ struct Electricity_consumption_calculatorApp: App {
     let persistenceController = PersistenceController.shared
     let syncManager = SyncManager.shared
     @State private var defaultGenerator: GeneratorEntity?
-        
-    let keychain = KeychainToolbox()
-    let generatorMiddleware = GeneratorMiddleware()
 
     var body: some Scene {
         WindowGroup {
             if let generator = defaultGenerator {
-                GeneratorView(generator: generator)
+//                GeneratorView(generator: generator)
+                GeneratorView(generatorId: generator.id.uuidString)
                     .environment(\.managedObjectContext, persistenceController.container.viewContext)
                     .environmentObject(persistenceController)
 //                    .onAppear {
@@ -48,7 +46,7 @@ struct Electricity_consumption_calculatorApp: App {
             } else {
                 ProgressView("Loading")
                     .onAppear {
-                        syncManager.fetchUserGenerators() { generatorToUse in
+                        syncManager.getGeneratorToUse() { generatorToUse in
                             defaultGenerator = generatorToUse
                         }
                     }
