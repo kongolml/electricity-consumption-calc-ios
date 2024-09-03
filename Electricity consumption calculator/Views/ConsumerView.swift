@@ -19,16 +19,18 @@ struct ConsumerView: View {
 
     @State var showDeleteConfirmationAlert: Bool = false
     @State private var isNewConsumer = false
+    @State private var formHasChanges: Bool = false
     @FocusState private var isNameFieldFocused: Bool
 //    @State private var preferredConsumptionUnit: ConsumptionUnits = .watt
     
-//    let consumerId: String
+    // Track initial values for change detection
+    @State private var initialName: String = ""
+    @State private var initialConsumption: Double = 0
+    @State private var initialQuantity: Int16 = 0
+    @State private var initialPriorityType: Int16 = 1
+    @State private var initialIsActive: Bool = false
 
     init(consumerId: UUID, isNewConsumer: Bool? = false) {
-//        let model = ConsumerViewModel(context: PersistenceController.shared.container.viewContext)
-//        _consumerViewModel = StateObject(wrappedValue: model)
-
-//        self.consumerId = consumerId.uuidString
         self.isNewConsumer = isNewConsumer ?? false
         
         let model = ConsumerViewModel(context: PersistenceController.shared.container.viewContext)
@@ -42,14 +44,17 @@ struct ConsumerView: View {
         model.setCurrentConsumer(consumer: consumer)
         _consumerViewModel = StateObject(wrappedValue: model)
         _isNewConsumer = State(initialValue: isNewConsumer ?? false)
-//        self.isNewConsumer = isNewConsumer ?? false
     }
     
-//    init() {
-//        let model = ConsumerViewModel(context: PersistenceController.shared.container.viewContext)
-//        model.setCurrentConsumer(consumer: <#T##ConsumerEntity#>)
-//        _consumerViewModel = StateObject(wrappedValue: model)
-//    }
+    private func checkForFormChanges() {
+        formHasChanges = (
+            consumerViewModel.name != initialName ||
+            consumerViewModel.consumption != initialConsumption ||
+            consumerViewModel.quantity != initialQuantity ||
+            consumerViewModel.priorityType != initialPriorityType ||
+            consumerViewModel.isActive != initialIsActive
+        )
+    }
 
     var body: some View {
         VStack {
@@ -60,9 +65,22 @@ struct ConsumerView: View {
                         .onAppear {
                             // Set the focus when the view appears
                             isNameFieldFocused = isNewConsumer
+                            
+                            // Initialize initial state
+                            initialName = consumerViewModel.name
+                            initialConsumption = consumerViewModel.consumption
+                            initialQuantity = consumerViewModel.quantity
+                            initialPriorityType = consumerViewModel.priorityType
+                            initialIsActive = consumerViewModel.isActive
+                        }
+                        .onChange(of: consumerViewModel.name) {
+                            checkForFormChanges()
                         }
                     HStack {
                         EnergyInput(entityProperty: $consumerViewModel.consumption, placeholder: "Consumption")
+                            .onChange(of: consumerViewModel.consumption) {
+                                checkForFormChanges()
+                            }
                     }
                     HStack {
                         TextField("Quantity", value: $consumerViewModel.quantity, formatter: NumberFormatter())
@@ -107,27 +125,27 @@ struct ConsumerView: View {
 //                    saveChanges()
 //                }
             }
-//            .navigationTitle($consumerViewModel.name)
         }
         .toolbar {
             ToolbarItem {
                 Button("Save") {
                     saveChanges()
                 }
+                .disabled(!formHasChanges)
             }
         }
-//        .navigationTitle("hallos")
-//        .navigationBarTitleDisplayMode(.inline)
     }
     
     private func saveChanges() {
-        consumerViewModel.updateConsumer()
+        if formHasChanges {
+            consumerViewModel.updateConsumer()
+        }
 
         if isNewConsumer {
             presentationMode.wrappedValue.dismiss()
         }
 //        if viewContext.hasChanges{
-            consumerViewModel.updateConsumer()
+//            consumerViewModel.updateConsumer()
 //        }
     }
 }

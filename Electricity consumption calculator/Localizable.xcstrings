@@ -280,6 +280,7 @@
       }
     },
     "Main device" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -446,6 +447,7 @@
       }
     },
     "Secondary device" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {

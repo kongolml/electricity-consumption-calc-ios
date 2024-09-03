@@ -168,19 +168,9 @@ struct GeneratorView: View {
                             EditButton()
                         }
                         ToolbarItem {
-                            Menu {
-                                Button(action: {
-                                    addNewConsumer(priority: .main)
-                                }) {
-                                    Label("Main device", systemImage: "refrigerator")
-                                }
-                                
-                                Button(action: {
-                                    addNewConsumer(priority: .secondary)
-                                }) {
-                                    Label("Secondary device", systemImage: "lightbulb.2")
-                                }
-                            } label: {
+                            Button(action: {
+                                addNewConsumer(priority: .main)
+                            }) {
                                 Label("Add Item", systemImage: "plus")
                             }
                         }
@@ -212,7 +202,6 @@ struct GeneratorView: View {
         .sheet(isPresented: $addNewGeneratorConsumerState.isAddingNewConsumer, content: {
             if let currentGenerator = generatorViewModel.currentGenerator {
                 let newConsumer = persistenceController.createLocalConsumer(for: currentGenerator)
-//                newItem.priorityType = addNewGeneratorConsumerState.consumerPriorityType.rawValue
                 
                 NavigationStack {
                     ConsumerView(consumer: newConsumer, isNewConsumer: true)
