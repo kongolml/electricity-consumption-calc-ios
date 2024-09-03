@@ -20,7 +20,7 @@ struct Electricity_consumption_calculatorApp: App {
         WindowGroup {
             if let generator = defaultGenerator {
 //                GeneratorView(generator: generator)
-                GeneratorView(generatorId: generator.id.uuidString)
+                GeneratorView(generatorId: generator.id)
                     .environment(\.managedObjectContext, persistenceController.container.viewContext)
                     .environmentObject(persistenceController)
 //                    .onAppear {

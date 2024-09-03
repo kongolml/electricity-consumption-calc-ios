@@ -122,7 +122,11 @@ class PersistenceController: ObservableObject {
 //        TODO: should it be fetched here all the time? this function is used in few places, overkill?
         let fetchRequest: NSFetchRequest<ConsumerEntity> = ConsumerEntity.fetchRequest()
         fetchRequest.predicate = NSPredicate(format: "generator == %@", generator)
+        
+        // Prefetching can be useful if you frequently access related entities. Ensure it's needed.
         fetchRequest.relationshipKeyPathsForPrefetching = ["consumers"]
+//            TODO: is this not too much?
+        fetchRequest.returnsObjectsAsFaults = false
         
         do {
             let generatorConsumers = try container.viewContext.fetch(fetchRequest)
@@ -138,6 +142,9 @@ class PersistenceController: ObservableObject {
     
     func fetchLocalGenerators() -> [GeneratorEntity] {
         let fetchRequest: NSFetchRequest<GeneratorEntity> = GeneratorEntity.fetchRequest()
+        
+        // Set this to false to avoid fetching faults (i.e., cached placeholders)
+            fetchRequest.returnsObjectsAsFaults = false
         
         do {
             let results = try container.viewContext.fetch(fetchRequest)
@@ -210,7 +217,7 @@ class PersistenceController: ObservableObject {
         }
     }
     
-    func deleteItem(consumer: ConsumerEntity) {
+    func deleteConsumer(consumer: ConsumerEntity) {
         container.viewContext.delete(consumer)
         saveContext()
     }

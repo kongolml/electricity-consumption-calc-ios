@@ -8,33 +8,38 @@
 import SwiftUI
 
 struct GeneratorDetailsView: View {
-    @ObservedObject var generator: GeneratorEntity
     @Environment(\.managedObjectContext) private var viewContext
     @EnvironmentObject var persistenceController: PersistenceController
+    @EnvironmentObject var generatorViewModel: GeneratorViewModel
     
     @State private var preferredConsumptionUnit: ConsumptionUnits = .watt
+    
+//    let generatorId: String
+    
+//    init(generatorId: UUID) {
+//        self.generatorId = generatorId.uuidString
+//    }
 
     var body: some View {
         NavigationStack {
             Form {
                 Section(content: {
-                    TextField("Name", text: $generator.name)
-                    EnergyInput(entityProperty: $generator.capacity, placeholder: "Capacity")
+                    TextField("Name", text: $generatorViewModel.name)
+                    EnergyInput(entityProperty: $generatorViewModel.capacity, placeholder: "Capacity")
                 })
             }
         }
-        .navigationTitle(generator.name)
+        .navigationTitle(generatorViewModel.name)
         .navigationBarTitleDisplayMode(.inline)
         .onDisappear {
             saveChanges()
         }
+        
     }
     
     private func saveChanges() {
-        viewContext.perform {
-            generator.updatedAt = Date()
-            persistenceController.saveContext()
-        }
+        print("generatorViewModel.updateGenerator()")
+        generatorViewModel.updateGenerator()
     }
 }
 
@@ -43,5 +48,5 @@ struct GeneratorDetailsView: View {
     
     let dummyGenerator = GeneratorEntity.createMock(context: context)
 
-    return GeneratorDetailsView(generator: dummyGenerator)
+    return GeneratorDetailsView()
 }

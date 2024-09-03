@@ -17,7 +17,7 @@ extension ConsumerEntity {
     }
 
     @NSManaged public var consumption: Double
-    @NSManaged public var id: UUID?
+    @NSManaged public var id: UUID
     @NSManaged public var isActive: Bool
     @NSManaged public var name: String
     @NSManaged public var orderInGroup: Int16

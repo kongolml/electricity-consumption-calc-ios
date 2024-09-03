@@ -24,7 +24,6 @@
 		112A33F32C45E79400920FBF /* Auth.middleware.swift in Sources */ = {isa = PBXBuildFile; fileRef = 112A33F22C45E79400920FBF /* Auth.middleware.swift */; };
 		112A33F72C45E84700920FBF /* Auth.router.swift in Sources */ = {isa = PBXBuildFile; fileRef = 112A33F62C45E84700920FBF /* Auth.router.swift */; };
 		112A33FA2C45EAD400920FBF /* Auth.metadata.swift in Sources */ = {isa = PBXBuildFile; fileRef = 112A33F92C45EAD400920FBF /* Auth.metadata.swift */; };
-		113084E62C3840150069845B /* ConsumersSectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 113084E52C3840150069845B /* ConsumersSectionView.swift */; };
 		114BFF212C52E69C00C2685A /* Payloads.http.swift in Sources */ = {isa = PBXBuildFile; fileRef = 114BFF202C52E69C00C2685A /* Payloads.http.swift */; };
 		114BFF232C545EFA00C2685A /* Consumer.router.swift in Sources */ = {isa = PBXBuildFile; fileRef = 114BFF222C545EF900C2685A /* Consumer.router.swift */; };
 		114BFF252C54646200C2685A /* Consumer.middleware.swift in Sources */ = {isa = PBXBuildFile; fileRef = 114BFF242C54646200C2685A /* Consumer.middleware.swift */; };
@@ -39,6 +38,7 @@
 		1191E5C92C569958001F9D64 /* GeneratorEntity+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1191E5C72C569958001F9D64 /* GeneratorEntity+CoreDataClass.swift */; };
 		1191E5CA2C569958001F9D64 /* GeneratorEntity+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1191E5C82C569958001F9D64 /* GeneratorEntity+CoreDataProperties.swift */; };
 		1191E5CC2C56C2C1001F9D64 /* SyncManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1191E5CB2C56C2C1001F9D64 /* SyncManager.swift */; };
+		11BD0BA62C6AB40E002377B1 /* Consumer.viewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11BD0BA52C6AB40E002377B1 /* Consumer.viewModel.swift */; };
 		11C30FE02C3720A300E43720 /* Electricity_consumption_calculatorApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11C30FDF2C3720A300E43720 /* Electricity_consumption_calculatorApp.swift */; };
 		11C30FE72C3720A500E43720 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 11C30FE62C3720A500E43720 /* Preview Assets.xcassets */; };
 		11C30FE92C3720A500E43720 /* Persistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11C30FE82C3720A500E43720 /* Persistence.swift */; };
@@ -64,7 +64,6 @@
 		112A33F22C45E79400920FBF /* Auth.middleware.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Auth.middleware.swift; sourceTree = "<group>"; };
 		112A33F62C45E84700920FBF /* Auth.router.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Auth.router.swift; sourceTree = "<group>"; };
 		112A33F92C45EAD400920FBF /* Auth.metadata.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Auth.metadata.swift; sourceTree = "<group>"; };
-		113084E52C3840150069845B /* ConsumersSectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConsumersSectionView.swift; sourceTree = "<group>"; };
 		114BFF202C52E69C00C2685A /* Payloads.http.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Payloads.http.swift; sourceTree = "<group>"; };
 		114BFF222C545EF900C2685A /* Consumer.router.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Consumer.router.swift; sourceTree = "<group>"; };
 		114BFF242C54646200C2685A /* Consumer.middleware.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Consumer.middleware.swift; sourceTree = "<group>"; };
@@ -80,6 +79,7 @@
 		1191E5C72C569958001F9D64 /* GeneratorEntity+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "GeneratorEntity+CoreDataClass.swift"; sourceTree = SOURCE_ROOT; };
 		1191E5C82C569958001F9D64 /* GeneratorEntity+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "GeneratorEntity+CoreDataProperties.swift"; sourceTree = SOURCE_ROOT; };
 		1191E5CB2C56C2C1001F9D64 /* SyncManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncManager.swift; sourceTree = "<group>"; };
+		11BD0BA52C6AB40E002377B1 /* Consumer.viewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Consumer.viewModel.swift; sourceTree = "<group>"; };
 		11C30FDC2C3720A300E43720 /* Electricity consumption calculator.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Electricity consumption calculator.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		11C30FDF2C3720A300E43720 /* Electricity_consumption_calculatorApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Electricity_consumption_calculatorApp.swift; sourceTree = "<group>"; };
 		11C30FE12C3720A300E43720 /* GeneratorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeneratorView.swift; sourceTree = "<group>"; };
@@ -123,6 +123,7 @@
 		1109E2FB2C3B1FF4003DE2AB /* Helpers */ = {
 			isa = PBXGroup;
 			children = (
+				1191E5CB2C56C2C1001F9D64 /* SyncManager.swift */,
 				1109E2FC2C3B2004003DE2AB /* Formatters.swift */,
 				1109E3012C3B261B003DE2AB /* Helpers.swift */,
 				112A33EA2C456C3A00920FBF /* KeychainAccess.swift */,
@@ -182,8 +183,21 @@
 			isa = PBXGroup;
 			children = (
 				115FCA402C65602B0023981F /* Generator.viewModel.swift */,
+				11BD0BA52C6AB40E002377B1 /* Consumer.viewModel.swift */,
 			);
 			path = ViewModels;
+			sourceTree = "<group>";
+		};
+		11BD0BA72C6AB505002377B1 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				11C30FF22C3720FE00E43720 /* ConsumerView.swift */,
+				11C30FFB2C37282600E43720 /* ConsumerListItemView.swift */,
+				11C30FE12C3720A300E43720 /* GeneratorView.swift */,
+				1109E2F02C3B0AA9003DE2AB /* GeneratorDetailsView.swift */,
+				1109E2FE2C3B2172003DE2AB /* Components */,
+			);
+			path = Views;
 			sourceTree = "<group>";
 		};
 		11C30FD32C3720A300E43720 = {
@@ -206,25 +220,19 @@
 		11C30FDE2C3720A300E43720 /* Electricity consumption calculator */ = {
 			isa = PBXGroup;
 			children = (
+				11BD0BA72C6AB505002377B1 /* Views */,
 				115FCA3F2C655F6C0023981F /* ViewModels */,
 				112A33F42C45E82900920FBF /* Http */,
 				118360272C3F0A3E00E97115 /* Electricity-consumption-calculator-Info.plist */,
-				1109E2FE2C3B2172003DE2AB /* Components */,
 				1109E2FB2C3B1FF4003DE2AB /* Helpers */,
 				11C30FF82C3724CC00E43720 /* Metadata */,
 				11C30FDF2C3720A300E43720 /* Electricity_consumption_calculatorApp.swift */,
-				11C30FF22C3720FE00E43720 /* ConsumerView.swift */,
-				11C30FFB2C37282600E43720 /* ConsumerListItemView.swift */,
-				11C30FE12C3720A300E43720 /* GeneratorView.swift */,
 				1109E3092C3B32A0003DE2AB /* Localizable.xcstrings */,
-				1109E2F02C3B0AA9003DE2AB /* GeneratorDetailsView.swift */,
-				113084E52C3840150069845B /* ConsumersSectionView.swift */,
 				1109E30B2C3B3FF0003DE2AB /* Assets.xcassets */,
 				11C30FE82C3720A500E43720 /* Persistence.swift */,
 				11C30FEA2C3720A600E43720 /* Electricity_consumption_calculator.xcdatamodeld */,
 				11C30FE52C3720A500E43720 /* Preview Content */,
 				1183602A2C3F143F00E97115 /* AppDelegate.swift */,
-				1191E5CB2C56C2C1001F9D64 /* SyncManager.swift */,
 			);
 			path = "Electricity consumption calculator";
 			sourceTree = "<group>";
@@ -344,9 +352,9 @@
 				1191E5CA2C569958001F9D64 /* GeneratorEntity+CoreDataProperties.swift in Sources */,
 				112A33F32C45E79400920FBF /* Auth.middleware.swift in Sources */,
 				114BFF232C545EFA00C2685A /* Consumer.router.swift in Sources */,
+				11BD0BA62C6AB40E002377B1 /* Consumer.viewModel.swift in Sources */,
 				11C30FFF2C37389500E43720 /* GeneratorView.swift in Sources */,
 				1109E3002C3B218C003DE2AB /* EnergyInput.swift in Sources */,
-				113084E62C3840150069845B /* ConsumersSectionView.swift in Sources */,
 				112A33EB2C456C3A00920FBF /* KeychainAccess.swift in Sources */,
 				112A33FA2C45EAD400920FBF /* Auth.metadata.swift in Sources */,
 				114BFF212C52E69C00C2685A /* Payloads.http.swift in Sources */,

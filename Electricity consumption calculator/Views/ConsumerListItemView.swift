@@ -8,8 +8,19 @@
 import SwiftUI
 
 struct ConsumerListItemView: View {
+//    @EnvironmentObject var consumerViewModel: ConsumerViewModel
     @ObservedObject var consumer: ConsumerEntity
-    @Environment(\.managedObjectContext) private var viewContext
+    
+//    let consumerId: String
+    
+//    init(consumerId: UUID) {
+//        self.consumerId = consumerId.uuidString
+        
+//        let model = ConsumerViewModel(context: PersistenceController.shared.container.viewContext)
+//        model.fetchConsumerById(self.consumerId)
+//        _consumerViewModel = StateObject(wrappedValue: model)
+//        consumerViewModel.fetchConsumerById(self.consumerId)
+//    }
 
     var body: some View {
         HStack {
@@ -19,6 +30,9 @@ struct ConsumerListItemView: View {
             Text("x\(String(consumer.quantity))")
         }
         .opacity(consumer.isActive ? 1.0 : 0.5)
+//        .onAppear {
+//            consumerViewModel.fetchConsumerById(self.consumerId)
+//        }
     }
 }
 

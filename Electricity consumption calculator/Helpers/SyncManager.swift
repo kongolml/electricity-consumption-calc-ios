@@ -204,7 +204,7 @@ class SyncManager {
     }
     
     func syncGeneratorConsumers(localGenerator: GeneratorEntity, generatorFromServer: GeneratorFromServer) {
-        // this will update generator updatedAt on server, but here in memory we still have "previous" generator instance
+        // TODO: this will update generator updatedAt on server, but here in memory we still have "previous" generator instance
         pushLocalGeneratorConsumers(localGenerator: localGenerator)
         
         // Add consumer to generator's consumers set
@@ -233,30 +233,46 @@ class SyncManager {
         self.persistenceController.saveContext()
     }
     
-    func updateConsumerEntity(_ localConsumer: ConsumerEntity, with consumerFromServer: ConsumerFromServer, generatorDbId: String) {
-        if localConsumer.updatedAt == consumerFromServer.updatedAt {
+    
+    func updateConsumerEntity(_ localConsumer: ConsumerEntity, with consumerFromServer: ConsumerFromServer? = nil, generatorDbId: String) {
+        guard let remoteConsumer = consumerFromServer else {
+            consumerMiddleware.updateGeneratorConsumer(generatorDbId: generatorDbId, with: localConsumer, completion: { updatedConsumer, error  in
+                // TODO: implement this !!!!
+                print(" !!!!! i've pushed local consumer")
+                print(" NOT YET IMPLEMENTED IN updateConsumerEntity")
+            })
+            return
+        }
+
+        if localConsumer.updatedAt == remoteConsumer.updatedAt {
             print("ok  local and external consumers have the same udpatedAt")
             return
         }
         
-        if localConsumer.updatedAt < consumerFromServer.updatedAt {
-            localConsumer.dbid = consumerFromServer.id
-            localConsumer.name = consumerFromServer.name
-            localConsumer.consumption = consumerFromServer.consumption
-            localConsumer.isActive = consumerFromServer.isActive
-            localConsumer.orderInGroup = consumerFromServer.orderInGroup
+        if localConsumer.updatedAt < remoteConsumer.updatedAt {
+            localConsumer.dbid = remoteConsumer.id
+            localConsumer.name = remoteConsumer.name
+            localConsumer.consumption = remoteConsumer.consumption
+            localConsumer.isActive = remoteConsumer.isActive
+            localConsumer.orderInGroup = remoteConsumer.orderInGroup
             
-            if let priorityType = PriorityType(rawValue: consumerFromServer.priorityType.rawValue) {
+            if let priorityType = PriorityType(rawValue: remoteConsumer.priorityType.rawValue) {
                 localConsumer.priorityType = Int16(priorityType.rawValue)
             }
             
-            localConsumer.quantity = consumerFromServer.quantity
-            localConsumer.updatedAt = consumerFromServer.updatedAt
-        } else if localConsumer.updatedAt > consumerFromServer.updatedAt {
+            localConsumer.quantity = remoteConsumer.quantity
+            localConsumer.updatedAt = remoteConsumer.updatedAt
+            
+            return
+        }
+        
+        if localConsumer.updatedAt > remoteConsumer.updatedAt {
             consumerMiddleware.updateGeneratorConsumer(generatorDbId: generatorDbId, with: localConsumer, completion: { updatedConsumer, error  in
                 // TODO: implement this !!!!
                 print(" NOT YET IMPLEMENTED IN updateConsumerEntity")
             })
+            
+            return
         }
     }
     
@@ -284,55 +300,6 @@ class SyncManager {
             }
         }
     }
-    
-//    /**
-//     This will get local and remote items and sych them, after it will return list of most recent items: ConsumerEntity
-//     */
-//    func getGeneratorConsumers(generatorEntity: GeneratorEntity, completion: (([ConsumerEntity]) -> Void)? = nil) {
-//        var isServerDataMoreRecent = false
-//        
-//        let dispatchGroup = DispatchGroup()
-//        var generatorConsumersFromServer: [ConsumerFromServer] = []
-//        var localGeneratorConsumers: [ConsumerEntity] = []
-//        var combinedConsumers: [ConsumerEntity] = []
-//
-//        // get data from server
-//        if let generatorDbId = generatorEntity.dbid {
-//            dispatchGroup.enter()
-//            generatorMiddleware.getGeneratorById(generatorId: generatorDbId, completion: { generatorFromServer, error in
-//                if let generatorFromServer = generatorFromServer {
-//                    isServerDataMoreRecent = generatorFromServer.updatedAt > generatorEntity.updatedAt
-//                }
-//                
-//                if let generatorFromServer = generatorFromServer, !generatorFromServer.consumers.isEmpty {
-//                    generatorConsumersFromServer = generatorFromServer.consumers
-//                }
-//                
-//                dispatchGroup.leave()
-//            })
-//        }
-//        
-//        // Enter the dispatch group for the local data fetch
-//        dispatchGroup.enter()
-//        // Perform the local data fetch
-//        DispatchQueue.global().async {
-//            localGeneratorConsumers = self.persistenceController.getGeneratorConsumers(generator: generatorEntity)
-//            combinedConsumers.append(contentsOf: localGeneratorConsumers)
-//            // Leave the dispatch group after the local data fetch is done
-//            dispatchGroup.leave()
-//        }
-//        
-//        // Notify when both tasks are finished
-//        dispatchGroup.notify(queue: .main) {
-//            // combine it, update, serve
-//            for consumer in generatorConsumersFromServer {
-//                let newConsumerEntity = self.persistenceController.createConsumerEntityFromServer(with: consumer)
-//                combinedConsumers.append(newConsumerEntity)
-//            }
-//            
-//            completion?(combinedConsumers)
-//        }
-//    }
     
     func getGeneratorToUse(completion: ((GeneratorEntity) -> Void)? = nil) {
         if keychain.getUserApiToken() == nil {
@@ -385,54 +352,8 @@ class SyncManager {
                     completion?(userGeneratorToUse)
                 })
                 .store(in: &cancellables)
-//            if (keychain.getUserApiToken() != nil) {
-//                generatorMiddleware.getUserGenerators(completion: { userGeneratorsFromServer, error  in
-//                    guard let userGeneratorsFromServer = userGeneratorsFromServer?.first else {
-//                        let defaultGenerator = self.loadDefaultGenerator()
-//                        completion?(defaultGenerator)
-//                        return
-//                    }
-//    
-//                    self.handleGeneratorsListFromServer(generatorsFromServer: [userGeneratorsFromServer], completion: { generatorToUse in
-//                        completion?(generatorToUse)
-//                    })
-//    
-//                    if (error != nil) {
-//                        let defaultGenerator = self.loadDefaultGenerator()
-//                        completion?(defaultGenerator)
-//                    }
-//                })
-//            } else {
-//                let defaultGenerator = self.loadDefaultGenerator()
-//                completion?(defaultGenerator)
-//            }
         }
     }
-    
-//    private func getCurrentGenerator() {
-//        Publishers.Zip(getGeneratorsFromCoreData(), fetchUserGenerators())
-//            .flatMap { coreDataGenerators, serverGenerators in
-//                // The flatMap operator is used because `mergeLocalAndRemoteGenerators` returns a publisher
-////                self.syncManager.handleGeneratorsListFromServer(generatorsFromServer: serverGenerators, completion: { generator in
-////
-////                })
-//                self.syncManager.mergeLocalAndRemoteGenerators(localGenerators: coreDataGenerators, remoteGenerators: serverGenerators)
-////                return (coreDataGenerators, serverGenerators)
-//            }
-//            .receive(on: DispatchQueue.main)
-//            .sink(receiveCompletion: { completion in
-//                if case let .failure(error) = completion {
-//                    print("Failed to fetch items: \(error)")
-//                }
-//            }, receiveValue: { mergedGeneratorsList in
-//                print(mergedGeneratorsList)
-////                guard let userGenerator = mergedGeneratorsList.first else {
-////                    self.currentGenerator = userGenerator
-////                    return
-////                }
-//            })
-//            .store(in: &cancellables)
-//    }
     
     func getGeneratorsFromCoreData() -> AnyPublisher<[GeneratorEntity], Error> {
         Future { promise in
@@ -479,6 +400,9 @@ class SyncManager {
             let fetchRequest: NSFetchRequest<GeneratorEntity> = GeneratorEntity.fetchRequest()
             fetchRequest.predicate = NSPredicate(format: "id == %@", id)
             fetchRequest.fetchLimit = 1
+            
+            // Prefetch the related consumers to avoid faults
+            fetchRequest.relationshipKeyPathsForPrefetching = ["consumers"]
 
             do {
                 let generators = try context.fetch(fetchRequest)
@@ -496,14 +420,44 @@ class SyncManager {
         .eraseToAnyPublisher()
     }
     
+    func getConsumerById(_ id: String, context: NSManagedObjectContext) -> AnyPublisher<ConsumerEntity?, Error> {
+        return Future<ConsumerEntity?, Error> { promise in
+            let fetchRequest: NSFetchRequest<ConsumerEntity> = ConsumerEntity.fetchRequest()
+            fetchRequest.predicate = NSPredicate(format: "id == %@", id)
+            fetchRequest.fetchLimit = 1
+
+            do {
+                let consumers = try context.fetch(fetchRequest)
+                if let consumer = consumers.first {
+                    promise(.success(consumer))
+                } else {
+                    // If not found, you might want to fetch from the server and update Core Data
+                    // Or return nil if you handle the absence in the view
+                    promise(.success(nil))
+                }
+            } catch {
+                promise(.failure(error))
+            }
+        }
+        .eraseToAnyPublisher()
+    }
+    
     func fetchGeneratorConsumers(generator: GeneratorEntity) -> [ConsumerEntity] {
         return persistenceController.getGeneratorConsumers(generator: generator)
     }
     
-//    private func loadDefaultGenerator() -> GeneratorEntity {
-//        let defaultGenerator = persistenceController.fetchOrCreateDefaultGeneratorEntity()
-//        persistenceController.fetchConsumersOrCreateDefaults()
-//        
-//        return defaultGenerator
-//    }
+    func updateRemoteGenerator(localGenerator: GeneratorEntity) -> Future<GeneratorFromServer, Error> {
+        return Future { promise in
+            let patchPayload = GeneratorHttpPayload(from: localGenerator)
+            self.generatorMiddleware.updateGenerator(generatorId: localGenerator.id.uuidString, updatedGenerator: patchPayload, completion: { updatedGenerator, error in
+                if let updatedGenerator = updatedGenerator {
+                    promise(.success(updatedGenerator))
+                }
+                
+                if let error = error {
+                    promise(.failure(error))
+                }
+            })
+        }
+    }
 }
