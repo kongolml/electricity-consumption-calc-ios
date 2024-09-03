@@ -23,12 +23,16 @@ struct ConsumerView: View {
     @FocusState private var isNameFieldFocused: Bool
 //    @State private var preferredConsumptionUnit: ConsumptionUnits = .watt
     
+    struct DefaultConsumerValues {
+        var name: String
+        var consumption: Double
+        var quantity: Int16
+        var priorityType: PriorityType
+        var isActive: Bool
+    }
+    
     // Track initial values for change detection
-    @State private var initialName: String = ""
-    @State private var initialConsumption: Double = 0
-    @State private var initialQuantity: Int16 = 0
-    @State private var initialPriorityType: Int16 = 1
-    @State private var initialIsActive: Bool = false
+    @State private var initialValues = DefaultConsumerValues(name: "", consumption: 50, quantity: 1, priorityType: .main, isActive: true)
 
     init(consumerId: UUID, isNewConsumer: Bool? = false) {
         self.isNewConsumer = isNewConsumer ?? false
@@ -48,30 +52,37 @@ struct ConsumerView: View {
     
     private func checkForFormChanges() {
         formHasChanges = (
-            consumerViewModel.name != initialName ||
-            consumerViewModel.consumption != initialConsumption ||
-            consumerViewModel.quantity != initialQuantity ||
-            consumerViewModel.priorityType != initialPriorityType ||
-            consumerViewModel.isActive != initialIsActive
+            consumerViewModel.name != initialValues.name ||
+            consumerViewModel.consumption != initialValues.consumption ||
+            consumerViewModel.quantity != initialValues.quantity ||
+            consumerViewModel.priorityType != initialValues.priorityType.rawValue ||
+            consumerViewModel.isActive != initialValues.isActive
         )
+    }
+    
+    private func setIntialState() {
+        // Set the focus when the view appears
+        isNameFieldFocused = isNewConsumer
+        
+        // Initialize initial state
+        initialValues.name = consumerViewModel.name
+        initialValues.consumption = consumerViewModel.consumption
+        initialValues.quantity = consumerViewModel.quantity
+        
+//        TODO: this is mess with int/int16
+        let priorityTypeAsInt = Int(consumerViewModel.priorityType)
+        initialValues.priorityType = PriorityType(rawValue: priorityTypeAsInt) ?? .main //PriorityType(rawValue: Int(consumerViewModel.priorityType))
+        initialValues.isActive = consumerViewModel.isActive
     }
 
     var body: some View {
-        VStack {
+        if consumerViewModel.currentConsumerIsSet {
             Form {
                 Section {
                     TextField("Name", text: $consumerViewModel.name)
                         .focused($isNameFieldFocused)
                         .onAppear {
-                            // Set the focus when the view appears
-                            isNameFieldFocused = isNewConsumer
-                            
-                            // Initialize initial state
-                            initialName = consumerViewModel.name
-                            initialConsumption = consumerViewModel.consumption
-                            initialQuantity = consumerViewModel.quantity
-                            initialPriorityType = consumerViewModel.priorityType
-                            initialIsActive = consumerViewModel.isActive
+                            setIntialState()
                         }
                         .onChange(of: consumerViewModel.name) {
                             checkForFormChanges()
@@ -85,6 +96,9 @@ struct ConsumerView: View {
                     HStack {
                         TextField("Quantity", value: $consumerViewModel.quantity, formatter: NumberFormatter())
                             .keyboardType(.decimalPad)
+                            .onChange(of: consumerViewModel.consumption) {
+                                checkForFormChanges()
+                            }
                     }
 
                     Picker("Type", selection: $consumerViewModel.priorityType) {
@@ -94,9 +108,15 @@ struct ConsumerView: View {
                     }
                     .pickerStyle(MenuPickerStyle())
                     .foregroundStyle(.gray)
+                    .onChange(of: consumerViewModel.consumption) {
+                        checkForFormChanges()
+                    }
 
                     Toggle("Enabled", isOn: $consumerViewModel.isActive)
                         .foregroundColor(.gray)
+                        .onChange(of: consumerViewModel.consumption) {
+                            checkForFormChanges()
+                        }
                 }
                 
                 if !isNewConsumer {
@@ -115,8 +135,19 @@ struct ConsumerView: View {
                     }
                 }
             }
-//            .navigationTitle($consumerViewModel.name)
-            .onDisappear {
+            .toolbar {
+                ToolbarItem {
+                    Button("Save") {
+                        saveChanges()
+                    }
+                    .disabled(!formHasChanges)
+                }
+            }
+        } else {
+            ProgressView("Loading consumer")
+        }
+        
+//            .onDisappear {
 //                if isNewConsumer && !viewContext.hasChanges {
 //                    consumerViewModel.deleteConsumer()
 //                }
@@ -124,16 +155,7 @@ struct ConsumerView: View {
 //                    print("saving changes")
 //                    saveChanges()
 //                }
-            }
-        }
-        .toolbar {
-            ToolbarItem {
-                Button("Save") {
-                    saveChanges()
-                }
-                .disabled(!formHasChanges)
-            }
-        }
+//            }
     }
     
     private func saveChanges() {
@@ -144,9 +166,6 @@ struct ConsumerView: View {
         if isNewConsumer {
             presentationMode.wrappedValue.dismiss()
         }
-//        if viewContext.hasChanges{
-//            consumerViewModel.updateConsumer()
-//        }
     }
 }
 

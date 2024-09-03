@@ -19,6 +19,7 @@ class ConsumerViewModel: ObservableObject {
     @Published var quantity: Int16 = 0
     @Published var dbid: String?
     
+    @Published var currentConsumerIsSet: Bool = false
     
     private var context: NSManagedObjectContext
     private let persistenceController = PersistenceController.shared
@@ -42,12 +43,12 @@ class ConsumerViewModel: ObservableObject {
                     self?.setCurrentConsumer(consumer: consumer)
 //                    self?.currentConsumer = consumer
 
-                    self?.name = consumer.name
-                    self?.consumption = consumer.consumption
-                    self?.isActive = consumer.isActive
-                    self?.priorityType = consumer.priorityType
-                    self?.quantity = consumer.quantity
-                    self?.dbid = consumer.dbid
+//                    self?.name = consumer.name
+//                    self?.consumption = consumer.consumption
+//                    self?.isActive = consumer.isActive
+//                    self?.priorityType = consumer.priorityType
+//                    self?.quantity = consumer.quantity
+//                    self?.dbid = consumer.dbid
                 }
             })
             .store(in: &cancellables)
@@ -83,7 +84,20 @@ class ConsumerViewModel: ObservableObject {
     
     func setCurrentConsumer(consumer: ConsumerEntity) {
         self.currentConsumer = consumer
+        
+        self.name = consumer.name
+        self.consumption = consumer.consumption
+        self.isActive = consumer.isActive
+        self.priorityType = consumer.priorityType
+        self.quantity = consumer.quantity
+        self.dbid = consumer.dbid
+
+        self.currentConsumerIsSet = true
     }
+    
+//    func setEmptyConsumer(for consumer: ConsumerEntity) -> ConsumerEntity {
+//        return persistenceController.createLocalConsumer(for: generator)
+//    }
     
 //    func createEmptyConsumer() {
 //        let newItem = persistenceController.createLocalConsumer(for: currentGenerator)

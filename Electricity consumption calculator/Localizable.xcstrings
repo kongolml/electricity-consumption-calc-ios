@@ -263,6 +263,9 @@
         }
       }
     },
+    "Loading consumer" : {
+
+    },
     "Main" : {
       "localizations" : {
         "en" : {
@@ -327,9 +330,6 @@
           }
         }
       }
-    },
-    "New consumer" : {
-
     },
     "new_consumer_item_name" : {
       "localizations" : {

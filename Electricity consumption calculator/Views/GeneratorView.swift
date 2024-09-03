@@ -58,9 +58,6 @@ struct GeneratorView: View {
         NavigationLink(value: ConsumerNavigationItem(consumerId: consumerItem.id, isNewConsumer: false)) {
             ConsumerListItemView(consumer: consumerItem)
         }
-//        NavigationLink(destination: ConsumerDestinationView(consumerId: consumerItem.id).navigationTitle(consumerItem.name), label: {
-//            ConsumerListItemView(consumer: consumerItem)
-//        })
         .swipeActions(edge: .leading) {
             Button(action: {
                 toggleItemActiveStatus(consumer: consumerItem)
@@ -190,8 +187,6 @@ struct GeneratorView: View {
                     }
                     .navigationDestination(for: ConsumerNavigationItem.self) { navigationItem in
                         ConsumerView(consumerId: navigationItem.consumerId, isNewConsumer: navigationItem.isNewConsumer)
-//                        ConsumerDestinationView(consumerId: consumer.id)
-//                            .navigationTitle(consumer.name)
                     }
                 } else {
                     ProgressView("Loading")
@@ -339,16 +334,6 @@ struct GeneratorView: View {
         GIDSignIn.sharedInstance.signOut()
     }
 }
-
-//struct ConsumerDestinationView: View {
-//    let consumerId: UUID
-//
-//    var body: some View {
-//        ConsumerView(consumerId: consumerId)
-////            .environmentObject(generatorViewModel)
-////            .environmentObject(consumerViewModel)
-//    }
-//}
 
 extension View {
     func getRootViewController() -> UIViewController {
