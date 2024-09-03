@@ -82,7 +82,7 @@ struct ConsumerView: View {
                     TextField("Name", text: $consumerViewModel.name)
                         .focused($isNameFieldFocused)
                         .onAppear {
-                            setIntialState()
+//                            UITextField.appearance().clearButtonMode = .whileEditing
                         }
                         .onChange(of: consumerViewModel.name) {
                             checkForFormChanges()
@@ -96,7 +96,7 @@ struct ConsumerView: View {
                     HStack {
                         TextField("Quantity", value: $consumerViewModel.quantity, formatter: NumberFormatter())
                             .keyboardType(.decimalPad)
-                            .onChange(of: consumerViewModel.consumption) {
+                            .onChange(of: consumerViewModel.quantity) {
                                 checkForFormChanges()
                             }
                     }
@@ -108,13 +108,13 @@ struct ConsumerView: View {
                     }
                     .pickerStyle(MenuPickerStyle())
                     .foregroundStyle(.gray)
-                    .onChange(of: consumerViewModel.consumption) {
+                    .onChange(of: consumerViewModel.priorityType) {
                         checkForFormChanges()
                     }
 
                     Toggle("Enabled", isOn: $consumerViewModel.isActive)
                         .foregroundColor(.gray)
-                        .onChange(of: consumerViewModel.consumption) {
+                        .onChange(of: consumerViewModel.isActive) {
                             checkForFormChanges()
                         }
                 }
@@ -134,6 +134,9 @@ struct ConsumerView: View {
                         }
                     }
                 }
+            }
+            .onAppear {
+                setIntialState()
             }
             .toolbar {
                 ToolbarItem {
