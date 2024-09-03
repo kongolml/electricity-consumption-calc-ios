@@ -42,7 +42,7 @@ struct GeneratorView: View {
     }
     
     var totalConsumption: Double {
-        return allGeneratorConsumers.filter { $0.isActive }.map { $0.consumption * Double($0.quantity) }.reduce(0, +)
+        return generatorViewModel.consumers.filter { $0.isActive }.map { $0.consumption * Double($0.quantity) }.reduce(0, +)
     }
     
     var leftCapacity: Double {
@@ -260,10 +260,10 @@ struct GeneratorView: View {
     }
     
     private func deleteItem(consumer: ConsumerEntity) {
-        viewContext.perform {
-            withAnimation {
-                persistenceController.deleteConsumer(consumer: consumer)
-            }
+        withAnimation {
+            generatorViewModel.deleteConsumer(consumer: consumer)
+            
+            allGeneratorConsumers = generatorViewModel.consumers
         }
     }
     

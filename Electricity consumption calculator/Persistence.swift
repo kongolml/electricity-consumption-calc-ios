@@ -218,8 +218,10 @@ class PersistenceController: ObservableObject {
     }
     
     func deleteConsumer(consumer: ConsumerEntity) {
-        container.viewContext.delete(consumer)
-        saveContext()
+        container.viewContext.perform {
+            self.container.viewContext.delete(consumer)
+            self.saveContext()
+        }
     }
     
     func createGeneratorEntity(with generatorFromServer: GeneratorFromServer) {

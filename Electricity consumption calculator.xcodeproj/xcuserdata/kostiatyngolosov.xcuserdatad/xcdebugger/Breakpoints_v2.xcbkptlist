@@ -78,8 +78,8 @@
             filePath = "Electricity consumption calculator/ViewModels/Generator.viewModel.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "40"
-            endingLineNumber = "40"
+            startingLineNumber = "62"
+            endingLineNumber = "62"
             landmarkName = "loadGeneratorById(_:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -94,8 +94,8 @@
             filePath = "Electricity consumption calculator/ViewModels/Generator.viewModel.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "43"
-            endingLineNumber = "43"
+            startingLineNumber = "65"
+            endingLineNumber = "65"
             landmarkName = "loadGeneratorById(_:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -222,8 +222,8 @@
             filePath = "Electricity consumption calculator/ViewModels/Generator.viewModel.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "167"
-            endingLineNumber = "167"
+            startingLineNumber = "207"
+            endingLineNumber = "207"
             landmarkName = "updateGenerator()"
             landmarkType = "7">
          </BreakpointContent>
@@ -238,8 +238,8 @@
             filePath = "Electricity consumption calculator/ViewModels/Generator.viewModel.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "197"
-            endingLineNumber = "197"
+            startingLineNumber = "237"
+            endingLineNumber = "237"
             landmarkName = "updateGenerator()"
             landmarkType = "7">
          </BreakpointContent>
@@ -254,25 +254,9 @@
             filePath = "Electricity consumption calculator/ViewModels/Generator.viewModel.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "47"
-            endingLineNumber = "47"
+            startingLineNumber = "69"
+            endingLineNumber = "69"
             landmarkName = "loadGeneratorById(_:)"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "D2A947DE-6F20-4643-A655-4BC4AC24259B"
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Electricity consumption calculator/ViewModels/Generator.viewModel.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "112"
-            endingLineNumber = "112"
-            landmarkName = "setCurrentGenerator(from:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -334,41 +318,9 @@
             filePath = "Electricity consumption calculator/ViewModels/Generator.viewModel.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "48"
-            endingLineNumber = "48"
+            startingLineNumber = "70"
+            endingLineNumber = "70"
             landmarkName = "loadGeneratorById(_:)"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "2E44DE1F-2218-4953-ADC0-E117E681D694"
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Electricity consumption calculator/ViewModels/Generator.viewModel.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "113"
-            endingLineNumber = "113"
-            landmarkName = "setCurrentGenerator(from:)"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "EDA30767-7132-4ED9-9A8A-EE1FB66D2712"
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Electricity consumption calculator/ViewModels/Generator.viewModel.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "117"
-            endingLineNumber = "117"
-            landmarkName = "setCurrentGenerator(from:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -382,8 +334,8 @@
             filePath = "Electricity consumption calculator/ViewModels/Generator.viewModel.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "59"
-            endingLineNumber = "59"
+            startingLineNumber = "81"
+            endingLineNumber = "81"
             landmarkName = "updateConsumers()"
             landmarkType = "7">
          </BreakpointContent>
@@ -398,8 +350,8 @@
             filePath = "Electricity consumption calculator/ViewModels/Generator.viewModel.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "30"
-            endingLineNumber = "30"
+            startingLineNumber = "51"
+            endingLineNumber = "51"
             landmarkName = "GeneratorViewModel"
             landmarkType = "3">
          </BreakpointContent>

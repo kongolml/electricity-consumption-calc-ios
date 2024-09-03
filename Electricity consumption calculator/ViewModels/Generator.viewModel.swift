@@ -15,11 +15,32 @@ class GeneratorViewModel: ObservableObject {
     @Published var capacity: Double = 0
     @Published var name: String = ""
     @Published var isLoading: Bool = true
-    @Published var consumers: [ConsumerEntity] = []
+    @Published var consumers: [ConsumerEntity] = [] {
+        didSet {
+            bindConsumers()
+        }
+    }
+
+    private var cancellables: Set<AnyCancellable> = []
+
+    private func bindConsumers() {
+        // Cancel existing bindings
+        cancellables.forEach { $0.cancel() }
+        cancellables.removeAll()
+
+        // Rebind consumers array to observe each ConsumerEntity
+        consumers.forEach { consumer in
+            consumer.objectWillChange
+                .sink { [weak self] _ in
+                    self?.objectWillChange.send()
+                }
+                .store(in: &cancellables)
+        }
+    }
 
     private var context: NSManagedObjectContext
     private let persistenceController = PersistenceController.shared
-    private var cancellables: Set<AnyCancellable> = []
+//    private var cancellables: Set<AnyCancellable> = []
     private let syncManager = SyncManager.shared
     private let generatorMiddleware = GeneratorMiddleware()
     
@@ -34,6 +55,7 @@ class GeneratorViewModel: ObservableObject {
     
     init(context: NSManagedObjectContext) {
         self.context = context
+        bindConsumers()
     }
     
     func loadGeneratorById(_ id: String){
@@ -77,6 +99,24 @@ class GeneratorViewModel: ObservableObject {
 //                self.setCurrentGenerator(from: userGenerator)
 //            })
 //            .store(in: &cancellables)
+    }
+    
+    func deleteConsumer(consumer: ConsumerEntity) {
+        if let currentGenerator = currentGenerator {
+            guard let consumersSet = currentGenerator.consumers else {
+                return
+            }
+
+            let consumersArray = consumersSet.compactMap { $0 as? ConsumerEntity }
+
+            if let consumerToDelete = consumersArray.first(where: { $0.id == consumer.id }) {
+                currentGenerator.removeFromConsumers(consumerToDelete)
+            }
+            
+            persistenceController.deleteConsumer(consumer: consumer)
+
+            setCurrentGenerator(from: currentGenerator)
+        }
     }
     
     private func getCurrentGenerator() {
