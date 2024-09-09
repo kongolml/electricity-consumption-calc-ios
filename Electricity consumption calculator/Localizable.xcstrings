@@ -98,7 +98,20 @@
       }
     },
     "Cancel" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cancel"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Відміна"
+          }
+        }
+      }
     },
     "Deactivate" : {
       "localizations" : {
@@ -264,10 +277,36 @@
       }
     },
     "Loading consumer" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Loading consumer"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Завантаження споживача"
+          }
+        }
+      }
     },
     "Loading generator" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Loading generator"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Завантаження генератора"
+          }
+        }
+      }
     },
     "Main" : {
       "localizations" : {
@@ -335,7 +374,20 @@
       }
     },
     "New consumer" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "New consumer"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Новий споживач"
+          }
+        }
+      }
     },
     "new_consumer_item_name" : {
       "localizations" : {
@@ -434,7 +486,20 @@
       }
     },
     "Save" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Save"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Зберегти"
+          }
+        }
+      }
     },
     "Secondary" : {
       "localizations" : {
