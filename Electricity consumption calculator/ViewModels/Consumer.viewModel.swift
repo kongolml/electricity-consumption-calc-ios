@@ -18,6 +18,7 @@ class ConsumerViewModel: ObservableObject {
     @Published var priorityType: Int16 = 1
     @Published var quantity: Int16 = 0
     @Published var dbid: String?
+    @Published var orderInGroup: Int16 = 0
     
     @Published var currentConsumerIsSet: Bool = false
     
@@ -41,14 +42,6 @@ class ConsumerViewModel: ObservableObject {
             }, receiveValue: { [weak self] receivedConsumer in
                 if let consumer = receivedConsumer {
                     self?.setCurrentConsumer(consumer: consumer)
-//                    self?.currentConsumer = consumer
-
-//                    self?.name = consumer.name
-//                    self?.consumption = consumer.consumption
-//                    self?.isActive = consumer.isActive
-//                    self?.priorityType = consumer.priorityType
-//                    self?.quantity = consumer.quantity
-//                    self?.dbid = consumer.dbid
                 }
             })
             .store(in: &cancellables)
@@ -61,7 +54,6 @@ class ConsumerViewModel: ObservableObject {
                 self.persistenceController.deleteConsumer(consumer: currentConsumer)
             }
         }
-        // currentConsumer?.id
         consumerMiddleware.deleteGeneratorConsumer()
     }
     
@@ -73,6 +65,7 @@ class ConsumerViewModel: ObservableObject {
                 currentConsumer.priorityType = self.priorityType
                 currentConsumer.quantity = self.quantity
                 currentConsumer.consumption = self.consumption
+                currentConsumer.orderInGroup = self.orderInGroup
 
                 currentConsumer.updatedAt = Date()
                 
@@ -91,6 +84,7 @@ class ConsumerViewModel: ObservableObject {
         self.priorityType = consumer.priorityType
         self.quantity = consumer.quantity
         self.dbid = consumer.dbid
+        self.orderInGroup = consumer.orderInGroup
 
         self.currentConsumerIsSet = true
     }

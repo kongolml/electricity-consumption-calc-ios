@@ -22,17 +22,21 @@ struct ConsumerView: View {
     @State private var formHasChanges: Bool = false
     @FocusState private var isNameFieldFocused: Bool
 //    @State private var preferredConsumptionUnit: ConsumptionUnits = .watt
+    @State private var consumersSections: [ConsumerPriorityType: [ConsumerEntity]] = [:]
     
     struct DefaultConsumerValues {
         var name: String
         var consumption: Double
         var quantity: Int16
-        var priorityType: PriorityType
+        var priorityType: ConsumerPriorityType
         var isActive: Bool
+        var orderInGroup: Int16
     }
     
     // Track initial values for change detection
-    @State private var initialValues = DefaultConsumerValues(name: "", consumption: 50, quantity: 1, priorityType: .main, isActive: true)
+    @State private var initialValues = DefaultConsumerValues(name: "", consumption: 50, quantity: 1, priorityType: .main, isActive: true, orderInGroup: {
+        return 99
+    }())
 
     init(consumerId: UUID, isNewConsumer: Bool? = false) {
         self.isNewConsumer = isNewConsumer ?? false
@@ -43,11 +47,12 @@ struct ConsumerView: View {
         _consumerViewModel = StateObject(wrappedValue: model)
     }
     
-    init(consumer: ConsumerEntity, isNewConsumer: Bool? = false) {
+    init(consumer: ConsumerEntity, isNewConsumer: Bool? = false, consumersSections: [ConsumerPriorityType: [ConsumerEntity]]) {
         let model = ConsumerViewModel(context: PersistenceController.shared.container.viewContext)
         model.setCurrentConsumer(consumer: consumer)
         _consumerViewModel = StateObject(wrappedValue: model)
         _isNewConsumer = State(initialValue: isNewConsumer ?? false)
+        _consumersSections = State(initialValue: consumersSections)
     }
     
     private func checkForFormChanges() {
@@ -70,8 +75,8 @@ struct ConsumerView: View {
         initialValues.quantity = consumerViewModel.quantity
         
 //        TODO: this is mess with int/int16
-        let priorityTypeAsInt = Int(consumerViewModel.priorityType)
-        initialValues.priorityType = PriorityType(rawValue: priorityTypeAsInt) ?? .main //PriorityType(rawValue: Int(consumerViewModel.priorityType))
+//        let priorityTypeAsInt = Int(consumerViewModel.priorityType)
+        initialValues.priorityType = ConsumerPriorityType(rawValue: consumerViewModel.priorityType) ?? .main //PriorityType(rawValue: Int(consumerViewModel.priorityType))
         initialValues.isActive = consumerViewModel.isActive
     }
 
@@ -162,6 +167,13 @@ struct ConsumerView: View {
     }
     
     private func saveChanges() {
+        if isNewConsumer {
+//            we need to calculate its order in group
+            let consumerPriorityType = ConsumerPriorityType(rawValue: consumerViewModel.priorityType) ?? .main
+            let consumersInGroup = self.consumersSections[consumerPriorityType]?.count ?? 0
+            consumerViewModel.orderInGroup = Int16(consumersInGroup)
+        }
+        
         if formHasChanges {
             consumerViewModel.updateConsumer()
         }

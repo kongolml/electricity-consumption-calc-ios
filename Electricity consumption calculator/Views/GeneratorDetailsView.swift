@@ -44,9 +44,9 @@ struct GeneratorDetailsView: View {
 }
 
 #Preview {
-    let context = PersistenceController.preview.container.viewContext
+//    let context = PersistenceController.preview.container.viewContext
     
-    let dummyGenerator = GeneratorEntity.createMock(context: context)
+//    let dummyGenerator = GeneratorEntity.createMock(context: context)
 
     return GeneratorDetailsView()
 }

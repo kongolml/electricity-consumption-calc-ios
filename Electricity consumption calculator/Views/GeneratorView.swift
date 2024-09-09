@@ -31,6 +31,8 @@ struct GeneratorView: View {
     @State private var path = NavigationPath()
     @State private var addNewGeneratorConsumerState = AddNewGeneratorConsumerState()
     
+//    @State private var consumersSections: [ConsumerPriorityType: [ConsumerEntity]] = [:]
+    
     let generatorId: String
 
     init(generatorId: UUID) {
@@ -45,13 +47,17 @@ struct GeneratorView: View {
         return generatorViewModel.consumers.filter { $0.isActive }.map { $0.consumption * Double($0.quantity) }.reduce(0, +)
     }
     
+    var consumersSections: [ConsumerPriorityType: [ConsumerEntity]] {
+        Dictionary(grouping: generatorViewModel.consumers, by: { ConsumerPriorityType(rawValue: $0.priorityType) ?? .secondary  })
+    }
+    
     var leftCapacity: Double {
         return generatorViewModel.capacity - totalConsumption
     }
     
-    private func filteredItems(for category: ConsumerPriorityType) -> [ConsumerEntity] {
-        return allGeneratorConsumers.filter { $0.priorityType == category.rawValue }
-    }
+    private func getConsumersForGroup(for category: ConsumerPriorityType) -> [ConsumerEntity] {
+            return generatorViewModel.consumers.filter { $0.priorityType == category.rawValue }.sorted { $0.orderInGroup < $1.orderInGroup }
+        }
     
     @ViewBuilder
     func consumerRow(for consumerItem: ConsumerEntity) -> some View {
@@ -83,7 +89,7 @@ struct GeneratorView: View {
                 consumerRow(for: consumerItem)
             }
             .onMove { indices, newOffset in
-                moveItems(from: indices, to: newOffset, in: group)
+                moveItems(from: indices, to: newOffset, currentConsumersGroupPriorityType: group)
             }
         }, header: {
             if consumers.count > 1 {
@@ -132,10 +138,10 @@ struct GeneratorView: View {
             VStack {
                 if let currentGenerator = generatorViewModel.currentGenerator {
                     List {
-                        GoogleSignInButton(action: handleSignInButton)
-                        Button("Sign out google") {
-                            signOutGoogle()
-                        }
+//                        GoogleSignInButton(action: handleSignInButton)
+//                        Button("Sign out google") {
+//                            signOutGoogle()
+//                        }
                         
                         if allGeneratorConsumers.isEmpty {
                             Text("No consumers yet")
@@ -143,7 +149,7 @@ struct GeneratorView: View {
                         
                         if !allGeneratorConsumers.isEmpty {
                             ForEach(ConsumerPriorityType.allCases, id: \.self) { consumerPriorityType in
-                                let consumersInGroup = filteredItems(for: consumerPriorityType)
+                                let consumersInGroup = getConsumersForGroup(for: consumerPriorityType)
                                 
                                 if !consumersInGroup.isEmpty {
                                     consumerGroupSection(for: consumerPriorityType, with: consumersInGroup)
@@ -166,7 +172,7 @@ struct GeneratorView: View {
                         }
                         ToolbarItem {
                             Button(action: {
-                                addNewConsumer(priority: .main)
+                                addNewConsumer()
                             }) {
                                 Label("Add Item", systemImage: "plus")
                             }
@@ -189,7 +195,7 @@ struct GeneratorView: View {
                         ConsumerView(consumerId: navigationItem.consumerId, isNewConsumer: navigationItem.isNewConsumer)
                     }
                 } else {
-                    ProgressView("Loading")
+                    ProgressView("Loading generator")
                 }
             }
             .navigationTitle(generatorViewModel.name)
@@ -199,12 +205,12 @@ struct GeneratorView: View {
                 let newConsumer = persistenceController.createLocalConsumer(for: currentGenerator)
                 
                 NavigationStack {
-                    ConsumerView(consumer: newConsumer, isNewConsumer: true)
+                    ConsumerView(consumer: newConsumer, isNewConsumer: true, consumersSections: consumersSections)
                         .onDisappear {
                             print("on disappear refresh from generatorview")
                             generatorViewModel.fetchGenerator()
                             allGeneratorConsumers = generatorViewModel.consumers
-                            print(allGeneratorConsumers)
+//                            print(allGeneratorConsumers)
                         }
                         .navigationTitle("New consumer")
                         .navigationBarTitleDisplayMode(.inline)
@@ -222,9 +228,8 @@ struct GeneratorView: View {
         .environmentObject(generatorViewModel)
     }
     
-    private func addNewConsumer(priority: ConsumerPriorityType) {
+    private func addNewConsumer() {
         addNewGeneratorConsumerState.isAddingNewConsumer = true
-        addNewGeneratorConsumerState.consumerPriorityType = priority
     }
     
     private func cancellAddingNewConsumer(consumer: ConsumerEntity) {
@@ -277,14 +282,64 @@ struct GeneratorView: View {
 //        }
 //    }
     
-    private func moveItems(from source: IndexSet, to destination: Int, in priorityTypeGroup: ConsumerPriorityType) {
-        var revisedItemsFromGroup = allGeneratorConsumers.map { $0 }.filter { $0.priorityType == priorityTypeGroup.rawValue }
-        revisedItemsFromGroup.move(fromOffsets: source, toOffset: destination)
+    private func moveItems(from source: IndexSet, to destination: Int, currentConsumersGroupPriorityType priorityTypeGroup: ConsumerPriorityType) {
+//        debugPrint(consumersSections)
+//        switch priorityTypeGroup.rawValue {
+//        case 1:
+//            moveItemWithinOrBetweenSections(from: source, to: destination, sourceArray: &section1Consumers, destinationArray: &section2Consumers, currentSection: 1)
+//        case 2:
+//            moveItemWithinOrBetweenSections(from: source, to: destination, sourceArray: &section2Consumers, destinationArray: &section1Consumers, currentSection: 2)
+//        default:
+//            break
+//        }
+//        var revisedItemsFromGroup = allGeneratorConsumers.map { $0 }.filter { $0.priorityType == priorityTypeGroup.rawValue }
+//        revisedItemsFromGroup.move(fromOffsets: source, toOffset: destination)
 
-        for reverseIndex in stride(from: revisedItemsFromGroup.count - 1, through: 0, by: -1) {
-            revisedItemsFromGroup[reverseIndex].orderInGroup = Int16(reverseIndex)
+//        for reverseIndex in stride(from: revisedItemsFromGroup.count - 1, through: 0, by: -1) {
+//            revisedItemsFromGroup[reverseIndex].orderInGroup = Int16(reverseIndex)
+//        }
+
+//        viewContext.perform {
+//            persistenceController.saveContext()
+//        }
+        
+        var reorderedItems = getConsumersForGroup(for: priorityTypeGroup)
+        reorderedItems.move(fromOffsets: source, toOffset: destination)
+
+        // Avoid frequent context saves during the drag operation
+        DispatchQueue.global(qos: .userInitiated).async {
+            updateOrderInGroup(for: reorderedItems)
         }
-
+    }
+    
+//    private func moveItemWithinOrBetweenSections(from source: IndexSet, to destination: Int, sourceArray: inout [ConsumerEntity], destinationArray: inout [ConsumerEntity], currentSection: Int) {
+//        let sourceItem = source.map { sourceArray[$0] }
+//
+//        if currentSection == 1 && destination >= sourceArray.count {
+//            // Moving from Section 1 to Section 2
+//            sourceArray.remove(atOffsets: source)
+//            destinationArray.insert(contentsOf: sourceItem, at: destination - sourceArray.count)
+//            sourceItem.forEach { $0.priorityType = PriorityType.secondary.rawValue }
+//        } else if currentSection == 2 && destination >= sourceArray.count {
+//            // Moving from Section 2 to Section 1
+//            sourceArray.remove(atOffsets: source)
+//            destinationArray.insert(contentsOf: sourceItem, at: destination - sourceArray.count)
+//            sourceItem.forEach { $0.priorityType = PriorityType.main.rawValue }
+//        } else {
+//            // Moving within the same section
+//            sourceArray.move(fromOffsets: source, toOffset: destination)
+//        }
+//
+//        // Update orderInGroup in both sections
+//        updateOrderInGroup(for: &section1Consumers)
+//        updateOrderInGroup(for: &section2Consumers)
+//    }
+    
+    private func updateOrderInGroup(for consumers: [ConsumerEntity]) {
+        // Batch the updates to avoid performance issues
+        for (index, consumer) in consumers.enumerated() {
+            consumer.orderInGroup = Int16(index)
+        }
         viewContext.perform {
             persistenceController.saveContext()
         }

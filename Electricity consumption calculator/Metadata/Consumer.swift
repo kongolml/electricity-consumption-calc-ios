@@ -7,7 +7,7 @@
 
 import Foundation
 
-enum ConsumerPriorityType: Int16, CaseIterable {
+enum ConsumerPriorityType: Int16, CaseIterable, Codable {
     case main = 1
     case secondary = 2
     

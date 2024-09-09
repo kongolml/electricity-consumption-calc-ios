@@ -7,10 +7,10 @@
 
 import Foundation
 
-enum PriorityType: Int, Codable {
-    case main = 1
-    case secondary = 2
-}
+//enum PriorityType: Int, Codable {
+//    case main = 1
+//    case secondary = 2
+//}
 
 struct GeneratorHttpPayload: Encodable {
     let name: String
@@ -39,7 +39,7 @@ struct ConsumerHttpPayload: Encodable, Decodable {
     let name: String?
     let consumption: Double?
     let isActive: Bool?
-    let priorityType: PriorityType?
+    let priorityType: ConsumerPriorityType?
     let quantity: Int16?
     let orderInGroup: Int16?
 //    let id: String?
@@ -48,7 +48,7 @@ struct ConsumerHttpPayload: Encodable, Decodable {
         self.name = consumerEntity.name
         self.consumption = consumerEntity.consumption
         self.isActive = consumerEntity.isActive
-        self.priorityType = PriorityType(rawValue: Int(consumerEntity.priorityType))
+        self.priorityType = ConsumerPriorityType(rawValue: consumerEntity.priorityType)
         self.quantity = consumerEntity.quantity
         self.orderInGroup = consumerEntity.orderInGroup
     }
@@ -58,7 +58,7 @@ struct ConsumerFromServer: Decodable {
     let name: String
     let consumption: Double
     let isActive: Bool
-    let priorityType: PriorityType
+    let priorityType: ConsumerPriorityType
     let quantity: Int16
     let orderInGroup: Int16
     let id: String
@@ -86,7 +86,7 @@ struct ConsumerFromServer: Decodable {
         self.name = try container.decode(String.self, forKey: .name)
         self.consumption = try container.decode(Double.self, forKey: .consumption)
         self.isActive = try container.decode(Bool.self, forKey: .isActive)
-        self.priorityType = try container.decode(PriorityType.self, forKey: .priorityType)
+        self.priorityType = try container.decode(ConsumerPriorityType.self, forKey: .priorityType)
         self.quantity = try container.decode(Int16.self, forKey: .quantity)
         self.orderInGroup = try container.decode(Int16.self, forKey: .orderInGroup)
         self.id = try container.decode(String.self, forKey: .id)

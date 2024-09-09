@@ -256,7 +256,7 @@ class SyncManager {
             localConsumer.isActive = remoteConsumer.isActive
             localConsumer.orderInGroup = remoteConsumer.orderInGroup
             
-            if let priorityType = PriorityType(rawValue: remoteConsumer.priorityType.rawValue) {
+            if let priorityType = ConsumerPriorityType(rawValue: remoteConsumer.priorityType.rawValue) {
                 localConsumer.priorityType = Int16(priorityType.rawValue)
             }
             

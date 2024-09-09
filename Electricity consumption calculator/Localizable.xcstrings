@@ -266,6 +266,9 @@
     "Loading consumer" : {
 
     },
+    "Loading generator" : {
+
+    },
     "Main" : {
       "localizations" : {
         "en" : {
@@ -482,9 +485,6 @@
         }
       }
     },
-    "Sign out google" : {
-
-    },
     "Summary" : {
       "localizations" : {
         "en" : {
@@ -599,6 +599,7 @@
       }
     },
     "x%@" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
