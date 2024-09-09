@@ -20,9 +20,20 @@ struct ConsumerView: View {
     @State var showDeleteConfirmationAlert: Bool = false
     @State private var isNewConsumer = false
     @State private var formHasChanges: Bool = false
-    @FocusState private var isNameFieldFocused: Bool
 //    @State private var preferredConsumptionUnit: ConsumptionUnits = .watt
     @State private var consumersSections: [ConsumerPriorityType: [ConsumerEntity]] = [:]
+    @FocusState private var focusedField: FormFields?
+    //    @FocusState private var isNameFieldFocused: Bool
+    
+    enum FormFields: Hashable {
+        case name
+        case consumption
+        case quantity
+        
+        // optional?:
+        case priorityType
+        case isActive
+    }
     
     struct DefaultConsumerValues {
         var name: String
@@ -34,9 +45,7 @@ struct ConsumerView: View {
     }
     
     // Track initial values for change detection
-    @State private var initialValues = DefaultConsumerValues(name: "", consumption: 50, quantity: 1, priorityType: .main, isActive: true, orderInGroup: {
-        return 99
-    }())
+    @State private var initialValues = DefaultConsumerValues(name: "", consumption: 50, quantity: 1, priorityType: .main, isActive: true, orderInGroup: 0)
 
     init(consumerId: UUID, isNewConsumer: Bool? = false) {
         self.isNewConsumer = isNewConsumer ?? false
@@ -67,7 +76,8 @@ struct ConsumerView: View {
     
     private func setIntialState() {
         // Set the focus when the view appears
-        isNameFieldFocused = isNewConsumer
+//        isNameFieldFocused = isNewConsumer
+        focusedField = .name
         
         // Initialize initial state
         initialValues.name = consumerViewModel.name
@@ -85,7 +95,12 @@ struct ConsumerView: View {
             Form {
                 Section {
                     TextField("Name", text: $consumerViewModel.name)
-                        .focused($isNameFieldFocused)
+//                        .focused($isNameFieldFocused)
+                        .focused($focusedField, equals: .name)
+//                        .submitLabel(.next)
+//                        .onSubmit {
+//                            focusedField = .consumption
+//                        }
                         .onAppear {
 //                            UITextField.appearance().clearButtonMode = .whileEditing
                         }
@@ -97,6 +112,24 @@ struct ConsumerView: View {
                             .onChange(of: consumerViewModel.consumption) {
                                 checkForFormChanges()
                             }
+//                            .focused($focusedField, equals: .consumption)
+//                            .submitLabel(.next)
+//                            .toolbar {
+//                                ToolbarItemGroup(placement: .keyboard) {
+//                                    Spacer()
+//
+//                                    Button("Next") {
+//                                        focusedField = .consumption // Or move to another field as needed
+//                                    }
+//
+//                                    Button("Done") {
+//                                        focusedField = nil // Dismiss the keyboard
+//                                    }
+//                                }
+//                            }
+//                            .onSubmit {
+//                                focusedField = .quantity
+//                            }
                     }
                     HStack {
                         TextField("Quantity", value: $consumerViewModel.quantity, formatter: NumberFormatter())
@@ -104,6 +137,11 @@ struct ConsumerView: View {
                             .onChange(of: consumerViewModel.quantity) {
                                 checkForFormChanges()
                             }
+//                            .focused($focusedField, equals: .quantity)
+//                            .submitLabel(.next)
+//                            .onSubmit {
+//                                focusedField = .priorityType
+//                            }
                     }
 
                     Picker("Type", selection: $consumerViewModel.priorityType) {
@@ -116,6 +154,11 @@ struct ConsumerView: View {
                     .onChange(of: consumerViewModel.priorityType) {
                         checkForFormChanges()
                     }
+//                    .focused($focusedField, equals: .priorityType)
+//                    .submitLabel(.next)
+//                    .onSubmit {
+//                        print("TODO: CLOSE KEYBOARD")
+//                    }
 
                     Toggle("Enabled", isOn: $consumerViewModel.isActive)
                         .foregroundColor(.gray)
@@ -178,9 +221,7 @@ struct ConsumerView: View {
             consumerViewModel.updateConsumer()
         }
 
-        if isNewConsumer {
-            presentationMode.wrappedValue.dismiss()
-        }
+        presentationMode.wrappedValue.dismiss()
     }
 }
 

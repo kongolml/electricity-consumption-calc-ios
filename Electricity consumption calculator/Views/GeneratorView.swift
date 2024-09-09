@@ -26,20 +26,13 @@ struct GeneratorView: View {
 
     @StateObject var generatorViewModel: GeneratorViewModel
     
-    @State private var allGeneratorConsumers: [ConsumerEntity] = []
-    @State private var generatorConsumersLoaded = false
-    @State private var path = NavigationPath()
     @State private var addNewGeneratorConsumerState = AddNewGeneratorConsumerState()
     
 //    @State private var consumersSections: [ConsumerPriorityType: [ConsumerEntity]] = [:]
-    
-    let generatorId: String
 
     init(generatorId: UUID) {
-        self.generatorId = generatorId.uuidString
-        
         let generatorViewModel = GeneratorViewModel(context: PersistenceController.shared.container.viewContext)
-        generatorViewModel.loadGeneratorById(self.generatorId)
+        generatorViewModel.loadGeneratorById(generatorId.uuidString)
         _generatorViewModel = StateObject(wrappedValue: generatorViewModel)
     }
     
@@ -61,7 +54,9 @@ struct GeneratorView: View {
     
     @ViewBuilder
     func consumerRow(for consumerItem: ConsumerEntity) -> some View {
-        NavigationLink(value: ConsumerNavigationItem(consumerId: consumerItem.id, isNewConsumer: false)) {
+        NavigationLink {
+            ConsumerView(consumerId: consumerItem.id, isNewConsumer: false)
+        } label: {
             ConsumerListItemView(consumer: consumerItem)
         }
         .swipeActions(edge: .leading) {
@@ -134,7 +129,7 @@ struct GeneratorView: View {
     }
 
     var body: some View {
-        NavigationStack(path: $path) {
+        NavigationStack {
             VStack {
                 if let currentGenerator = generatorViewModel.currentGenerator {
                     List {
@@ -143,11 +138,11 @@ struct GeneratorView: View {
 //                            signOutGoogle()
 //                        }
                         
-                        if allGeneratorConsumers.isEmpty {
+                        if generatorViewModel.consumers.isEmpty {
                             Text("No consumers yet")
                         }
                         
-                        if !allGeneratorConsumers.isEmpty {
+                        if !generatorViewModel.consumers.isEmpty {
                             ForEach(ConsumerPriorityType.allCases, id: \.self) { consumerPriorityType in
                                 let consumersInGroup = getConsumersForGroup(for: consumerPriorityType)
                                 
@@ -181,18 +176,10 @@ struct GeneratorView: View {
                     .refreshable {
                         print("MANuaLLY refrresing GENERATOR CONSUEMRS")
                         generatorViewModel.fetchGenerator()
-                        allGeneratorConsumers = generatorViewModel.consumers
-                        print(allGeneratorConsumers)
                     }
                     .onAppear {
                         print("REFRESHING GENERATOR CONSUEMRS")
-    //                    generatorViewModel.setupSubscriptions(consumerViewModel: consumerViewModel)
                         generatorViewModel.fetchGenerator()
-                        allGeneratorConsumers = generatorViewModel.consumers
-                        print(allGeneratorConsumers)
-                    }
-                    .navigationDestination(for: ConsumerNavigationItem.self) { navigationItem in
-                        ConsumerView(consumerId: navigationItem.consumerId, isNewConsumer: navigationItem.isNewConsumer)
                     }
                 } else {
                     ProgressView("Loading generator")
@@ -209,8 +196,6 @@ struct GeneratorView: View {
                         .onDisappear {
                             print("on disappear refresh from generatorview")
                             generatorViewModel.fetchGenerator()
-                            allGeneratorConsumers = generatorViewModel.consumers
-//                            print(allGeneratorConsumers)
                         }
                         .navigationTitle("New consumer")
                         .navigationBarTitleDisplayMode(.inline)
@@ -236,25 +221,6 @@ struct GeneratorView: View {
         addNewGeneratorConsumerState.isAddingNewConsumer = false
         persistenceController.deleteConsumer(consumer: consumer)
     }
-
-    private func addNewConsumer1(priority: ConsumerPriorityType) {
-        viewContext.perform {
-            if let currentGenerator = generatorViewModel.currentGenerator {
-                let newItem = persistenceController.createLocalConsumer(for: currentGenerator)
-//                let newItem = ConsumerEntity(context: viewContext)
-                newItem.priorityType = priority.rawValue
-                
-                persistenceController.saveContext()
-                
-                DispatchQueue.main.async {
-                    withAnimation {
-//                        path.append(newItem)
-                        path.append(ConsumerNavigationItem(consumerId: newItem.id, isNewConsumer: true))
-                    }
-                }
-            }
-        }
-    }
     
     private func toggleItemActiveStatus(consumer: ConsumerEntity) {
         viewContext.perform {
@@ -267,8 +233,6 @@ struct GeneratorView: View {
     private func deleteItem(consumer: ConsumerEntity) {
         withAnimation {
             generatorViewModel.deleteConsumer(consumer: consumer)
-            
-            allGeneratorConsumers = generatorViewModel.consumers
         }
     }
     
