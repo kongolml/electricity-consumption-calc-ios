@@ -14,21 +14,9 @@ struct ConsumersSectionView: View {
 
     @Binding var consumersList: [ConsumerEntity]
     
-//    @StateObject private var viewModel: ConsumersListViewModel
-//    init(consumersList: [ConsumerEntity]) {
-//            _viewModel = StateObject(wrappedValue: ConsumersListViewModel(consumersList: consumersList))
-//        }
-    
-//    var consumersTotalConsumption: Double {
-//        consumersList.filter { $0.isActive }.map { $0.consumption * Double($0.quantity) }.reduce(0, +)
-//    }
     var consumersTotalConsumption: Double {
-        consumersList.filter { $0.isActive }.map { $0.consumption * Double($0.quantity) }.reduce(0, +)
+        ConsumptionCalculator.totalConsumption(for: consumersList)
     }
-    
-//    var sectionPriorityGroup: String {
-//        consumersList.isEmpty ? "No items to display" : ConsumerPriorityType.init(rawValue: consumersList[0].priorityType)?.description ?? "Basic group"
-//    }
     
     var body: some View {
         Section(content: {
@@ -55,12 +43,7 @@ struct ConsumersSectionView: View {
                     .tint(.red)
                 }
             }
-            .onDelete(perform: deleteItemsInBulk)
-            .onMove(perform: moveItems)
-        }, header: {
-//            Text("\(1) item\($viewModel.consumersList.count > 1 ? "s" : "")")
         }, footer: {
-//            Text("Total: \(String(format: "%.2f", $viewModel.t)) Watt")
             Text("Total Consumption: \(consumersTotalConsumption, specifier: "%.2f")")
         })
     }
@@ -80,43 +63,4 @@ struct ConsumersSectionView: View {
             }
         }
     }
-    
-    private func deleteItemsInBulk(offsets: IndexSet) {
-//        viewContext.perform {
-//            offsets.map { consumersList[$0] }.forEach { consumer in
-//                viewContext.delete(consumer)
-//            }
-//            
-//            persistenceController.saveContext()
-//        }
-    }
-    
-    private func moveItems(from source: IndexSet, to destination: Int) {
-//        var revisedItems = consumersList.map { $0 }
-//        revisedItems.move(fromOffsets: source, toOffset: destination)
-//
-//        for reverseIndex in stride(from: revisedItems.count - 1, through: 0, by: -1) {
-//            revisedItems[reverseIndex].orderInGroup = Int16(reverseIndex)
-//        }
-
-        viewContext.perform {
-            persistenceController.saveContext()
-        }
-    }
 }
-
-//#Preview {
-//    @Environment(\.managedObjectContext) var viewContext
-//
-//    @State var dummyConsumers = [
-//        ConsumerEntity.createMock(context: viewContext),
-//        ConsumerEntity.createMock(context: viewContext),
-//        ConsumerEntity.createMock(context: viewContext),
-//        ConsumerEntity.createMock(context: viewContext),
-//        ConsumerEntity.createMock(context: viewContext),
-//        ConsumerEntity.createMock(context: viewContext),
-//        ConsumerEntity.createMock(context: viewContext)
-//    ]
-//
-//    return List{ConsumersSectionView(consumersList: dummyConsumers)}
-//}

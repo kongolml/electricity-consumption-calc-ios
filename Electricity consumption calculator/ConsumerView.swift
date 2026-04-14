@@ -10,7 +10,7 @@ import SwiftUI
 struct ConsumerView: View {
     @ObservedObject var consumer: ConsumerEntity
     @Environment(\.managedObjectContext) private var viewContext
-    @Environment(\.presentationMode) var presentationMode
+    @Environment(\.dismiss) private var dismiss
     @EnvironmentObject var persistenceController: PersistenceController
 
     @State var showDeleteConfirmationAlert: Bool = false
@@ -48,8 +48,7 @@ struct ConsumerView: View {
                         Button("Delete", role: .destructive) {
                             showDeleteConfirmationAlert = false
                             persistenceController.deleteItem(consumer: consumer)
-                            print("TODO: go back to prev view")
-                            presentationMode.wrappedValue.dismiss()
+                            dismiss()
                         }
                     }
                 }
@@ -59,7 +58,6 @@ struct ConsumerView: View {
             }
         }
         .navigationTitle(consumer.name)
-//        .navigationBarTitleDisplayMode(.inline)
     }
     
     private func saveChanges() {

@@ -7,21 +7,26 @@
 
 import Foundation
 import Alamofire
+import os
 
 /// Response model for authentication tokens
 struct AccessTokens: Codable {
     let accessToken: String
     let refreshToken: String?
-    
+    let expiresIn: Int? // Token lifetime in seconds
+
     enum CodingKeys: String, CodingKey {
         case accessToken = "access_token"
         case refreshToken = "refresh_token"
+        case expiresIn = "expires_in"
     }
 }
 
 /// Service for managing authentication operations
-final class AuthenticationService: ObservableObject {
+final class AuthenticationService: AuthenticationServiceProtocol, ObservableObject {
     static let shared = AuthenticationService()
+    
+    private let logger = Logger(subsystem: Bundle.main.bundleIdentifier ?? "com.electricitycalculator", category: "Auth")
     
     private init() {}
     
@@ -43,12 +48,12 @@ final class AuthenticationService: ObservableObject {
             encoding: JSONEncoding.default
         )
         .validate()
-        .responseDecodable(of: AccessTokens.self) { response in
+        .responseDecodable(of: AccessTokens.self) { [weak self] response in
             switch response.result {
             case .success(let tokens):
                 completion(tokens, nil)
             case .failure(let error):
-                print("❌ Authentication failed: \(error.localizedDescription)")
+                self?.logger.error("Authentication failed: \(error.localizedDescription)")
                 completion(nil, error)
             }
         }
@@ -72,12 +77,12 @@ final class AuthenticationService: ObservableObject {
             encoding: JSONEncoding.default
         )
         .validate()
-        .responseDecodable(of: AccessTokens.self) { response in
+        .responseDecodable(of: AccessTokens.self) { [weak self] response in
             switch response.result {
             case .success(let tokens):
                 completion(tokens, nil)
             case .failure(let error):
-                print("❌ Token refresh failed: \(error.localizedDescription)")
+                self?.logger.error("Token refresh failed: \(error.localizedDescription)")
                 completion(nil, error)
             }
         }

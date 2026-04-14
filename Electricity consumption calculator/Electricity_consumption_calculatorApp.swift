@@ -7,6 +7,14 @@
 
 import SwiftUI
 import GoogleSignIn
+import os
+
+// MARK: - Environment Keys for Dependency Injection
+
+extension EnvironmentValues {
+    @Entry var keychainService: KeychainServiceProtocol = KeychainService.shared
+    @Entry var authenticationService: AuthenticationServiceProtocol = AuthenticationService.shared
+}
 
 @main
 struct Electricity_consumption_calculatorApp: App {
@@ -20,20 +28,22 @@ struct Electricity_consumption_calculatorApp: App {
             if let generator = defaultGenerator {
                 GeneratorView(generator: generator)
                     .environment(\.managedObjectContext, persistenceController.container.viewContext)
+                    .environment(\.keychainService, KeychainService.shared)
+                    .environment(\.authenticationService, AuthenticationService.shared)
                     .environmentObject(persistenceController)
                     .onAppear {
                         GIDSignIn.sharedInstance.restorePreviousSignIn { user, error in
+                            if let error {
+                                Logger.auth.error("Google sign-in restore error: \(error.localizedDescription)")
+                                return
+                            }
+
                             guard let signedGoogleUser = user else {
-                                print("No google user signed in")
+                                Logger.auth.info("No google user signed in")
                                 return
                             }
-                            
-                            if let error = error {
-                                print("Google sign-in error: \(error.localizedDescription)")
-                                return
-                            }
-                            
-                            print("Logged google user email: \(String(describing: signedGoogleUser.profile?.email))")
+
+                            Logger.auth.info("Restored google user email: \(String(describing: signedGoogleUser.profile?.email))")
                         }
                     }
                     .onOpenURL { url in
@@ -51,8 +61,7 @@ struct Electricity_consumption_calculatorApp: App {
     private func loadDefaultGenerator() {
         defaultGenerator = persistenceController.fetchOrCreateDefaultGeneratorEntity()
         if defaultGenerator == nil {
-            // Handle error - maybe show error state
-            print("❌ Failed to load or create default generator")
+            Logger.persistence.error("Failed to load or create default generator")
         }
         persistenceController.fetchConsumersOrCreateDefaults()
     }

@@ -9,13 +9,16 @@ import SwiftUI
 import CoreData
 import GoogleSignIn
 import GoogleSignInSwift
-import os
 
 struct GeneratorView: View {
     @Environment(\.managedObjectContext) private var viewContext
+    @Environment(\.keychainService) private var keychainService
+    @Environment(\.authenticationService) private var authenticationService
     @EnvironmentObject var persistenceController: PersistenceController
 
     @ObservedObject var generator: GeneratorEntity
+
+    @State private var viewModel: GeneratorViewModel?
 
     @FetchRequest(
         sortDescriptors: [NSSortDescriptor(keyPath: \ConsumerEntity.orderInGroup, ascending: true)],
@@ -23,15 +26,15 @@ struct GeneratorView: View {
     private var allGeneratorConsumers: FetchedResults<ConsumerEntity>
 
     var totalConsumption: Double {
-        return allGeneratorConsumers.filter { $0.isActive }.map { $0.consumption * Double($0.quantity) }.reduce(0, +)
+        ConsumptionCalculator.totalConsumption(for: Array(allGeneratorConsumers))
     }
 
     var leftCapacity: Double {
-        generator.capacity - totalConsumption
+        ConsumptionCalculator.remainingCapacity(generator: generator, consumers: Array(allGeneratorConsumers))
     }
 
-    private var consumersByPriority: [ConsumerPriorityType: [ConsumerEntity]] {
-        Dictionary(grouping: allGeneratorConsumers, by: { ConsumerPriorityType(rawValue: $0.priorityType) ?? .secondary })
+    private func filteredItems(for category: ConsumerPriorityType) -> [ConsumerEntity] {
+        ConsumptionCalculator.groupedByPriority(consumers: Array(allGeneratorConsumers))[category] ?? []
     }
 
     var body: some View {
@@ -39,7 +42,7 @@ struct GeneratorView: View {
             List {
                 GoogleSignInButton(action: handleSignInButton)
                 Button("Sign out google") {
-                    signOutGoogle()
+                    viewModel?.signOut()
                 }
 
                 if (allGeneratorConsumers.count == 0) {
@@ -48,7 +51,7 @@ struct GeneratorView: View {
 
                 if (allGeneratorConsumers.count > 0) {
                     ForEach(ConsumerPriorityType.allCases, id: \.self) { filteredConsumersGroup in
-                        let consumersInGroup = consumersByPriority[filteredConsumersGroup] ?? []
+                        let consumersInGroup = filteredItems(for: filteredConsumersGroup)
 
                         Section(content: {
                             ForEach(consumersInGroup, id: \.self) { consumerItem in
@@ -84,10 +87,8 @@ struct GeneratorView: View {
                                 Text("\(filteredConsumersGroup.name) consumer")
                             }
                         }, footer: {
-                            var consumersTotalConsumption: Double {
-                                consumersInGroup.filter { $0.isActive }.map { $0.consumption * Double($0.quantity) }.reduce(0, +)
-                            }
-                            Text("Total: \(convertEnergyDoubleToNiceFormat(value: consumersTotalConsumption)) Watt")
+                            let groupConsumption = ConsumptionCalculator.totalConsumption(for: consumersInGroup)
+                            Text("Total: \(convertEnergyDoubleToNiceFormat(value: groupConsumption)) Watt")
                         })
                     }
                 }
@@ -146,6 +147,14 @@ struct GeneratorView: View {
             }
             .navigationTitle(generator.name)
         }
+        .onAppear {
+            if viewModel == nil {
+                viewModel = GeneratorViewModel(
+                    keychainService: keychainService,
+                    authenticationService: authenticationService
+                )
+            }
+        }
     }
 
     private func addNewItem(priority: ConsumerPriorityType) {
@@ -189,59 +198,10 @@ struct GeneratorView: View {
     }
 
     func handleSignInButton() {
-        GIDSignIn.sharedInstance.signIn(withPresenting: getRootViewController()) { [weak self] signInResult, error in
-            if let error {
-                Logger.auth.error("Sign in failed: \(error.localizedDescription)")
-                return
-            }
-            guard let signInResult else { return }
-
-            signInResult.user.refreshTokensIfNeeded { user, error in
-                if let error {
-                    Logger.auth.error("Token refresh failed: \(error.localizedDescription)")
-                    return
-                }
-                guard let user else { return }
-                guard let idToken = user.idToken?.tokenString else {
-                    Logger.auth.error("No ID token available from Google Sign-In")
-                    return
-                }
-
-                self?.exchangeGoogleToken(idToken: idToken)
-            }
+        GIDSignIn.sharedInstance.signIn(withPresenting: getRootViewController()) { signInResult, error in
+            viewModel?.handleGoogleSignInResult(signInResult: signInResult, error: error)
         }
     }
-
-    func exchangeGoogleToken(idToken: String) {
-        AuthenticationService.shared.signInWithGoogleToken(idToken: idToken) { tokens, error in
-            if let error {
-                Logger.auth.error("Auth exchange failed: \(error.localizedDescription)")
-                return
-            }
-            guard let tokens else {
-                Logger.auth.error("No tokens received from authentication service")
-                return
-            }
-
-            KeychainService.shared.setUserApiToken(newToken: tokens.accessToken)
-            Logger.auth.info("Access token saved successfully")
-
-            if let refreshToken = tokens.refreshToken {
-                KeychainService.shared.setRefreshToken(value: refreshToken)
-                Logger.auth.info("Refresh token saved successfully")
-            }
-        }
-    }
-
-    func signOutGoogle() {
-        GIDSignIn.sharedInstance.signOut()
-        KeychainService.shared.clearAllTokens()
-        Logger.auth.info("User signed out, all tokens cleared")
-    }
-}
-
-extension Logger {
-    static let auth = Logger(subsystem: Bundle.main.bundleIdentifier ?? "com.electricitycalculator", category: "Auth")
 }
 
 extension View {
@@ -254,11 +214,9 @@ extension View {
             return .init()
         }
 
-
         return root
     }
 }
-
 
 #Preview {
     @Environment(\.managedObjectContext) var viewContext

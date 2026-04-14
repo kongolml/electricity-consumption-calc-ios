@@ -17,6 +17,9 @@ protocol KeychainServiceProtocol {
     func setRefreshToken(value: String)
     func getRefreshToken() -> String?
     func clearAllTokens()
+    func setTokenExpiration(expirationDate: Date)
+    func getTokenExpiration() -> Date?
+    func isTokenValid() -> Bool
 }
 
 /// Service for managing keychain operations with proper singleton pattern
@@ -53,5 +56,17 @@ final class KeychainService: KeychainServiceProtocol, ObservableObject {
 
     func clearAllTokens() {
         keychainToolbox.clearAllTokens()
+    }
+
+    func setTokenExpiration(expirationDate: Date) {
+        keychainToolbox.setTokenExpiration(expirationDate: expirationDate)
+    }
+
+    func getTokenExpiration() -> Date? {
+        keychainToolbox.getTokenExpiration()
+    }
+
+    func isTokenValid() -> Bool {
+        keychainToolbox.isTokenValid()
     }
 }

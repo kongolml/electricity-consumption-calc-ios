@@ -9,6 +9,11 @@ import Foundation
 import Alamofire
 import os
 
+// Notification name for authentication state changes
+extension Notification.Name {
+    static let authenticationFailed = Notification.Name("com.electricitycalculator.authenticationFailed")
+}
+
 struct Api {
     private static let infoDictionary: [String: Any]? = {
         Bundle.main.infoDictionary
@@ -125,14 +130,26 @@ class AFRequestInterceptor: RequestInterceptor {
                         if let newRefreshToken = tokens.refreshToken {
                             KeychainService.shared.setRefreshToken(value: newRefreshToken)
                         }
-                        Logger.auth.info("Token refreshed successfully")
+
+                        // Update token expiration if provided, default to 1 hour
+                        let expiresIn = tokens.expiresIn ?? 3600
+                        let expirationDate = Date().addingTimeInterval(TimeInterval(expiresIn))
+                        KeychainService.shared.setTokenExpiration(expirationDate: expirationDate)
+
+                        Logger.auth.info("Token refreshed successfully, expires at: \(expirationDate)")
 
                         // Retry all queued requests
                         self.requestsToRetry.forEach { $0(.retry) }
                     } else {
-                        // Refresh failed - clear tokens and don't retry
+                        // Refresh failed - clear tokens, notify UI, and don't retry
                         Logger.auth.error("Token refresh failed: \(error?.localizedDescription ?? "unknown error")")
                         KeychainService.shared.clearAllTokens()
+
+                        // Notify UI to update authentication state
+                        DispatchQueue.main.async {
+                            NotificationCenter.default.post(name: .authenticationFailed, object: nil)
+                        }
+
                         self.requestsToRetry.forEach { $0(.doNotRetry) }
                     }
                 }

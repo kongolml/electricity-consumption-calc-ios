@@ -56,7 +56,7 @@ class PersistenceController: ObservableObject {
                 }
                 recoveryAttempted = true
 
-                // Attempt recovery: delete the corrupted store and retry
+                // Attempt recovery: backup and delete the corrupted store, then retry
                 guard let self = self else { return }
                 let storeURL = storeDescription.url
                 let storeType = storeDescription.type
@@ -65,6 +65,21 @@ class PersistenceController: ObservableObject {
                     let fileManager = FileManager.default
                     let walURL = url.deletingLastPathComponent().appendingPathComponent(url.lastPathComponent + "-wal")
                     let shmURL = url.deletingLastPathComponent().appendingPathComponent(url.lastPathComponent + "-shm")
+
+                    // Create backup before deletion to prevent data loss
+                    let timestamp = Int(Date().timeIntervalSince1970)
+                    let backupDir = url.deletingLastPathComponent().appendingPathComponent("Backups")
+                    let backupURL = backupDir.appendingPathComponent("\(url.lastPathComponent).backup-\(timestamp)")
+
+                    do {
+                        if !fileManager.fileExists(atPath: backupDir.path) {
+                            try fileManager.createDirectory(at: backupDir, withIntermediateDirectories: true)
+                        }
+                        try fileManager.copyItem(at: url, to: backupURL)
+                        Logger.persistence.info("Created Core Data backup at: \(backupURL.lastPathComponent)")
+                    } catch {
+                        Logger.persistence.error("Failed to create Core Data backup: \(error.localizedDescription)")
+                    }
 
                     for fileURL in [url, walURL, shmURL] {
                         if fileManager.fileExists(atPath: fileURL.path) {
@@ -159,4 +174,5 @@ class PersistenceController: ObservableObject {
 
 extension Logger {
     static let persistence = Logger(subsystem: Bundle.main.bundleIdentifier ?? "com.electricitycalculator", category: "Persistence")
+    static let auth = Logger(subsystem: Bundle.main.bundleIdentifier ?? "com.electricitycalculator", category: "Auth")
 }
