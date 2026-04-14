@@ -10,10 +10,10 @@ import Alamofire
 
 enum GeneratorRouter: URLRequestConvertible {
     case ls, getById(id: String), delete(id: String), patch(id: String, updatedGenerator: GeneratorHttpPayload), create(newGenerator: GeneratorHttpPayload)
-    
+
     var path: String {
         let routeBaseUrl = "generator"
-        
+
         switch self {
         case .ls:
             return "\(routeBaseUrl)/ls"
@@ -25,7 +25,7 @@ enum GeneratorRouter: URLRequestConvertible {
             return "\(routeBaseUrl)/new"
         }
     }
-        
+
     var method: HTTPMethod {
         switch self {
         case .ls:
@@ -40,37 +40,35 @@ enum GeneratorRouter: URLRequestConvertible {
             return .post
         }
     }
-            
+
     private var userToken: String {
-        let keychain = KeychainToolbox()
-
-        guard let userAccessToken = keychain.getUserApiToken() else {return "NO_TOKEN_FROM_USER_ROUTER"}
-
-        return userAccessToken
+        KeychainService.shared.getUserApiToken() ?? ""
     }
-    
+
     var headers: HTTPHeaders {
         var headers = HTTPHeaders()
-        
+
         switch self {
         case .ls,
                 .create,
                 .delete,
                 .patch,
                 .getById:
-            headers.add(.authorization(bearerToken: userToken))
+            if !userToken.isEmpty {
+                headers.add(.authorization(bearerToken: userToken))
+            }
         }
-        
+
         return headers
     }
-    
-    
+
+
     func asURLRequest() throws -> URLRequest {
         let apiBaseUrl = try Api.baseApiUrl.asURL()
         var request = URLRequest(url: apiBaseUrl.appendingPathComponent(path))
         request.method = method
         request.headers = headers
-        
+
         switch self {
         case .create(let newGeneratorPayload):
             request = try JSONParameterEncoder().encode(newGeneratorPayload, into: request)
@@ -81,7 +79,7 @@ enum GeneratorRouter: URLRequestConvertible {
                 .ls:
             break
         }
-        
+
         return request
     }
 }

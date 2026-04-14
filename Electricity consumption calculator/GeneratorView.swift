@@ -9,11 +9,9 @@ import SwiftUI
 import CoreData
 import GoogleSignIn
 import GoogleSignInSwift
+import os
 
 struct GeneratorView: View {
-    let authMiddleWare = AuthMiddleware()
-    let keychain = KeychainToolbox()
-    
     @Environment(\.managedObjectContext) private var viewContext
     @EnvironmentObject var persistenceController: PersistenceController
 
@@ -23,17 +21,17 @@ struct GeneratorView: View {
         sortDescriptors: [NSSortDescriptor(keyPath: \ConsumerEntity.orderInGroup, ascending: true)],
         animation: .default)
     private var allGeneratorConsumers: FetchedResults<ConsumerEntity>
-    
+
     var totalConsumption: Double {
         return allGeneratorConsumers.filter { $0.isActive }.map { $0.consumption * Double($0.quantity) }.reduce(0, +)
     }
-    
+
     var leftCapacity: Double {
         generator.capacity - totalConsumption
     }
-    
-    private func filteredItems(for category: ConsumerPriorityType) -> [ConsumerEntity] {
-        return allGeneratorConsumers.filter { $0.priorityType == category.rawValue }
+
+    private var consumersByPriority: [ConsumerPriorityType: [ConsumerEntity]] {
+        Dictionary(grouping: allGeneratorConsumers, by: { ConsumerPriorityType(rawValue: $0.priorityType) ?? .secondary })
     }
 
     var body: some View {
@@ -47,11 +45,11 @@ struct GeneratorView: View {
                 if (allGeneratorConsumers.count == 0) {
                     Text("No consumers yet")
                 }
-                
+
                 if (allGeneratorConsumers.count > 0) {
                     ForEach(ConsumerPriorityType.allCases, id: \.self) { filteredConsumersGroup in
-                        let consumersInGroup = filteredItems(for: filteredConsumersGroup)
-                        
+                        let consumersInGroup = consumersByPriority[filteredConsumersGroup] ?? []
+
                         Section(content: {
                             ForEach(consumersInGroup, id: \.self) { consumerItem in
                                 NavigationLink {
@@ -76,7 +74,6 @@ struct GeneratorView: View {
                                     .tint(.red)
                                 }
                             }
-                            //                        .onDelete(perform: deleteItemsInBulk)
                             .onMove { indices, newOffset in
                                 moveItems(from: indices, to: newOffset, in: filteredConsumersGroup)
                             }
@@ -94,7 +91,7 @@ struct GeneratorView: View {
                         })
                     }
                 }
-                
+
                 Section(content: {
                     HStack {
                         Text("Total capacity")
@@ -132,13 +129,13 @@ struct GeneratorView: View {
                 ToolbarItem {
                     Menu {
                         Button(action: {
-                            addINewtem(priority: .main)
+                            addNewItem(priority: .main)
                         }) {
                             Label("Main device", systemImage: "refrigerator")
                         }
-                        
+
                         Button(action: {
-                            addINewtem(priority: .secondary)
+                            addNewItem(priority: .secondary)
                         }) {
                             Label("Secondary device", systemImage: "lightbulb.2")
                         }
@@ -151,25 +148,25 @@ struct GeneratorView: View {
         }
     }
 
-    private func addINewtem(priority: ConsumerPriorityType) {
+    private func addNewItem(priority: ConsumerPriorityType) {
         viewContext.perform {
             withAnimation {
                 let newItem = ConsumerEntity(context: viewContext)
                 newItem.priorityType = priority.rawValue
-                
+
                 persistenceController.saveContext()
             }
         }
     }
-    
+
     private func toggleItemActiveStatus(consumer: ConsumerEntity) {
         viewContext.perform {
             consumer.isActive.toggle()
-            
+
             persistenceController.saveContext()
         }
     }
-    
+
     private func deleteItem(consumer: ConsumerEntity) {
         viewContext.perform {
             withAnimation {
@@ -177,17 +174,7 @@ struct GeneratorView: View {
             }
         }
     }
-    
-//    private func deleteItemsInBulk(offsets: IndexSet) {
-//        viewContext.perform {
-//            offsets.map { consumersList[$0] }.forEach { consumer in
-//                viewContext.delete(consumer)
-//            }
-//            
-//            persistenceController.saveContext()
-//        }
-//    }
-    
+
     private func moveItems(from source: IndexSet, to destination: Int, in priorityTypeGroup: ConsumerPriorityType) {
         var revisedItemsFromGroup = allGeneratorConsumers.map { $0 }.filter { $0.priorityType == priorityTypeGroup.rawValue }
         revisedItemsFromGroup.move(fromOffsets: source, toOffset: destination)
@@ -200,50 +187,61 @@ struct GeneratorView: View {
             persistenceController.saveContext()
         }
     }
-    
+
     func handleSignInButton() {
-      GIDSignIn.sharedInstance.signIn(
-        withPresenting: getRootViewController()) { signInResult, error in
-            guard error == nil else { return }
-                guard let signInResult = signInResult else { return }
+        GIDSignIn.sharedInstance.signIn(withPresenting: getRootViewController()) { [weak self] signInResult, error in
+            if let error {
+                Logger.auth.error("Sign in failed: \(error.localizedDescription)")
+                return
+            }
+            guard let signInResult else { return }
 
-                signInResult.user.refreshTokensIfNeeded { user, error in
-                    guard error == nil else { return }
-                    guard let user = user else { return }
-
-                    let idToken = user.idToken
-                    // Send ID token to backend (example below).
-                    if (idToken?.tokenString != nil) {
-                        authorizeOnApiUsingGoogleToken(idToken: idToken!.tokenString)
-                        let keychain = KeychainToolbox()
-                        keychain.setGoogleIdToken(value: idToken!.tokenString)
-                    }
+            signInResult.user.refreshTokensIfNeeded { user, error in
+                if let error {
+                    Logger.auth.error("Token refresh failed: \(error.localizedDescription)")
+                    return
                 }
-        }
-//      )
-        print("handleSignInButton handleSignInButton handleSignInButton handleSignInButton")
-    }
-    
-    func authorizeOnApiUsingGoogleToken(idToken: String) {
-        guard !idToken.isEmpty else {
-            return
-        }
+                guard let user else { return }
+                guard let idToken = user.idToken?.tokenString else {
+                    Logger.auth.error("No ID token available from Google Sign-In")
+                    return
+                }
 
-        authMiddleWare.signInWithGoogleToken(idToken: idToken) { accesTokens, error  in
-            print("here is response")
-            
-            if let error = error {
-                debugPrint(error)
-            } else if let accesTokens = accesTokens {
-                keychain.setUserApiToken(newToken: accesTokens.accessToken)
-                print(accesTokens.accessToken)
+                self?.exchangeGoogleToken(idToken: idToken)
             }
         }
     }
-    
+
+    func exchangeGoogleToken(idToken: String) {
+        AuthenticationService.shared.signInWithGoogleToken(idToken: idToken) { tokens, error in
+            if let error {
+                Logger.auth.error("Auth exchange failed: \(error.localizedDescription)")
+                return
+            }
+            guard let tokens else {
+                Logger.auth.error("No tokens received from authentication service")
+                return
+            }
+
+            KeychainService.shared.setUserApiToken(newToken: tokens.accessToken)
+            Logger.auth.info("Access token saved successfully")
+
+            if let refreshToken = tokens.refreshToken {
+                KeychainService.shared.setRefreshToken(value: refreshToken)
+                Logger.auth.info("Refresh token saved successfully")
+            }
+        }
+    }
+
     func signOutGoogle() {
         GIDSignIn.sharedInstance.signOut()
+        KeychainService.shared.clearAllTokens()
+        Logger.auth.info("User signed out, all tokens cleared")
     }
+}
+
+extension Logger {
+    static let auth = Logger(subsystem: Bundle.main.bundleIdentifier ?? "com.electricitycalculator", category: "Auth")
 }
 
 extension View {
@@ -255,7 +253,7 @@ extension View {
         guard let root = screen.windows.first?.rootViewController else {
             return .init()
         }
-        
+
 
         return root
     }

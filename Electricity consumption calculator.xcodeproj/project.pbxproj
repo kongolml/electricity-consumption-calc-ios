@@ -18,7 +18,6 @@
 		1109E3002C3B218C003DE2AB /* EnergyInput.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1109E2FF2C3B218C003DE2AB /* EnergyInput.swift */; };
 		1109E3022C3B261B003DE2AB /* Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1109E3012C3B261B003DE2AB /* Helpers.swift */; };
 		1109E30A2C3B32A0003DE2AB /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 1109E3092C3B32A0003DE2AB /* Localizable.xcstrings */; };
-		1109E30C2C3B3FF0003DE2AB /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1109E30B2C3B3FF0003DE2AB /* Assets.xcassets */; };
 		112A33E92C456BA300920FBF /* KeychainAccess in Frameworks */ = {isa = PBXBuildFile; productRef = 112A33E82C456BA300920FBF /* KeychainAccess */; };
 		112A33EB2C456C3A00920FBF /* KeychainAccess.swift in Sources */ = {isa = PBXBuildFile; fileRef = 112A33EA2C456C3A00920FBF /* KeychainAccess.swift */; };
 		112A33EE2C45E6AA00920FBF /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = 112A33ED2C45E6AA00920FBF /* Alamofire */; };
@@ -41,6 +40,10 @@
 		11C30FFA2C3724DF00E43720 /* Consumer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11C30FF92C3724DF00E43720 /* Consumer.swift */; };
 		11C30FFC2C37282600E43720 /* ConsumerListItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11C30FFB2C37282600E43720 /* ConsumerListItemView.swift */; };
 		11C30FFF2C37389500E43720 /* GeneratorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11C30FE12C3720A300E43720 /* GeneratorView.swift */; };
+		BA59FFE92F8EE81100B242DC /* KeychainService.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA59FFE82F8EE81100B242DC /* KeychainService.swift */; };
+		BA59FFEB2F8EE81C00B242DC /* AuthenticationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA59FFEA2F8EE81C00B242DC /* AuthenticationService.swift */; };
+		BA59FFED2F8EE84400B242DC /* BUILD_FIX_GUIDE.md in Resources */ = {isa = PBXBuildFile; fileRef = BA59FFEC2F8EE84400B242DC /* BUILD_FIX_GUIDE.md */; };
+		BA59FFF02F8EEA9900B242DC /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BA59FFEF2F8EEA9900B242DC /* Assets.xcassets */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -55,7 +58,6 @@
 		1109E2FF2C3B218C003DE2AB /* EnergyInput.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnergyInput.swift; sourceTree = "<group>"; };
 		1109E3012C3B261B003DE2AB /* Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Helpers.swift; sourceTree = "<group>"; };
 		1109E3092C3B32A0003DE2AB /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
-		1109E30B2C3B3FF0003DE2AB /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Assets.xcassets; path = "../../../../Downloads/AppIcons (4)/Assets.xcassets"; sourceTree = "<group>"; };
 		112A33EA2C456C3A00920FBF /* KeychainAccess.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainAccess.swift; sourceTree = "<group>"; };
 		112A33EF2C45E6BE00920FBF /* HttpConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HttpConfig.swift; sourceTree = "<group>"; };
 		112A33F22C45E79400920FBF /* Auth.middleware.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Auth.middleware.swift; sourceTree = "<group>"; };
@@ -78,6 +80,10 @@
 		11C30FF92C3724DF00E43720 /* Consumer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Consumer.swift; sourceTree = "<group>"; };
 		11C30FFB2C37282600E43720 /* ConsumerListItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConsumerListItemView.swift; sourceTree = "<group>"; };
 		11C30FFD2C37305C00E43720 /* Electricity_consumption_calculator 2.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Electricity_consumption_calculator 2.xcdatamodel"; sourceTree = "<group>"; };
+		BA59FFE82F8EE81100B242DC /* KeychainService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainService.swift; sourceTree = "<group>"; };
+		BA59FFEA2F8EE81C00B242DC /* AuthenticationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationService.swift; sourceTree = "<group>"; };
+		BA59FFEC2F8EE84400B242DC /* BUILD_FIX_GUIDE.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = BUILD_FIX_GUIDE.md; sourceTree = "<group>"; };
+		BA59FFEF2F8EEA9900B242DC /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -195,11 +201,14 @@
 				1109E3092C3B32A0003DE2AB /* Localizable.xcstrings */,
 				1109E2F02C3B0AA9003DE2AB /* GeneratorDetailsView.swift */,
 				113084E52C3840150069845B /* ConsumersSectionView.swift */,
-				1109E30B2C3B3FF0003DE2AB /* Assets.xcassets */,
 				11C30FE82C3720A500E43720 /* Persistence.swift */,
 				11C30FEA2C3720A600E43720 /* Electricity_consumption_calculator.xcdatamodeld */,
 				11C30FE52C3720A500E43720 /* Preview Content */,
 				1183602A2C3F143F00E97115 /* AppDelegate.swift */,
+				BA59FFE82F8EE81100B242DC /* KeychainService.swift */,
+				BA59FFEA2F8EE81C00B242DC /* AuthenticationService.swift */,
+				BA59FFEC2F8EE84400B242DC /* BUILD_FIX_GUIDE.md */,
+				BA59FFEF2F8EEA9900B242DC /* Assets.xcassets */,
 			);
 			path = "Electricity consumption calculator";
 			sourceTree = "<group>";
@@ -291,9 +300,10 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BA59FFED2F8EE84400B242DC /* BUILD_FIX_GUIDE.md in Resources */,
 				11C30FE72C3720A500E43720 /* Preview Assets.xcassets in Resources */,
-				1109E30C2C3B3FF0003DE2AB /* Assets.xcassets in Resources */,
 				1109E30A2C3B32A0003DE2AB /* Localizable.xcstrings in Resources */,
+				BA59FFF02F8EEA9900B242DC /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -326,6 +336,8 @@
 				1109E3022C3B261B003DE2AB /* Helpers.swift in Sources */,
 				1109E2EC2C39E2F9003DE2AB /* ConsumerEntity+Custom.swift in Sources */,
 				1109E2F12C3B0AA9003DE2AB /* GeneratorDetailsView.swift in Sources */,
+				BA59FFE92F8EE81100B242DC /* KeychainService.swift in Sources */,
+				BA59FFEB2F8EE81C00B242DC /* AuthenticationService.swift in Sources */,
 				11C30FFC2C37282600E43720 /* ConsumerListItemView.swift in Sources */,
 				1108C3252C488F6900393AF3 /* Generator.router.swift in Sources */,
 				11C30FF72C37237100E43720 /* ConsumerEntity+CoreDataProperties.swift in Sources */,

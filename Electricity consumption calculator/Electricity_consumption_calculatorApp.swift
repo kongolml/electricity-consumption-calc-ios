@@ -23,20 +23,18 @@ struct Electricity_consumption_calculatorApp: App {
                     .environmentObject(persistenceController)
                     .onAppear {
                         GIDSignIn.sharedInstance.restorePreviousSignIn { user, error in
-                            // Check if `user` exists; otherwise, do something with `error`
                             guard let signedGoogleUser = user else {
-                                print("no google user, error?, check")
+                                print("No google user signed in")
                                 return
                             }
                             
-                            if error != nil {
-                                debugPrint(error)
+                            if let error = error {
+                                print("Google sign-in error: \(error.localizedDescription)")
                                 return
                             }
                             
-                            print("logged google user email: \(String(describing: signedGoogleUser.profile?.email))")
+                            print("Logged google user email: \(String(describing: signedGoogleUser.profile?.email))")
                         }
-                        self.loadDefaultGenerator()
                     }
                     .onOpenURL { url in
                         GIDSignIn.sharedInstance.handle(url)
@@ -50,8 +48,12 @@ struct Electricity_consumption_calculatorApp: App {
         }
     }
     
-    private func loadDefaultGenerator() -> Void {
+    private func loadDefaultGenerator() {
         defaultGenerator = persistenceController.fetchOrCreateDefaultGeneratorEntity()
+        if defaultGenerator == nil {
+            // Handle error - maybe show error state
+            print("❌ Failed to load or create default generator")
+        }
         persistenceController.fetchConsumersOrCreateDefaults()
     }
 }

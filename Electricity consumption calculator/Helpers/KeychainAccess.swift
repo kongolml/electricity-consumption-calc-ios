@@ -12,19 +12,23 @@ import KeychainAccess
 enum KeychainKeys: String {
     case googleIdToken = "googleIdToken"
     case userAccessTokenApi = "userAccessTokenApi"
+    case refreshToken = "refreshToken"
 }
 
-let keychain = Keychain(service: KeychainKeys.googleIdToken.rawValue)
-
 class KeychainToolbox {
+    // Private keychain instance per service
+    private let authKeychain = Keychain(service: "com.electricitycalculator.auth")
+        .synchronizable(false)
+        .accessibility(.afterFirstUnlock)
+    
     func setItem(value: String, key: KeychainKeys) {
-        if (value.isEmpty) {
-            debugPrint("no value was provided for seting")
+        if value.isEmpty {
+            debugPrint("no value was provided for setting")
             return
         }
 
         do {
-            try keychain.set(value, key: key.rawValue)
+            try authKeychain.set(value, key: key.rawValue)
         } catch let error {
             print("Error saving item to keychain")
             debugPrint(error)
@@ -33,7 +37,7 @@ class KeychainToolbox {
     
     func setGoogleIdToken(value: String) {
         do {
-            try keychain.set(value, key: KeychainKeys.googleIdToken.rawValue)
+            try authKeychain.set(value, key: KeychainKeys.googleIdToken.rawValue)
         } catch let error {
             print("Error saving item to keychain")
             debugPrint(error)
@@ -41,7 +45,7 @@ class KeychainToolbox {
     }
     
     func getGoogleIdToken() -> String? {
-        let googleIdToken = try? keychain.getString(KeychainKeys.googleIdToken.rawValue)
+        let googleIdToken = try? authKeychain.getString(KeychainKeys.googleIdToken.rawValue)
         
         return googleIdToken
     }
@@ -51,33 +55,65 @@ class KeychainToolbox {
     }
     
     func getUserApiToken() -> String? {
-        return "TODO: HARDCODEDE TOKEN IS USER, GET REAL ONE"
+        do {
+            return try authKeychain.getString(KeychainKeys.userAccessTokenApi.rawValue)
+        } catch {
+            print("Error retrieving user API token from keychain")
+            debugPrint(error)
+            return nil
+        }
     }
     
 //    
-//    func clearItem(key: KeychainKeys) {
-//        do {
-//            try keychain.remove(key.rawValue)
-//        } catch let error {
-//            print("Error removing item from keychain")
-//            debugPrint(error)
-//        }
-//    }
-//
-//    func getUserTokenFromKeychain() -> String? {
-//        let accessToken = try? keychain.getString(KeychainKeys.accessToken.rawValue)
-//        
-//        return accessToken
-//    }
-//    
-//    
-//    func getProviderTokenFromKeychain() -> String? {
-//        let providerToken = try? keychain.getString(KeychainKeys.providerToken.rawValue)
-//        
-//        return providerToken
-//    }
-//    
-//    func setProviderToken(newToken: String) {
-//        setItem(value: newToken, key: .providerToken)
-//    }
+    func setRefreshToken(value: String) {
+        do {
+            try authKeychain.set(value, key: KeychainKeys.refreshToken.rawValue)
+        } catch let error {
+            print("Error saving refresh token to keychain")
+            debugPrint(error)
+        }
+    }
+
+    func getRefreshToken() -> String? {
+        do {
+            return try authKeychain.getString(KeychainKeys.refreshToken.rawValue)
+        } catch {
+            print("Error retrieving refresh token from keychain")
+            debugPrint(error)
+            return nil
+        }
+    }
+
+    func clearGoogleIdToken() {
+        do {
+            try authKeychain.remove(KeychainKeys.googleIdToken.rawValue)
+        } catch let error {
+            print("Error removing Google ID token from keychain")
+            debugPrint(error)
+        }
+    }
+
+    func clearUserApiToken() {
+        do {
+            try authKeychain.remove(KeychainKeys.userAccessTokenApi.rawValue)
+        } catch let error {
+            print("Error removing user API token from keychain")
+            debugPrint(error)
+        }
+    }
+
+    func clearRefreshToken() {
+        do {
+            try authKeychain.remove(KeychainKeys.refreshToken.rawValue)
+        } catch let error {
+            print("Error removing refresh token from keychain")
+            debugPrint(error)
+        }
+    }
+
+    func clearAllTokens() {
+        clearGoogleIdToken()
+        clearUserApiToken()
+        clearRefreshToken()
+    }
 }
