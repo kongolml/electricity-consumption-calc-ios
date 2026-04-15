@@ -1,8 +1,8 @@
 //
-//  GeneratorViewModel.swift
+//  AccountViewModel.swift
 //  Electricity consumption calculator
 //
-//  ViewModel for GeneratorView — owns all business logic
+//  ViewModel for AccountView — owns authentication state and logic
 //
 
 import Foundation
@@ -10,29 +10,60 @@ import Observation
 import GoogleSignIn
 import os
 
+// Protocol wrapper for Google Sign-In to enable testing
+protocol GoogleSignInServiceProtocol {
+    var currentUser: GIDGoogleUser? { get }
+    func signOut()
+}
+
+// Wrapper for the real Google Sign-In SDK
+struct GoogleSignInService: GoogleSignInServiceProtocol {
+    var currentUser: GIDGoogleUser? {
+        GIDSignIn.sharedInstance.currentUser
+    }
+    
+    func signOut() {
+        GIDSignIn.sharedInstance.signOut()
+    }
+}
+
 @Observable
-final class GeneratorViewModel {
+final class AccountViewModel {
     // MARK: - State
     var isSignedIn: Bool = false
     var isSigningIn: Bool = false
     var authError: String?
+    var userName: String?
+    var userEmail: String?
+    var userProfileImageURL: URL?
 
     // MARK: - Dependencies
     private let keychainService: KeychainServiceProtocol
     private let authenticationService: AuthenticationServiceProtocol
-    private let logger = Logger(subsystem: Bundle.main.bundleIdentifier ?? "com.electricitycalculator", category: "GeneratorViewModel")
+    private let googleSignInService: GoogleSignInServiceProtocol
+    private let logger = Logger(subsystem: Bundle.main.bundleIdentifier ?? "com.electricitycalculator", category: "AccountViewModel")
+    
+    private var authFailureObserver: NSObjectProtocol?
 
     // MARK: - Init
     init(keychainService: KeychainServiceProtocol,
-         authenticationService: AuthenticationServiceProtocol) {
+         authenticationService: AuthenticationServiceProtocol,
+         googleSignInService: GoogleSignInServiceProtocol = GoogleSignInService()) {
         self.keychainService = keychainService
         self.authenticationService = authenticationService
+        self.googleSignInService = googleSignInService
         checkExistingAuth()
         setupNotifications()
     }
+    
+    deinit {
+        if let observer = authFailureObserver {
+            NotificationCenter.default.removeObserver(observer)
+        }
+    }
 
     private func setupNotifications() {
-        NotificationCenter.default.addObserver(
+        authFailureObserver = NotificationCenter.default.addObserver(
             forName: .authenticationFailed,
             object: nil,
             queue: .main
@@ -44,8 +75,9 @@ final class GeneratorViewModel {
 
     // MARK: - Auth
 
-    func checkExistingAuth() {
+    private func checkExistingAuth() {
         isSignedIn = keychainService.isTokenValid()
+        updateGoogleUserInfo()
     }
 
     func handleGoogleSignInResult(signInResult: GIDSignInResult?, error: Error?) {
@@ -63,17 +95,23 @@ final class GeneratorViewModel {
         signInResult.user.refreshTokensIfNeeded { [weak self] user, error in
             if let error {
                 self?.logger.error("Token refresh failed: \(error.localizedDescription)")
-                self?.authError = error.localizedDescription
-                self?.isSigningIn = false
+                DispatchQueue.main.async {
+                    self?.authError = error.localizedDescription
+                    self?.isSigningIn = false
+                }
                 return
             }
             guard let user else {
-                self?.isSigningIn = false
+                DispatchQueue.main.async {
+                    self?.isSigningIn = false
+                }
                 return
             }
             guard let idToken = user.idToken?.tokenString else {
                 self?.logger.error("No ID token available from Google Sign-In")
-                self?.isSigningIn = false
+                DispatchQueue.main.async {
+                    self?.isSigningIn = false
+                }
                 return
             }
 
@@ -81,17 +119,21 @@ final class GeneratorViewModel {
         }
     }
 
-    func exchangeGoogleToken(idToken: String) {
+    private func exchangeGoogleToken(idToken: String) {
         authenticationService.signInWithGoogleToken(idToken: idToken) { [weak self] tokens, error in
             if let error {
                 self?.logger.error("Auth exchange failed: \(error.localizedDescription)")
-                self?.authError = error.localizedDescription
-                self?.isSigningIn = false
+                DispatchQueue.main.async {
+                    self?.authError = error.localizedDescription
+                    self?.isSigningIn = false
+                }
                 return
             }
             guard let tokens else {
                 self?.logger.error("No tokens received from authentication service")
-                self?.isSigningIn = false
+                DispatchQueue.main.async {
+                    self?.isSigningIn = false
+                }
                 return
             }
 
@@ -103,23 +145,43 @@ final class GeneratorViewModel {
                 self?.logger.info("Refresh token saved successfully")
             }
 
-            // Store token expiration if provided, default to 1 hour if not
             let expiresIn = tokens.expiresIn ?? 3600
             let expirationDate = Date().addingTimeInterval(TimeInterval(expiresIn))
             self?.keychainService.setTokenExpiration(expirationDate: expirationDate)
             self?.logger.info("Token expiration saved: \(expirationDate)")
 
-            self?.isSignedIn = true
-            self?.isSigningIn = false
-            self?.authError = nil
+            DispatchQueue.main.async {
+                self?.isSignedIn = true
+                self?.isSigningIn = false
+                self?.authError = nil
+                self?.updateGoogleUserInfo()
+            }
         }
     }
 
     func signOut() {
-        GIDSignIn.sharedInstance.signOut()
+        isSigningIn = false
+        googleSignInService.signOut()
         keychainService.clearAllTokens()
         isSignedIn = false
         authError = nil
+        userName = nil
+        userEmail = nil
+        userProfileImageURL = nil
         logger.info("User signed out, all tokens cleared")
+    }
+
+    // MARK: - Private Helpers
+
+    private func updateGoogleUserInfo() {
+        guard let googleUser = googleSignInService.currentUser else {
+            userName = nil
+            userEmail = nil
+            userProfileImageURL = nil
+            return
+        }
+        userName = googleUser.profile?.name
+        userEmail = googleUser.profile?.email
+        userProfileImageURL = googleUser.profile?.imageURL(withDimension: 100)
     }
 }
