@@ -27,3 +27,6 @@ fastlane/test_output
 
 .vscode/
 .opencode/
+
+*.xcodeproj
+*.xcworkspace

@@ -163,6 +163,12 @@
         }
       }
     },
+    "default_value_backlight" : {
+
+    },
+    "default_value_fridge" : {
+
+    },
     "Delete" : {
       "localizations" : {
         "en" : {

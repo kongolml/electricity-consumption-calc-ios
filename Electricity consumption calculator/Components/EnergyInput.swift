@@ -22,7 +22,7 @@ struct EnergyInput: View {
                     entityProperty = newValue / preferredConsumptionUnit.conversionFactor
                     
                 }
-            ), formatter: floatNumberFormatter)
+            ), formatter: Formatters.floatNumber)
             .keyboardType(.decimalPad)
             
             Menu {

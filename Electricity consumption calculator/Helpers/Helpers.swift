@@ -7,12 +7,9 @@
 
 import Foundation
 
+/// Converts an energy value to a nicely formatted string
+/// - Parameter value: The energy value to format
+/// - Returns: A formatted string representation
 func convertEnergyDoubleToNiceFormat(value: Double) -> String {
-    let formatter = NumberFormatter()
-    formatter.numberStyle = .decimal
-    formatter.maximumFractionDigits = 2
-    formatter.minimumFractionDigits = 0
-    formatter.usesGroupingSeparator = false
-    
-    return formatter.string(from: value as NSNumber) ?? ""
+    Formatters.formatEnergy(value)
 }

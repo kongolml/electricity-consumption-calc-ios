@@ -120,12 +120,12 @@ class PersistenceController: ObservableObject {
                 return newEntity
             }
         } catch {
-            print("❌ Error fetching or creating GeneratorEntity: \(error.localizedDescription)")
+            Logger.persistence.error("Error fetching or creating GeneratorEntity: \(error.localizedDescription)")
             return nil
         }
     }
     
-    func fetchConsumersOrCreateDefaults() -> ConsumerEntity? {
+    func fetchOrCreateDefaultConsumers() -> ConsumerEntity? {
         let fetchRequest: NSFetchRequest<ConsumerEntity> = ConsumerEntity.fetchRequest()
 
         do {
@@ -137,31 +137,31 @@ class PersistenceController: ObservableObject {
                 // Set default values for newEntity here if needed
                 newConsumerMain.priorityType = ConsumerPriorityType.main.rawValue
                 newConsumerMain.quantity = 1
-                newConsumerMain.name = NSLocalizedString("defaul_value_fridge", comment: "")
+                newConsumerMain.name = NSLocalizedString("default_value_fridge", comment: "")
                 newConsumerMain.isActive = true
-                
+
                 let newConsumerSecondary = ConsumerEntity.createMock(context: container.viewContext)
                 newConsumerSecondary.priorityType = ConsumerPriorityType.secondary.rawValue
-                newConsumerSecondary.name = NSLocalizedString("defaul_value_backlight", comment: "")
+                newConsumerSecondary.name = NSLocalizedString("default_value_backlight", comment: "")
                 newConsumerSecondary.isActive = true
-                
+
                 try container.viewContext.save()
                 return nil
             }
         } catch {
-            print("❌ Error fetching or creating consumers: \(error.localizedDescription)")
+            Logger.persistence.error("Error fetching or creating consumers: \(error.localizedDescription)")
             return nil
         }
     }
     
     func saveContext() {
         guard container.viewContext.hasChanges else { return }
-        
+
         do {
             try container.viewContext.save()
         } catch {
             let nsError = error as NSError
-            print("❌ Error saving context: \(nsError), \(nsError.userInfo)")
+            Logger.persistence.error("Error saving context: \(nsError), \(nsError.userInfo)")
             // Handle error appropriately - maybe show alert to user
         }
     }

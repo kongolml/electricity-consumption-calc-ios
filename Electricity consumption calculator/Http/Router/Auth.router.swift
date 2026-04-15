@@ -10,16 +10,13 @@ import Alamofire
 
 enum AuthRouter: URLRequestConvertible {
     case google(token: SignInGooglePayload)
-    
+
     var path: String {
         let routeBaseUrl = "auth"
-        
+
         switch self {
         case .google:
             return "\(routeBaseUrl)/google"
-            
-            //        case .signup:
-            //            return "\(routeBaseUrl)/signup"
         }
     }
         
@@ -30,25 +27,13 @@ enum AuthRouter: URLRequestConvertible {
         }
     }
             
-//    private var userToken: String {
-//        let keychain = KeychainToolbox()
-//
-//        guard let userAccessToken = keychain.getUserTokenFromKeychain() else {return "NO_TOKEN_FROM_USER_ROUTER"}
-//
-//        return userAccessToken
-//    }
-    
     var headers: HTTPHeaders {
         var headers = HTTPHeaders()
-        
+
         switch self {
         case .google: break
-            //        case .signup: break
-            //        case .getCurrent:
-            //            debugPrint("UserRouter is using access token: \(userToken)")
-            //            headers.add(.authorization(bearerToken: userToken))
         }
-        
+
         return headers
     }
     
@@ -61,16 +46,7 @@ enum AuthRouter: URLRequestConvertible {
         
         switch self {
         case .google(let token):
-//            print("the toekn is \(token)")
             request = try JSONParameterEncoder().encode(token, into: request)
-            //        case let .login(loginCredentials):
-            //            request = try JSONParameterEncoder().encode(loginCredentials, into: request)
-            //
-            //        case let .signup(newUserData):
-            //            request = try JSONParameterEncoder().encode(newUserData, into: request)
-            //
-            //        case .getCurrent:
-            //            break
         }
         
         return request

@@ -63,6 +63,6 @@ struct Electricity_consumption_calculatorApp: App {
         if defaultGenerator == nil {
             Logger.persistence.error("Failed to load or create default generator")
         }
-        persistenceController.fetchConsumersOrCreateDefaults()
+        persistenceController.fetchOrCreateDefaultConsumers()
     }
 }

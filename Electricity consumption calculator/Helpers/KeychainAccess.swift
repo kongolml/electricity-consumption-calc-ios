@@ -7,7 +7,7 @@
 
 import Foundation
 import KeychainAccess
-
+import os
 
 enum KeychainKeys: String {
     case googleIdToken = "googleIdToken"
@@ -24,15 +24,14 @@ class KeychainToolbox {
     
     func setItem(value: String, key: KeychainKeys) {
         if value.isEmpty {
-            debugPrint("no value was provided for setting")
+            AppLogger.keychain.debug("No value was provided for setting")
             return
         }
 
         do {
             try authKeychain.set(value, key: key.rawValue)
         } catch let error {
-            print("Error saving item to keychain")
-            debugPrint(error)
+            AppLogger.keychain.error("Error saving item to keychain: \(error.localizedDescription)")
         }
     }
     
@@ -40,8 +39,7 @@ class KeychainToolbox {
         do {
             try authKeychain.set(value, key: KeychainKeys.googleIdToken.rawValue)
         } catch let error {
-            print("Error saving item to keychain")
-            debugPrint(error)
+            AppLogger.keychain.error("Error saving Google ID token to keychain: \(error.localizedDescription)")
         }
     }
     
@@ -59,19 +57,16 @@ class KeychainToolbox {
         do {
             return try authKeychain.getString(KeychainKeys.userAccessTokenApi.rawValue)
         } catch {
-            print("Error retrieving user API token from keychain")
-            debugPrint(error)
+            AppLogger.keychain.error("Error retrieving user API token from keychain: \(error.localizedDescription)")
             return nil
         }
     }
-    
-//    
+
     func setRefreshToken(value: String) {
         do {
             try authKeychain.set(value, key: KeychainKeys.refreshToken.rawValue)
         } catch let error {
-            print("Error saving refresh token to keychain")
-            debugPrint(error)
+            AppLogger.keychain.error("Error saving refresh token to keychain: \(error.localizedDescription)")
         }
     }
 
@@ -79,8 +74,7 @@ class KeychainToolbox {
         do {
             return try authKeychain.getString(KeychainKeys.refreshToken.rawValue)
         } catch {
-            print("Error retrieving refresh token from keychain")
-            debugPrint(error)
+            AppLogger.keychain.error("Error retrieving refresh token from keychain: \(error.localizedDescription)")
             return nil
         }
     }
@@ -89,8 +83,7 @@ class KeychainToolbox {
         do {
             try authKeychain.remove(KeychainKeys.googleIdToken.rawValue)
         } catch let error {
-            print("Error removing Google ID token from keychain")
-            debugPrint(error)
+            AppLogger.keychain.error("Error removing Google ID token from keychain: \(error.localizedDescription)")
         }
     }
 
@@ -98,8 +91,7 @@ class KeychainToolbox {
         do {
             try authKeychain.remove(KeychainKeys.userAccessTokenApi.rawValue)
         } catch let error {
-            print("Error removing user API token from keychain")
-            debugPrint(error)
+            AppLogger.keychain.error("Error removing user API token from keychain: \(error.localizedDescription)")
         }
     }
 
@@ -107,8 +99,7 @@ class KeychainToolbox {
         do {
             try authKeychain.remove(KeychainKeys.refreshToken.rawValue)
         } catch let error {
-            print("Error removing refresh token from keychain")
-            debugPrint(error)
+            AppLogger.keychain.error("Error removing refresh token from keychain: \(error.localizedDescription)")
         }
     }
 
@@ -126,8 +117,7 @@ class KeychainToolbox {
             let timestamp = expirationDate.timeIntervalSince1970
             try authKeychain.set(String(timestamp), key: KeychainKeys.tokenExpiration.rawValue)
         } catch let error {
-            print("Error saving token expiration to keychain")
-            debugPrint(error)
+            AppLogger.keychain.error("Error saving token expiration to keychain: \(error.localizedDescription)")
         }
     }
 
@@ -139,8 +129,7 @@ class KeychainToolbox {
             }
             return Date(timeIntervalSince1970: timestamp)
         } catch {
-            print("Error retrieving token expiration from keychain")
-            debugPrint(error)
+            AppLogger.keychain.error("Error retrieving token expiration from keychain: \(error.localizedDescription)")
             return nil
         }
     }
@@ -149,8 +138,7 @@ class KeychainToolbox {
         do {
             try authKeychain.remove(KeychainKeys.tokenExpiration.rawValue)
         } catch let error {
-            print("Error removing token expiration from keychain")
-            debugPrint(error)
+            AppLogger.keychain.error("Error removing token expiration from keychain: \(error.localizedDescription)")
         }
     }
 
