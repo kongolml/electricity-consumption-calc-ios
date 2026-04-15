@@ -1,4 +1,4 @@
-name: "Electricity consumption calculator"
+name: ElectricityConsumptionCalculator
 options:
   bundleIdPrefix: project
   deploymentTarget:
@@ -27,22 +27,22 @@ packages:
     branch: master
 
 targets:
-  "Electricity consumption calculator":
+  ElectricityConsumptionCalculator:
     type: application
     platform: iOS
     sources:
-      - path: "Electricity consumption calculator"
+      - path: ElectricityConsumptionCalculator
         excludes:
           - "**/.DS_Store"
       - path: CoreData
       - path: Services
       - path: ViewModels
     resources:
-      - path: "Electricity consumption calculator/Assets.xcassets"
-      - path: "Electricity consumption calculator/Preview Content"
-      - path: "Electricity consumption calculator/Localizable.xcstrings"
-      - path: "Electricity consumption calculator/Electricity_consumption_calculator.xcdatamodeld"
-      - path: "Electricity-consumption-calculator-Info.plist"
+      - path: ElectricityConsumptionCalculator/Assets.xcassets
+      - path: ElectricityConsumptionCalculator/PreviewContent
+      - path: ElectricityConsumptionCalculator/Localizable.xcstrings
+      - path: ElectricityConsumptionCalculator/Electricity_consumption_calculator.xcdatamodeld
+      - path: Electricity-consumption-calculator-Info.plist
     dependencies:
       - package: Alamofire
       - package: GoogleSignIn
@@ -59,7 +59,7 @@ targets:
         ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
         SWIFT_EMIT_LOC_STRINGS: YES
         ENABLE_PREVIEWS: YES
-        DEVELOPMENT_ASSET_PATHS: "Electricity consumption calculator/Preview Content"
+        DEVELOPMENT_ASSET_PATHS: ElectricityConsumptionCalculator/PreviewContent
         INFOPLIST_KEY_UIApplicationSceneManifest_Generation: YES
         INFOPLIST_KEY_UILaunchScreen_Generation: YES
         INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone: "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight"
@@ -82,10 +82,10 @@ targets:
               NSTemporaryExceptionMinimumTLSVersion: "TLSv1.1"
 
 schemes:
-  "Electricity consumption calculator":
+  ElectricityConsumptionCalculator:
     build:
       targets:
-        "Electricity consumption calculator": all
+        ElectricityConsumptionCalculator: all
     run:
       config: Debug
     test:

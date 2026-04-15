@@ -136,13 +136,13 @@ class AFRequestInterceptor: RequestInterceptor {
                         let expirationDate = Date().addingTimeInterval(TimeInterval(expiresIn))
                         KeychainService.shared.setTokenExpiration(expirationDate: expirationDate)
 
-                        Logger.auth.info("Token refreshed successfully, expires at: \(expirationDate)")
+                        AppLogger.auth.info("Token refreshed successfully, expires at: \(expirationDate)")
 
                         // Retry all queued requests
                         self.requestsToRetry.forEach { $0(.retry) }
                     } else {
                         // Refresh failed - clear tokens, notify UI, and don't retry
-                        Logger.auth.error("Token refresh failed: \(error?.localizedDescription ?? "unknown error")")
+                        AppLogger.auth.error("Token refresh failed: \(error?.localizedDescription ?? "unknown error")")
                         KeychainService.shared.clearAllTokens()
 
                         // Notify UI to update authentication state

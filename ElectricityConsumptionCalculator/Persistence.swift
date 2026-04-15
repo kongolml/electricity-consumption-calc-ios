@@ -47,11 +47,11 @@ class PersistenceController: ObservableObject {
         container.loadPersistentStores { [weak self] storeDescription, error in
             if let error = error as NSError? {
                 // Log the error with details
-                Logger.persistence.error("Core Data failed to load persistent store: \(error), \(error.userInfo)")
+                AppLogger.persistence.error("Core Data failed to load persistent store: \(error), \(error.userInfo)")
 
                 // Only attempt recovery once to prevent infinite loops
                 guard !recoveryAttempted else {
-                    Logger.persistence.error("Core Data recovery already attempted, skipping")
+                    AppLogger.persistence.error("Core Data recovery already attempted, skipping")
                     return
                 }
                 recoveryAttempted = true
@@ -76,18 +76,18 @@ class PersistenceController: ObservableObject {
                             try fileManager.createDirectory(at: backupDir, withIntermediateDirectories: true)
                         }
                         try fileManager.copyItem(at: url, to: backupURL)
-                        Logger.persistence.info("Created Core Data backup at: \(backupURL.lastPathComponent)")
+                        AppLogger.persistence.info("Created Core Data backup at: \(backupURL.lastPathComponent)")
                     } catch {
-                        Logger.persistence.error("Failed to create Core Data backup: \(error.localizedDescription)")
+                        AppLogger.persistence.error("Failed to create Core Data backup: \(error.localizedDescription)")
                     }
 
                     for fileURL in [url, walURL, shmURL] {
                         if fileManager.fileExists(atPath: fileURL.path) {
                             do {
                                 try fileManager.removeItem(at: fileURL)
-                                Logger.persistence.info("Removed corrupted Core Data file: \(fileURL.lastPathComponent)")
+                                AppLogger.persistence.info("Removed corrupted Core Data file: \(fileURL.lastPathComponent)")
                             } catch {
-                                Logger.persistence.error("Failed to remove Core Data file: \(error.localizedDescription)")
+                                AppLogger.persistence.error("Failed to remove Core Data file: \(error.localizedDescription)")
                             }
                         }
                     }
@@ -95,9 +95,9 @@ class PersistenceController: ObservableObject {
                     // Retry loading with a fresh store
                     self.container.loadPersistentStores { _, retryError in
                         if let retryError = retryError {
-                            Logger.persistence.error("Core Data recovery also failed: \(retryError)")
+                            AppLogger.persistence.error("Core Data recovery also failed: \(retryError)")
                         } else {
-                            Logger.persistence.info("Core Data store successfully recovered")
+                            AppLogger.persistence.info("Core Data store successfully recovered")
                         }
                     }
                 }
@@ -120,7 +120,7 @@ class PersistenceController: ObservableObject {
                 return newEntity
             }
         } catch {
-            Logger.persistence.error("Error fetching or creating GeneratorEntity: \(error.localizedDescription)")
+            AppLogger.persistence.error("Error fetching or creating GeneratorEntity: \(error.localizedDescription)")
             return nil
         }
     }
@@ -149,7 +149,7 @@ class PersistenceController: ObservableObject {
                 return nil
             }
         } catch {
-            Logger.persistence.error("Error fetching or creating consumers: \(error.localizedDescription)")
+            AppLogger.persistence.error("Error fetching or creating consumers: \(error.localizedDescription)")
             return nil
         }
     }
@@ -161,7 +161,7 @@ class PersistenceController: ObservableObject {
             try container.viewContext.save()
         } catch {
             let nsError = error as NSError
-            Logger.persistence.error("Error saving context: \(nsError), \(nsError.userInfo)")
+            AppLogger.persistence.error("Error saving context: \(nsError), \(nsError.userInfo)")
             // Handle error appropriately - maybe show alert to user
         }
     }

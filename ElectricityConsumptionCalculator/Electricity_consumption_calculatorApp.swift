@@ -34,16 +34,16 @@ struct Electricity_consumption_calculatorApp: App {
                     .onAppear {
                         GIDSignIn.sharedInstance.restorePreviousSignIn { user, error in
                             if let error {
-                                Logger.auth.error("Google sign-in restore error: \(error.localizedDescription)")
+                                AppLogger.auth.error("Google sign-in restore error: \(error.localizedDescription)")
                                 return
                             }
 
                             guard let signedGoogleUser = user else {
-                                Logger.auth.info("No google user signed in")
+                                AppLogger.auth.info("No google user signed in")
                                 return
                             }
 
-                            Logger.auth.info("Restored google user email: \(String(describing: signedGoogleUser.profile?.email))")
+                            AppLogger.auth.info("Restored google user email: \(String(describing: signedGoogleUser.profile?.email))")
                         }
                     }
                     .onOpenURL { url in
@@ -61,7 +61,7 @@ struct Electricity_consumption_calculatorApp: App {
     private func loadDefaultGenerator() {
         defaultGenerator = persistenceController.fetchOrCreateDefaultGeneratorEntity()
         if defaultGenerator == nil {
-            Logger.persistence.error("Failed to load or create default generator")
+            AppLogger.persistence.error("Failed to load or create default generator")
         }
         persistenceController.fetchOrCreateDefaultConsumers()
     }
