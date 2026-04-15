@@ -1,0 +1,98 @@
+name: ElectricityConsumptionCalculator
+options:
+  bundleIdPrefix: project
+  deploymentTarget:
+    iOS: "17.5"
+  xcodeVersion: "15.4"
+  generateEmptyDirectories: true
+
+settings:
+  base:
+    SWIFT_VERSION: "5.0"
+    TARGETED_DEVICE_FAMILY: "1,2"
+    MARKETING_VERSION: "1.1"
+    CURRENT_PROJECT_VERSION: "2"
+    CODE_SIGN_STYLE: Automatic
+    DEVELOPMENT_TEAM: "6H5SPDEMQK"
+
+packages:
+  Alamofire:
+    url: https://github.com/Alamofire/Alamofire.git
+    from: "5.9.1"
+  GoogleSignIn:
+    url: https://github.com/google/GoogleSignIn-iOS
+    from: "7.1.0"
+  KeychainAccess:
+    url: https://github.com/kishikawakatsumi/KeychainAccess.git
+    branch: master
+
+targets:
+  ElectricityConsumptionCalculator:
+    type: application
+    platform: iOS
+    sources:
+      - path: ElectricityConsumptionCalculator
+        excludes:
+          - "**/.DS_Store"
+      - path: CoreData
+      - path: Services
+      - path: ViewModels
+    resources:
+      - path: ElectricityConsumptionCalculator/Assets.xcassets
+      - path: ElectricityConsumptionCalculator/PreviewContent
+      - path: ElectricityConsumptionCalculator/Localizable.xcstrings
+      - path: ElectricityConsumptionCalculator/Electricity_consumption_calculator.xcdatamodeld
+      - path: Electricity-consumption-calculator-Info.plist
+    dependencies:
+      - package: Alamofire
+      - package: GoogleSignIn
+        product: GoogleSignIn
+      - package: GoogleSignIn
+        product: GoogleSignInSwift
+      - package: KeychainAccess
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: project.Electricity-consumption-calculator
+        INFOPLIST_FILE: Electricity-consumption-calculator-Info.plist
+        GENERATE_INFOPLIST_FILE: YES
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
+        SWIFT_EMIT_LOC_STRINGS: YES
+        ENABLE_PREVIEWS: YES
+        DEVELOPMENT_ASSET_PATHS: ElectricityConsumptionCalculator/PreviewContent
+        INFOPLIST_KEY_UIApplicationSceneManifest_Generation: YES
+        INFOPLIST_KEY_UILaunchScreen_Generation: YES
+        INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone: "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight"
+        INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad: "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight"
+        INFOPLIST_KEY_CFBundleDisplayName: "Споживання"
+        INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents: YES
+    info:
+      path: Electricity-consumption-calculator-Info.plist
+      properties:
+        ApiHostUrl: ""
+        CFBundleURLTypes:
+          - CFBundleURLSchemes:
+              - "com.googleusercontent.apps.570329292923-2jc3f32vf4pb4g8du30354oni4qifh1l"
+        GIDClientID: "570329292923-2jc3f32vf4pb4g8du30354oni4qifh1l.apps.googleusercontent.com"
+        NSAppTransportSecurity:
+          NSExceptionDomains:
+            electricity-consumptions.localbackend:
+              NSIncludesSubdomains: true
+              NSTemporaryExceptionAllowsInsecureHTTPLoads: true
+              NSTemporaryExceptionMinimumTLSVersion: "TLSv1.1"
+
+schemes:
+  ElectricityConsumptionCalculator:
+    build:
+      targets:
+        ElectricityConsumptionCalculator: all
+    run:
+      config: Debug
+    test:
+      config: Debug
+    profile:
+      config: Release
+    analyze:
+      config: Debug
+    archive:
+      config: Release

@@ -1,0 +1,32 @@
+# Xcode
+xcuserdata/
+*.xcworkspace/xcuserdata/
+*.xcuserstate
+*.xcuserdatad
+
+# macOS
+.DS_Store
+
+# Build artifacts
+build/
+DerivedData/
+
+# CocoaPods
+Pods/
+
+# Swift Package Manager
+.build/
+.swiftpm/
+Package.resolved
+
+# Fastlane
+fastlane/report.xml
+fastlane/Preview.html
+fastlane/screenshots
+fastlane/test_output
+
+.vscode/
+.opencode/
+
+*.xcodeproj
+*.xcworkspace
