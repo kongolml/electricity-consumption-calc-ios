@@ -49,6 +49,19 @@
         }
       }
     },
+    "%@, %@" : {
+      "localizations" : {
+        "uk" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@, %2$@"
+          }
+        }
+      }
+    },
+    "Account" : {
+
+    },
     "Activate" : {
       "localizations" : {
         "en" : {
@@ -114,6 +127,7 @@
       }
     },
     "Dectivate" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -216,6 +230,9 @@
           }
         }
       }
+    },
+    "Generator" : {
+
     },
     "kWatt" : {
       "localizations" : {
@@ -474,6 +491,9 @@
       }
     },
     "Sign out google" : {
+
+    },
+    "Signing in..." : {
 
     },
     "Summary" : {
