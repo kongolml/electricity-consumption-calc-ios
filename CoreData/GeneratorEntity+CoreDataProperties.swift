@@ -19,6 +19,13 @@ extension GeneratorEntity {
     @NSManaged public var name: String
     @NSManaged public var capacity: Double
     @NSManaged public var id: UUID?
+    @NSManaged public var brand: String?
+    @NSManaged public var peakCapacity: Double
+    @NSManaged public var fuelTankCapacity: Double
+    @NSManaged public var fuelType: Int16
+    @NSManaged public var fuelConsumptionRate: Double
+    @NSManaged public var isSelected: Bool
+    @NSManaged public var consumers: NSSet?
 
 }
 

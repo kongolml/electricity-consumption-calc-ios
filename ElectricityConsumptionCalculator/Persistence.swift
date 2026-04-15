@@ -125,33 +125,96 @@ class PersistenceController: ObservableObject {
         }
     }
     
-    func fetchOrCreateDefaultConsumers() -> ConsumerEntity? {
+    func fetchOrCreateDefaultConsumers(for generator: GeneratorEntity) -> [ConsumerEntity]? {
         let fetchRequest: NSFetchRequest<ConsumerEntity> = ConsumerEntity.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "relationship == %@", generator)
 
         do {
             let results = try container.viewContext.fetch(fetchRequest)
-            if let existingConsumer = results.first {
-                return existingConsumer
+            if !results.isEmpty {
+                return results
             } else {
-                let newConsumerMain = ConsumerEntity.createMock(context: container.viewContext)
-                // Set default values for newEntity here if needed
-                newConsumerMain.priorityType = ConsumerPriorityType.main.rawValue
-                newConsumerMain.quantity = 1
-                newConsumerMain.name = NSLocalizedString("default_value_fridge", comment: "")
-                newConsumerMain.isActive = true
+                // Create default consumers for this generator
+                let newConsumerCritical = ConsumerEntity.createMock(context: container.viewContext)
+                newConsumerCritical.priorityType = ConsumerPriorityType.critical.rawValue
+                newConsumerCritical.quantity = 1
+                newConsumerCritical.name = NSLocalizedString("default_value_fridge", comment: "")
+                newConsumerCritical.isActive = true
+                newConsumerCritical.category = DeviceCategory.kitchen.rawValue
+                newConsumerCritical.relationship = generator
 
-                let newConsumerSecondary = ConsumerEntity.createMock(context: container.viewContext)
-                newConsumerSecondary.priorityType = ConsumerPriorityType.secondary.rawValue
-                newConsumerSecondary.name = NSLocalizedString("default_value_backlight", comment: "")
-                newConsumerSecondary.isActive = true
+                let newConsumerImportant = ConsumerEntity.createMock(context: container.viewContext)
+                newConsumerImportant.priorityType = ConsumerPriorityType.important.rawValue
+                newConsumerImportant.name = NSLocalizedString("default_value_backlight", comment: "")
+                newConsumerImportant.isActive = true
+                newConsumerImportant.category = DeviceCategory.lighting.rawValue
+                newConsumerImportant.relationship = generator
 
                 try container.viewContext.save()
-                return nil
+                return [newConsumerCritical, newConsumerImportant]
             }
         } catch {
             AppLogger.persistence.error("Error fetching or creating consumers: \(error.localizedDescription)")
             return nil
         }
+    }
+
+    // MARK: - Multi-Generator Support
+
+    func fetchGenerators() -> [GeneratorEntity] {
+        let fetchRequest: NSFetchRequest<GeneratorEntity> = GeneratorEntity.fetchRequest()
+        fetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \GeneratorEntity.name, ascending: true)]
+
+        do {
+            return try container.viewContext.fetch(fetchRequest)
+        } catch {
+            AppLogger.persistence.error("Error fetching generators: \(error.localizedDescription)")
+            return []
+        }
+    }
+
+    func fetchSelectedGenerator() -> GeneratorEntity? {
+        let fetchRequest: NSFetchRequest<GeneratorEntity> = GeneratorEntity.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "isSelected == YES")
+        fetchRequest.fetchLimit = 1
+
+        do {
+            let results = try container.viewContext.fetch(fetchRequest)
+            return results.first
+        } catch {
+            AppLogger.persistence.error("Error fetching selected generator: \(error.localizedDescription)")
+            return nil
+        }
+    }
+
+    func createGenerator(name: String, capacity: Double) -> GeneratorEntity {
+        let newGenerator = GeneratorEntity(context: container.viewContext)
+        newGenerator.name = name
+        newGenerator.capacity = capacity
+        newGenerator.peakCapacity = capacity * 1.2 // Default peak to 120% of running capacity
+        saveContext()
+        return newGenerator
+    }
+
+    func deleteGenerator(_ generator: GeneratorEntity) {
+        // If deleting the selected generator, select another one first
+        if generator.isSelected {
+            let remainingGenerators = fetchGenerators().filter { $0 != generator }
+            if let firstRemaining = remainingGenerators.first {
+                firstRemaining.isSelected = true
+            }
+        }
+        container.viewContext.delete(generator)
+        saveContext()
+    }
+
+    func selectGenerator(_ generator: GeneratorEntity) {
+        // Deselect all other generators
+        let allGenerators = fetchGenerators()
+        for gen in allGenerators {
+            gen.isSelected = (gen == generator)
+        }
+        saveContext()
     }
     
     func saveContext() {

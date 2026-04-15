@@ -19,6 +19,10 @@ extension ConsumerEntity {
         self.isActive = true
         self.quantity = 1
         self.timeCreated = Date()
+        self.category = 8 // DeviceCategory.other
+        self.surgeWattage = 0
+        self.powerFactor = 1.0
+        self.dutyCycleType = 3 // DutyCycleType.manualOnOff
     }
     
     public static func createMock(context: NSManagedObjectContext) -> ConsumerEntity {

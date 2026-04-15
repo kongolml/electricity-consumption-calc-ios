@@ -1,0 +1,380 @@
+[
+  {
+    "id": "fridge-standard",
+    "name": "Preset_Fridge_Standard",
+    "category": 2,
+    "consumption": 150,
+    "surgeWattage": 800,
+    "powerFactor": 1.0,
+    "dutyCycleType": 2
+  },
+  {
+    "id": "fridge-chest-freezer",
+    "name": "Preset_Fridge_ChestFreezer",
+    "category": 2,
+    "consumption": 200,
+    "surgeWattage": 1000,
+    "powerFactor": 1.0,
+    "dutyCycleType": 2
+  },
+  {
+    "id": "microwave-small",
+    "name": "Preset_Microwave_Small",
+    "category": 3,
+    "consumption": 700,
+    "surgeWattage": 1000,
+    "powerFactor": 1.0,
+    "dutyCycleType": 3
+  },
+  {
+    "id": "microwave-large",
+    "name": "Preset_Microwave_Large",
+    "category": 3,
+    "consumption": 1200,
+    "surgeWattage": 1500,
+    "powerFactor": 1.0,
+    "dutyCycleType": 3
+  },
+  {
+    "id": "coffee-maker",
+    "name": "Preset_CoffeeMaker",
+    "category": 3,
+    "consumption": 800,
+    "surgeWattage": 800,
+    "powerFactor": 1.0,
+    "dutyCycleType": 3
+  },
+  {
+    "id": "toaster",
+    "name": "Preset_Toaster",
+    "category": 3,
+    "consumption": 800,
+    "surgeWattage": 800,
+    "powerFactor": 1.0,
+    "dutyCycleType": 3
+  },
+  {
+    "id": "electric-kettle",
+    "name": "Preset_ElectricKettle",
+    "category": 3,
+    "consumption": 1500,
+    "surgeWattage": 1500,
+    "powerFactor": 1.0,
+    "dutyCycleType": 3
+  },
+  {
+    "id": "rice-cooker",
+    "name": "Preset_RiceCooker",
+    "category": 3,
+    "consumption": 500,
+    "surgeWattage": 500,
+    "powerFactor": 1.0,
+    "dutyCycleType": 3
+  },
+  {
+    "id": "air-conditioner-small",
+    "name": "Preset_AC_Small",
+    "category": 2,
+    "consumption": 900,
+    "surgeWattage": 2200,
+    "powerFactor": 0.95,
+    "dutyCycleType": 2
+  },
+  {
+    "id": "air-conditioner-large",
+    "name": "Preset_AC_Large",
+    "category": 2,
+    "consumption": 1500,
+    "surgeWattage": 3500,
+    "powerFactor": 0.95,
+    "dutyCycleType": 2
+  },
+  {
+    "id": "fan-ceiling",
+    "name": "Preset_Fan_Ceiling",
+    "category": 2,
+    "consumption": 75,
+    "surgeWattage": 150,
+    "powerFactor": 0.9,
+    "dutyCycleType": 3
+  },
+  {
+    "id": "fan-standing",
+    "name": "Preset_Fan_Standing",
+    "category": 2,
+    "consumption": 50,
+    "surgeWattage": 100,
+    "powerFactor": 0.9,
+    "dutyCycleType": 3
+  },
+  {
+    "id": "space-heater-small",
+    "name": "Preset_Heater_Small",
+    "category": 1,
+    "consumption": 750,
+    "surgeWattage": 750,
+    "powerFactor": 1.0,
+    "dutyCycleType": 3
+  },
+  {
+    "id": "space-heater-large",
+    "name": "Preset_Heater_Large",
+    "category": 1,
+    "consumption": 1500,
+    "surgeWattage": 1500,
+    "powerFactor": 1.0,
+    "dutyCycleType": 3
+  },
+  {
+    "id": "water-heater",
+    "name": "Preset_WaterHeater",
+    "category": 1,
+    "consumption": 3000,
+    "surgeWattage": 3000,
+    "powerFactor": 1.0,
+    "dutyCycleType": 2
+  },
+  {
+    "id": "led-bulb",
+    "name": "Preset_LED_Bulb",
+    "category": 0,
+    "consumption": 10,
+    "surgeWattage": 10,
+    "powerFactor": 0.9,
+    "dutyCycleType": 3
+  },
+  {
+    "id": "cfl-bulb",
+    "name": "Preset_CFL_Bulb",
+    "category": 0,
+    "consumption": 15,
+    "surgeWattage": 15,
+    "powerFactor": 0.9,
+    "dutyCycleType": 3
+  },
+  {
+    "id": "incandescent-bulb",
+    "name": "Preset_Incandescent_Bulb",
+    "category": 0,
+    "consumption": 60,
+    "surgeWattage": 60,
+    "powerFactor": 1.0,
+    "dutyCycleType": 3
+  },
+  {
+    "id": "tv-led",
+    "name": "Preset_TV_LED",
+    "category": 5,
+    "consumption": 100,
+    "surgeWattage": 100,
+    "powerFactor": 0.95,
+    "dutyCycleType": 3
+  },
+  {
+    "id": "tv-oled",
+    "name": "Preset_TV_OLED",
+    "category": 5,
+    "consumption": 150,
+    "surgeWattage": 150,
+    "powerFactor": 0.95,
+    "dutyCycleType": 3
+  },
+  {
+    "id": "laptop",
+    "name": "Preset_Laptop",
+    "category": 5,
+    "consumption": 65,
+    "surgeWattage": 90,
+    "powerFactor": 0.9,
+    "dutyCycleType": 3
+  },
+  {
+    "id": "desktop-computer",
+    "name": "Preset_Desktop",
+    "category": 5,
+    "consumption": 200,
+    "surgeWattage": 400,
+    "powerFactor": 0.95,
+    "dutyCycleType": 3
+  },
+  {
+    "id": "monitor-24",
+    "name": "Preset_Monitor_24",
+    "category": 5,
+    "consumption": 25,
+    "surgeWattage": 40,
+    "powerFactor": 0.9,
+    "dutyCycleType": 3
+  },
+  {
+    "id": "router-wifi",
+    "name": "Preset_Router_WiFi",
+    "category": 5,
+    "consumption": 10,
+    "surgeWattage": 15,
+    "powerFactor": 0.8,
+    "dutyCycleType": 1
+  },
+  {
+    "id": "phone-charger",
+    "name": "Preset_Phone_Charger",
+    "category": 5,
+    "consumption": 10,
+    "surgeWattage": 10,
+    "powerFactor": 0.9,
+    "dutyCycleType": 3
+  },
+  {
+    "id": "washing-machine",
+    "name": "Preset_WashingMachine",
+    "category": 6,
+    "consumption": 500,
+    "surgeWattage": 1500,
+    "powerFactor": 0.9,
+    "dutyCycleType": 3
+  },
+  {
+    "id": "water-pump-small",
+    "name": "Preset_WaterPump_Small",
+    "category": 6,
+    "consumption": 250,
+    "surgeWattage": 750,
+    "powerFactor": 0.85,
+    "dutyCycleType": 3
+  },
+  {
+    "id": "water-pump-large",
+    "name": "Preset_WaterPump_Large",
+    "category": 6,
+    "consumption": 750,
+    "surgeWattage": 2200,
+    "powerFactor": 0.85,
+    "dutyCycleType": 3
+  },
+  {
+    "id": "sump-pump",
+    "name": "Preset_SumpPump",
+    "category": 6,
+    "consumption": 600,
+    "surgeWattage": 1800,
+    "powerFactor": 0.85,
+    "dutyCycleType": 2
+  },
+  {
+    "id": "well-pump",
+    "name": "Preset_WellPump",
+    "category": 6,
+    "consumption": 1000,
+    "surgeWattage": 3000,
+    "powerFactor": 0.85,
+    "dutyCycleType": 2
+  },
+  {
+    "id": "circular-saw",
+    "name": "Preset_CircularSaw",
+    "category": 4,
+    "consumption": 1200,
+    "surgeWattage": 2400,
+    "powerFactor": 0.9,
+    "dutyCycleType": 3
+  },
+  {
+    "id": "drill",
+    "name": "Preset_Drill",
+    "category": 4,
+    "consumption": 600,
+    "surgeWattage": 900,
+    "powerFactor": 0.9,
+    "dutyCycleType": 3
+  },
+  {
+    "id": "angle-grinder",
+    "name": "Preset_AngleGrinder",
+    "category": 4,
+    "consumption": 800,
+    "surgeWattage": 1200,
+    "powerFactor": 0.9,
+    "dutyCycleType": 3
+  },
+  {
+    "id": "air-compressor",
+    "name": "Preset_AirCompressor",
+    "category": 4,
+    "consumption": 1500,
+    "surgeWattage": 3000,
+    "powerFactor": 0.9,
+    "dutyCycleType": 2
+  },
+  {
+    "id": "welder-small",
+    "name": "Preset_Welder_Small",
+    "category": 4,
+    "consumption": 2000,
+    "surgeWattage": 3000,
+    "powerFactor": 0.8,
+    "dutyCycleType": 3
+  },
+  {
+    "id": "vacuum-cleaner",
+    "name": "Preset_VacuumCleaner",
+    "category": 8,
+    "consumption": 800,
+    "surgeWattage": 1200,
+    "powerFactor": 0.9,
+    "dutyCycleType": 3
+  },
+  {
+    "id": "hair-dryer",
+    "name": "Preset_HairDryer",
+    "category": 8,
+    "consumption": 1200,
+    "surgeWattage": 1200,
+    "powerFactor": 1.0,
+    "dutyCycleType": 3
+  },
+  {
+    "id": "cpap-machine",
+    "name": "Preset_CPAP",
+    "category": 7,
+    "consumption": 60,
+    "surgeWattage": 90,
+    "powerFactor": 0.95,
+    "dutyCycleType": 1
+  },
+  {
+    "id": "oxygen-concentrator",
+    "name": "Preset_OxygenConcentrator",
+    "category": 7,
+    "consumption": 350,
+    "surgeWattage": 500,
+    "powerFactor": 0.95,
+    "dutyCycleType": 1
+  },
+  {
+    "id": "garage-door-opener",
+    "name": "Preset_GarageDoorOpener",
+    "category": 4,
+    "consumption": 400,
+    "surgeWattage": 800,
+    "powerFactor": 0.9,
+    "dutyCycleType": 3
+  },
+  {
+    "id": "electric-oven",
+    "name": "Preset_ElectricOven",
+    "category": 3,
+    "consumption": 2500,
+    "surgeWattage": 2500,
+    "powerFactor": 1.0,
+    "dutyCycleType": 3
+  },
+  {
+    "id": "dishwasher",
+    "name": "Preset_Dishwasher",
+    "category": 3,
+    "consumption": 1200,
+    "surgeWattage": 1500,
+    "powerFactor": 0.95,
+    "dutyCycleType": 3
+  }
+]

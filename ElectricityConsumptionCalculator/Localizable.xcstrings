@@ -1,6 +1,12 @@
 {
   "sourceLanguage" : "uk",
   "strings" : {
+    "/" : {
+
+    },
+    "/ %lld W" : {
+
+    },
     "%@ consumer" : {
       "localizations" : {
         "en" : {
@@ -33,6 +39,15 @@
         }
       }
     },
+    "%@ L/h" : {
+
+    },
+    "%@ W" : {
+
+    },
+    "%@ W peak" : {
+
+    },
     "%@ Watt" : {
       "localizations" : {
         "en" : {
@@ -49,6 +64,16 @@
         }
       }
     },
+    "%@ watts of %@ watts capacity" : {
+      "localizations" : {
+        "uk" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ watts of %2$@ watts capacity"
+          }
+        }
+      }
+    },
     "%@, %@" : {
       "localizations" : {
         "uk" : {
@@ -58,6 +83,43 @@
           }
         }
       }
+    },
+    "%lld + %lld = %lld W" : {
+      "localizations" : {
+        "uk" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$lld + %2$lld = %3$lld W"
+          }
+        }
+      }
+    },
+    "%lld devices" : {
+
+    },
+    "%lld W" : {
+
+    },
+    "%lld W surge" : {
+
+    },
+    "%lld%%" : {
+
+    },
+    "•" : {
+
+    },
+    "+%@ W" : {
+
+    },
+    "+%@ W over limit" : {
+
+    },
+    "0.5" : {
+
+    },
+    "1.0" : {
+
     },
     "Account" : {
 
@@ -78,6 +140,15 @@
         }
       }
     },
+    "Active" : {
+
+    },
+    "Add active consumers to see runtime estimate" : {
+
+    },
+    "Add Device" : {
+
+    },
     "Add Item" : {
       "localizations" : {
         "en" : {
@@ -94,6 +165,9 @@
         }
       }
     },
+    "Advanced" : {
+
+    },
     "Are you sure you want to delete this item?" : {
       "localizations" : {
         "en" : {
@@ -109,6 +183,72 @@
           }
         }
       }
+    },
+    "Back" : {
+
+    },
+    "Basic Information" : {
+
+    },
+    "Brand (optional)" : {
+
+    },
+    "Can I Add?" : {
+
+    },
+    "Cancel" : {
+
+    },
+    "Capacity" : {
+
+    },
+    "Category" : {
+
+    },
+    "Category_Cooling" : {
+
+    },
+    "Category_Electronics" : {
+
+    },
+    "Category_Heating" : {
+
+    },
+    "Category_Kitchen" : {
+
+    },
+    "Category_Lighting" : {
+
+    },
+    "Category_Medical" : {
+
+    },
+    "Category_Other" : {
+
+    },
+    "Category_Tools" : {
+
+    },
+    "Category_WaterPumps" : {
+
+    },
+    "Choose Different" : {
+
+    },
+    "Configuration" : {
+
+    },
+    "Consumption" : {
+
+    },
+    "Consumption Rate" : {
+
+    },
+    "Current Load" : {
+
+    },
+    "Custom" : {
+
     },
     "Deactivate" : {
       "localizations" : {
@@ -199,6 +339,30 @@
         }
       }
     },
+    "Device" : {
+
+    },
+    "Device Details" : {
+
+    },
+    "Device Name" : {
+
+    },
+    "Devices are ordered by priority (optional first) and consumption (highest first)." : {
+
+    },
+    "Duty Cycle" : {
+
+    },
+    "DutyCycle_AlwaysOn" : {
+
+    },
+    "DutyCycle_CyclesAutomatically" : {
+
+    },
+    "DutyCycle_ManualOnOff" : {
+
+    },
     "Edit generator" : {
       "localizations" : {
         "en" : {
@@ -214,6 +378,15 @@
           }
         }
       }
+    },
+    "Efficiency multiplier (0.5 - 1.0)" : {
+
+    },
+    "Empty" : {
+
+    },
+    "Enable Fuel Tracking" : {
+
     },
     "Enabled" : {
       "localizations" : {
@@ -231,7 +404,49 @@
         }
       }
     },
+    "Estimated Runtime" : {
+
+    },
+    "Estimated runtime based on current load" : {
+
+    },
+    "Fuel & Runtime" : {
+
+    },
+    "Fuel Configuration" : {
+
+    },
+    "Fuel Level" : {
+
+    },
+    "Fuel tracking enables runtime estimation based on current load." : {
+
+    },
+    "Fuel Type" : {
+
+    },
+    "FuelType_Diesel" : {
+
+    },
+    "FuelType_Gasoline" : {
+
+    },
+    "FuelType_None" : {
+
+    },
+    "FuelType_Propane" : {
+
+    },
+    "Full (%lld L)" : {
+
+    },
     "Generator" : {
+
+    },
+    "Generator load: %lld percent" : {
+
+    },
+    "High surge devices:" : {
 
     },
     "kWatt" : {
@@ -250,6 +465,12 @@
         }
       }
     },
+    "L" : {
+
+    },
+    "L/kWh" : {
+
+    },
     "Left capacity" : {
       "localizations" : {
         "en" : {
@@ -265,6 +486,15 @@
           }
         }
       }
+    },
+    "Liters" : {
+
+    },
+    "Load" : {
+
+    },
+    "Load is within safe limits" : {
+
     },
     "Loading" : {
       "localizations" : {
@@ -283,6 +513,7 @@
       }
     },
     "Main" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -299,6 +530,7 @@
       }
     },
     "Main device" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -315,6 +547,7 @@
       }
     },
     "Main_plural" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -329,6 +562,9 @@
           }
         }
       }
+    },
+    "May exceed generator capacity" : {
+
     },
     "Name" : {
       "localizations" : {
@@ -426,6 +662,45 @@
         }
       }
     },
+    "No suggestions needed" : {
+
+    },
+    "Not Recommended" : {
+
+    },
+    "Overload" : {
+
+    },
+    "Peak capacity is used for surge protection calculations" : {
+
+    },
+    "Peak/Surge Capacity" : {
+
+    },
+    "Power Factor" : {
+
+    },
+    "Priority" : {
+
+    },
+    "Priority_Critical" : {
+
+    },
+    "Priority_Critical_Plural" : {
+
+    },
+    "Priority_Important" : {
+
+    },
+    "Priority_Important_Plural" : {
+
+    },
+    "Priority_Optional" : {
+
+    },
+    "Priority_Optional_Plural" : {
+
+    },
     "Quantity" : {
       "localizations" : {
         "en" : {
@@ -442,7 +717,23 @@
         }
       }
     },
+    "Quantity: %d" : {
+
+    },
+    "Result" : {
+
+    },
+    "Running Capacity" : {
+
+    },
+    "Running Watts" : {
+
+    },
+    "Safe to Add" : {
+
+    },
     "Secondary" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -459,6 +750,7 @@
       }
     },
     "Secondary device" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -475,6 +767,7 @@
       }
     },
     "Secondary_plural" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -490,10 +783,25 @@
         }
       }
     },
+    "Select Category" : {
+
+    },
+    "Select Device" : {
+
+    },
+    "Select from Presets" : {
+
+    },
     "Sign out google" : {
 
     },
     "Signing in..." : {
+
+    },
+    "Startup/surge power (0 = same as running)" : {
+
+    },
+    "Suggested to Turn Off" : {
 
     },
     "Summary" : {
@@ -511,6 +819,24 @@
           }
         }
       }
+    },
+    "Surge" : {
+
+    },
+    "Surge Safe" : {
+
+    },
+    "Surge Warning" : {
+
+    },
+    "Surge Wattage" : {
+
+    },
+    "Surge Watts (optional)" : {
+
+    },
+    "Tank Capacity" : {
+
     },
     "Total capacity" : {
       "localizations" : {
@@ -576,7 +902,11 @@
         }
       }
     },
+    "Turn Off All Suggested" : {
+
+    },
     "Type" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -591,6 +921,9 @@
           }
         }
       }
+    },
+    "Use default for %@" : {
+
     },
     "Watt" : {
       "localizations" : {
@@ -607,6 +940,12 @@
           }
         }
       }
+    },
+    "What to Turn Off?" : {
+
+    },
+    "Worst-case startup surge analysis" : {
+
     },
     "x%@" : {
       "localizations" : {

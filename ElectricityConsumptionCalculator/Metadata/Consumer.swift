@@ -8,24 +8,29 @@
 import Foundation
 
 enum ConsumerPriorityType: Int16, CaseIterable {
-    case main = 1
-    case secondary = 2
+    case critical = 1
+    case important = 2
+    case optional = 3
     
     var name: LocalizedStringResource {
         switch self {
-        case .main:
-            return "Main"
-        case .secondary:
-            return "Secondary"
+        case .critical:
+            return "Priority_Critical"
+        case .important:
+            return "Priority_Important"
+        case .optional:
+            return "Priority_Optional"
         }
     }
     
     var namePlural: LocalizedStringResource {
         switch self {
-        case .main:
-            return "Main_plural"
-        case .secondary:
-            return "Secondary_plural"
+        case .critical:
+            return "Priority_Critical_Plural"
+        case .important:
+            return "Priority_Important_Plural"
+        case .optional:
+            return "Priority_Optional_Plural"
         }
     }
 }

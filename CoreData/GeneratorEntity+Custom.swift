@@ -15,6 +15,11 @@ extension GeneratorEntity {
         self.id = UUID()
         self.name = NSLocalizedString("new_generator_item_name", comment: "")
         self.capacity = 1000
+        self.peakCapacity = 0
+        self.fuelTankCapacity = 0
+        self.fuelType = 0
+        self.fuelConsumptionRate = 0.35
+        self.isSelected = true
     }
 
     public static func createMock(context: NSManagedObjectContext) -> GeneratorEntity {
@@ -22,6 +27,11 @@ extension GeneratorEntity {
         newGenerator.id = UUID()
         newGenerator.name = NSLocalizedString("new_mock_generator_item_name", comment: "")
         newGenerator.capacity = 1000
+        newGenerator.peakCapacity = 2000
+        newGenerator.fuelTankCapacity = 15
+        newGenerator.fuelType = 1
+        newGenerator.fuelConsumptionRate = 0.35
+        newGenerator.isSelected = true
         return newGenerator
     }
 }

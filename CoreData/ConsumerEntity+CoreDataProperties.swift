@@ -25,6 +25,10 @@ extension ConsumerEntity {
     @NSManaged public var quantity: Int16
     @NSManaged public var timeCreated: Date?
     @NSManaged public var relationship: GeneratorEntity?
+    @NSManaged public var category: Int16
+    @NSManaged public var surgeWattage: Double
+    @NSManaged public var powerFactor: Double
+    @NSManaged public var dutyCycleType: Int16
 
 }
 

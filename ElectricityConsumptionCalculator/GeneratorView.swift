@@ -14,10 +14,18 @@ struct GeneratorView: View {
 
     @ObservedObject var generator: GeneratorEntity
 
-    @FetchRequest(
-        sortDescriptors: [NSSortDescriptor(keyPath: \ConsumerEntity.orderInGroup, ascending: true)],
-        animation: .default)
-    private var allGeneratorConsumers: FetchedResults<ConsumerEntity>
+    @FetchRequest private var allGeneratorConsumers: FetchedResults<ConsumerEntity>
+
+    @State private var showAddDeviceSheet = false
+
+    init(generator: GeneratorEntity) {
+        self.generator = generator
+        self._allGeneratorConsumers = FetchRequest(
+            sortDescriptors: [NSSortDescriptor(keyPath: \ConsumerEntity.orderInGroup, ascending: true)],
+            predicate: NSPredicate(format: "relationship == %@", generator),
+            animation: .default
+        )
+    }
 
     var totalConsumption: Double {
         ConsumptionCalculator.totalConsumption(for: Array(allGeneratorConsumers))
@@ -27,6 +35,10 @@ struct GeneratorView: View {
         ConsumptionCalculator.remainingCapacity(generator: generator, consumers: Array(allGeneratorConsumers))
     }
 
+    var loadPercentage: Double {
+        ConsumptionCalculator.loadPercentage(generator: generator, consumers: Array(allGeneratorConsumers))
+    }
+
     private func filteredItems(for category: ConsumerPriorityType) -> [ConsumerEntity] {
         ConsumptionCalculator.groupedByPriority(consumers: Array(allGeneratorConsumers))[category] ?? []
     }
@@ -34,6 +46,42 @@ struct GeneratorView: View {
     var body: some View {
         NavigationStack {
             List {
+                // Load Gauge Section
+                Section {
+                    LoadGaugeView(
+                        loadPercentage: loadPercentage,
+                        currentConsumption: totalConsumption,
+                        maxCapacity: generator.capacity
+                    )
+                    .frame(maxWidth: .infinity)
+                    .listRowBackground(Color.clear)
+                    .listRowInsets(EdgeInsets())
+                }
+
+                // Surge Warning Section
+                if generator.peakCapacity > 0 {
+                    Section {
+                        SurgeWarningView(
+                            generator: generator,
+                            consumers: Array(allGeneratorConsumers)
+                        )
+                        .listRowBackground(Color.clear)
+                        .listRowInsets(EdgeInsets())
+                    }
+                }
+
+                // Fuel Runtime Section
+                if generator.fuelTankCapacity > 0 {
+                    Section {
+                        FuelRuntimeView(
+                            generator: generator,
+                            consumers: Array(allGeneratorConsumers)
+                        )
+                        .listRowBackground(Color.clear)
+                        .listRowInsets(EdgeInsets())
+                    }
+                }
+
                 if allGeneratorConsumers.isEmpty {
                     Text("No consumers yet")
                 }
@@ -117,22 +165,15 @@ struct GeneratorView: View {
                     EditButton()
                 }
                 ToolbarItem {
-                    Menu {
-                        Button(action: {
-                            addNewItem(priority: .main)
-                        }) {
-                            Label("Main device", systemImage: "refrigerator")
-                        }
-
-                        Button(action: {
-                            addNewItem(priority: .secondary)
-                        }) {
-                            Label("Secondary device", systemImage: "lightbulb.2")
-                        }
-                    } label: {
+                    Button(action: {
+                        showAddDeviceSheet = true
+                    }) {
                         Label("Add Item", systemImage: "plus")
                     }
                 }
+            }
+            .sheet(isPresented: $showAddDeviceSheet) {
+                AddDeviceFlowView(generator: generator)
             }
             .navigationTitle(generator.name)
         }
@@ -143,6 +184,8 @@ struct GeneratorView: View {
             withAnimation {
                 let newItem = ConsumerEntity(context: viewContext)
                 newItem.priorityType = priority.rawValue
+                newItem.relationship = generator
+                newItem.orderInGroup = Int16(allGeneratorConsumers.count)
 
                 persistenceController.saveContext()
             }
