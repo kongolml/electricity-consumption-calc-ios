@@ -7,18 +7,12 @@
 
 import SwiftUI
 import CoreData
-import GoogleSignIn
-import GoogleSignInSwift
 
 struct GeneratorView: View {
     @Environment(\.managedObjectContext) private var viewContext
-    @Environment(\.keychainService) private var keychainService
-    @Environment(\.authenticationService) private var authenticationService
     @EnvironmentObject var persistenceController: PersistenceController
 
     @ObservedObject var generator: GeneratorEntity
-
-    @State private var viewModel: GeneratorViewModel?
 
     @FetchRequest(
         sortDescriptors: [NSSortDescriptor(keyPath: \ConsumerEntity.orderInGroup, ascending: true)],
@@ -40,16 +34,11 @@ struct GeneratorView: View {
     var body: some View {
         NavigationStack {
             List {
-                GoogleSignInButton(action: handleSignInButton)
-                Button("Sign out google") {
-                    viewModel?.signOut()
-                }
-
-                if (allGeneratorConsumers.count == 0) {
+                if allGeneratorConsumers.isEmpty {
                     Text("No consumers yet")
                 }
 
-                if (allGeneratorConsumers.count > 0) {
+                if !allGeneratorConsumers.isEmpty {
                     ForEach(ConsumerPriorityType.allCases, id: \.self) { filteredConsumersGroup in
                         let consumersInGroup = filteredItems(for: filteredConsumersGroup)
 
@@ -64,7 +53,7 @@ struct GeneratorView: View {
                                     Button(action: {
                                         toggleItemActiveStatus(consumer: consumerItem)
                                     }) {
-                                        consumerItem.isActive ? Label("Dectivate", systemImage: "bolt.slash") : Label("Activate", systemImage: "powercord")
+                                        consumerItem.isActive ? Label("Deactivate", systemImage: "bolt.slash") : Label("Activate", systemImage: "powercord")
                                     }
                                     .tint(consumerItem.isActive ? .red : .green)
                                 }
@@ -98,19 +87,19 @@ struct GeneratorView: View {
                         Text("Total capacity")
                         Spacer()
                         Text("\(convertEnergyDoubleToNiceFormat(value: generator.capacity)) Watt")
-                            .foregroundColor(.gray)
+                            .foregroundStyle(.gray)
                     }
                     HStack {
                         Text("Total consumption")
                         Spacer()
                         Text("\(convertEnergyDoubleToNiceFormat(value: totalConsumption)) Watt")
-                            .foregroundColor(.gray)
+                            .foregroundStyle(.gray)
                     }
                     HStack {
                         Text("Left capacity")
                         Spacer()
                         Text("\(convertEnergyDoubleToNiceFormat(value: leftCapacity)) Watt")
-                            .foregroundColor(.gray)
+                            .foregroundStyle(.gray)
                     }
                 }, header: {
                     Text("Summary")
@@ -146,14 +135,6 @@ struct GeneratorView: View {
                 }
             }
             .navigationTitle(generator.name)
-        }
-        .onAppear {
-            if viewModel == nil {
-                viewModel = GeneratorViewModel(
-                    keychainService: keychainService,
-                    authenticationService: authenticationService
-                )
-            }
         }
     }
 
@@ -195,26 +176,6 @@ struct GeneratorView: View {
         viewContext.perform {
             persistenceController.saveContext()
         }
-    }
-
-    func handleSignInButton() {
-        GIDSignIn.sharedInstance.signIn(withPresenting: getRootViewController()) { signInResult, error in
-            viewModel?.handleGoogleSignInResult(signInResult: signInResult, error: error)
-        }
-    }
-}
-
-extension View {
-    func getRootViewController() -> UIViewController {
-        guard let screen = UIApplication.shared.connectedScenes.first as? UIWindowScene else {
-            return .init()
-        }
-
-        guard let root = screen.windows.first?.rootViewController else {
-            return .init()
-        }
-
-        return root
     }
 }
 
