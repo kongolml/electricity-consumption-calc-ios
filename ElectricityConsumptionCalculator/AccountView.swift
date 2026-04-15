@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import GoogleSignIn
 import GoogleSignInSwift
 
 struct AccountView: View {

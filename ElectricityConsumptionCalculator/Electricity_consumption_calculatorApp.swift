@@ -26,7 +26,7 @@ struct Electricity_consumption_calculatorApp: App {
     var body: some Scene {
         WindowGroup {
             if let generator = defaultGenerator {
-                GeneratorView(generator: generator)
+                ContentView(generator: generator)
                     .environment(\.managedObjectContext, persistenceController.container.viewContext)
                     .environment(\.keychainService, KeychainService.shared)
                     .environment(\.authenticationService, AuthenticationService.shared)
