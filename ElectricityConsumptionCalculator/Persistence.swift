@@ -227,6 +227,10 @@ class PersistenceController: ObservableObject {
     
     func saveContext() {
         guard container.viewContext.hasChanges else { return }
+        // Trigger view updates for any views observing this PersistenceController.
+        // This is necessary because @FetchRequest doesn't reliably track property-level
+        // changes on existing NSManagedObjects (only inserts/deletes/reordering).
+        objectWillChange.send()
 
         do {
             try container.viewContext.save()

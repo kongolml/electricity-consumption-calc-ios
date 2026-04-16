@@ -26,12 +26,7 @@ struct GeneratorView: View {
     }
 
     var body: some View {
-        let consumers: [ConsumerEntity] = {
-            let array = Array(allGeneratorConsumers)
-            // Explicitly access isActive to ensure SwiftUI tracks this dependency
-            for consumer in array { _ = consumer.isActive }
-            return array
-        }()
+        let consumers = Array(allGeneratorConsumers)
         let totalConsumption = ConsumptionCalculator.totalConsumption(for: consumers)
         let leftCapacity = ConsumptionCalculator.remainingCapacity(generator: generator, consumers: consumers)
         let loadPercentage = ConsumptionCalculator.loadPercentage(generator: generator, consumers: consumers)
