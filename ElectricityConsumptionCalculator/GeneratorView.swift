@@ -20,32 +20,24 @@ struct GeneratorView: View {
         self.generator = generator
         self._allGeneratorConsumers = FetchRequest(
             sortDescriptors: [NSSortDescriptor(keyPath: \ConsumerEntity.orderInGroup, ascending: true)],
-            predicate: NSPredicate(format: "relationship == %@", generator),
+            predicate: NSPredicate(format: "relationship == %@", generator.objectID),
             animation: .default
         )
     }
 
-    var totalConsumption: Double {
-        ConsumptionCalculator.totalConsumption(for: Array(allGeneratorConsumers))
-    }
-
-    var leftCapacity: Double {
-        ConsumptionCalculator.remainingCapacity(generator: generator, consumers: Array(allGeneratorConsumers))
-    }
-
-    var loadPercentage: Double {
-        ConsumptionCalculator.loadPercentage(generator: generator, consumers: Array(allGeneratorConsumers))
-    }
-
-    var loadStatus: LoadStatus {
-        ConsumptionCalculator.loadStatus(percentage: loadPercentage)
-    }
-
-    private func filteredItems(for category: ConsumerPriorityType) -> [ConsumerEntity] {
-        ConsumptionCalculator.groupedByPriority(consumers: Array(allGeneratorConsumers))[category] ?? []
-    }
-
     var body: some View {
+        let consumers: [ConsumerEntity] = {
+            let array = Array(allGeneratorConsumers)
+            // Explicitly access isActive to ensure SwiftUI tracks this dependency
+            for consumer in array { _ = consumer.isActive }
+            return array
+        }()
+        let totalConsumption = ConsumptionCalculator.totalConsumption(for: consumers)
+        let leftCapacity = ConsumptionCalculator.remainingCapacity(generator: generator, consumers: consumers)
+        let loadPercentage = ConsumptionCalculator.loadPercentage(generator: generator, consumers: consumers)
+        let loadStatus = ConsumptionCalculator.loadStatus(percentage: loadPercentage)
+        let grouped = ConsumptionCalculator.groupedByPriority(consumers: consumers)
+
         NavigationStack {
             List {
                 // Load Gauge Section
@@ -61,13 +53,13 @@ struct GeneratorView: View {
                     .listRowInsets(EdgeInsets())
                 }
 
-                if allGeneratorConsumers.isEmpty {
+                if consumers.isEmpty {
                     Text("No consumers yet")
                 }
 
-                if !allGeneratorConsumers.isEmpty {
+                if !consumers.isEmpty {
                     ForEach(ConsumerPriorityType.allCases, id: \.self) { filteredConsumersGroup in
-                        let consumersInGroup = filteredItems(for: filteredConsumersGroup)
+                        let consumersInGroup = grouped[filteredConsumersGroup] ?? []
 
                         Section(content: {
                             ForEach(consumersInGroup, id: \.self) { consumerItem in
@@ -162,7 +154,7 @@ struct GeneratorView: View {
     }
 
     private func moveItems(from source: IndexSet, to destination: Int, in priorityTypeGroup: ConsumerPriorityType) {
-        var revisedItemsFromGroup = allGeneratorConsumers.map { $0 }.filter { $0.priorityType == priorityTypeGroup.rawValue }
+        var revisedItemsFromGroup = allGeneratorConsumers.filter { $0.priorityType == priorityTypeGroup.rawValue }
         revisedItemsFromGroup.move(fromOffsets: source, toOffset: destination)
 
         for reverseIndex in stride(from: revisedItemsFromGroup.count - 1, through: 0, by: -1) {
@@ -176,9 +168,9 @@ struct GeneratorView: View {
 }
 
 #Preview {
-    @Environment(\.managedObjectContext) var viewContext
+    @Previewable @Environment(\.managedObjectContext) var viewContext
 
     let dummyGenerator = GeneratorEntity.createMock(context: viewContext)
 
-    return GeneratorView(generator: dummyGenerator).environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
+    GeneratorView(generator: dummyGenerator).environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
 }

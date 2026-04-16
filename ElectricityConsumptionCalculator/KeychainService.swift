@@ -23,7 +23,7 @@ protocol KeychainServiceProtocol {
 }
 
 /// Service for managing keychain operations with proper singleton pattern
-final class KeychainService: KeychainServiceProtocol, ObservableObject {
+final class KeychainService: KeychainServiceProtocol {
     static let shared = KeychainService()
 
     private let keychainToolbox = KeychainToolbox()

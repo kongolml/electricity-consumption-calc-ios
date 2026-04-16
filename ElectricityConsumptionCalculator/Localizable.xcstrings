@@ -918,6 +918,7 @@
       }
     },
     "Total Consumption: %.2f" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -983,6 +984,7 @@
       }
     },
     "x%@" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -997,6 +999,9 @@
           }
         }
       }
+    },
+    "x%d" : {
+
     }
   },
   "version" : "1.0"

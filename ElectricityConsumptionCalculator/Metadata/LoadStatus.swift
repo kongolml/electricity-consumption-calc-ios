@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-enum LoadStatus {
+enum LoadStatus: Equatable {
     case normal    // 0-60%
     case caution   // 60-80%
     case highLoad  // 80-100%

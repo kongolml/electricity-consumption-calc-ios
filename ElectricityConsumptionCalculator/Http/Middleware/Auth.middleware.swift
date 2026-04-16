@@ -14,7 +14,6 @@ class AuthMiddleware {
         AlamofireService.sharedSession.request(AuthRouter.google(token: SignInGooglePayload(idToken: idToken))).validate().responseDecodable(of: UserAuthTokensFromServer.self) { response in
             switch response.result {
             case let .success(authTokens):
-//                completion(.success(authTokens))
                 completion(authTokens, nil)
             case let .failure(error):
                 debugPrint(error)

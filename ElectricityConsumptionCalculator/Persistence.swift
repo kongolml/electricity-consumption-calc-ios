@@ -35,10 +35,18 @@ class PersistenceController: ObservableObject {
 
     init(inMemory: Bool = false) {
         container = NSPersistentContainer(name: "Electricity_consumption_calculator")
+
+        guard let storeDescription = container.persistentStoreDescriptions.first else {
+            fatalError("No persistent store descriptions found")
+        }
+
+        // Enable lightweight migration for model version changes
+        storeDescription.setOption(true as NSNumber,
+            forKey: NSMigratePersistentStoresAutomaticallyOption)
+        storeDescription.setOption(true as NSNumber,
+            forKey: NSInferMappingModelAutomaticallyOption)
+
         if inMemory {
-            guard let storeDescription = container.persistentStoreDescriptions.first else {
-                fatalError("No persistent store descriptions found")
-            }
             storeDescription.url = URL(fileURLWithPath: "/dev/null")
         }
 
@@ -233,9 +241,4 @@ class PersistenceController: ObservableObject {
         container.viewContext.delete(consumer)
         saveContext()
     }
-}
-
-extension Logger {
-    static let persistence = Logger(subsystem: Bundle.main.bundleIdentifier ?? "com.electricitycalculator", category: "Persistence")
-    static let auth = Logger(subsystem: Bundle.main.bundleIdentifier ?? "com.electricitycalculator", category: "Auth")
 }

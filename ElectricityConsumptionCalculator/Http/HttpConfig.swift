@@ -67,10 +67,18 @@ class AFRequestInterceptor: RequestInterceptor {
     private let refreshQueue = DispatchQueue(label: "com.electricitycalculator.requestinterceptor.refresh")
     private var isRefreshing = false
     private var requestsToRetry: [(RetryResult) -> Void] = []
+    private let keychainService: KeychainServiceProtocol
+    private let authenticationService: AuthenticationServiceProtocol
+
+    init(keychainService: KeychainServiceProtocol = KeychainService.shared,
+         authenticationService: AuthenticationServiceProtocol = AuthenticationService.shared) {
+        self.keychainService = keychainService
+        self.authenticationService = authenticationService
+    }
 
     func adapt(_ urlRequest: URLRequest, for session: Session, completion: @escaping (Result<URLRequest, Error>) -> Void) {
         var urlRequest = urlRequest
-        if let token = KeychainService.shared.getUserApiToken(), !token.isEmpty {
+        if let token = keychainService.getUserApiToken(), !token.isEmpty {
             urlRequest.headers.add(.authorization(bearerToken: token))
         }
         completion(.success(urlRequest))
@@ -102,9 +110,9 @@ class AFRequestInterceptor: RequestInterceptor {
             }
 
             // Check if we have a refresh token
-            guard let refreshToken = KeychainService.shared.getRefreshToken() else {
+            guard let refreshToken = self.keychainService.getRefreshToken() else {
                 // No refresh token available, clear tokens and don't retry
-                KeychainService.shared.clearAllTokens()
+                self.keychainService.clearAllTokens()
                 completion(.doNotRetry)
                 return
             }
@@ -115,7 +123,7 @@ class AFRequestInterceptor: RequestInterceptor {
             guard !self.isRefreshing else { return }
             self.isRefreshing = true
 
-            AuthenticationService.shared.refreshToken(refreshToken: refreshToken) { [weak self] tokens, error in
+            self.authenticationService.refreshToken(refreshToken: refreshToken) { [weak self] tokens, error in
                 guard let self = self else { return }
 
                 self.refreshQueue.async {
@@ -126,15 +134,15 @@ class AFRequestInterceptor: RequestInterceptor {
 
                     if let tokens = tokens {
                         // Save new tokens
-                        KeychainService.shared.setUserApiToken(newToken: tokens.accessToken)
+                        self.keychainService.setUserApiToken(newToken: tokens.accessToken)
                         if let newRefreshToken = tokens.refreshToken {
-                            KeychainService.shared.setRefreshToken(value: newRefreshToken)
+                            self.keychainService.setRefreshToken(value: newRefreshToken)
                         }
 
                         // Update token expiration if provided, default to 1 hour
                         let expiresIn = tokens.expiresIn ?? 3600
                         let expirationDate = Date().addingTimeInterval(TimeInterval(expiresIn))
-                        KeychainService.shared.setTokenExpiration(expirationDate: expirationDate)
+                        self.keychainService.setTokenExpiration(expirationDate: expirationDate)
 
                         AppLogger.auth.info("Token refreshed successfully, expires at: \(expirationDate)")
 
@@ -143,7 +151,7 @@ class AFRequestInterceptor: RequestInterceptor {
                     } else {
                         // Refresh failed - clear tokens, notify UI, and don't retry
                         AppLogger.auth.error("Token refresh failed: \(error?.localizedDescription ?? "unknown error")")
-                        KeychainService.shared.clearAllTokens()
+                        self.keychainService.clearAllTokens()
 
                         // Notify UI to update authentication state
                         DispatchQueue.main.async {

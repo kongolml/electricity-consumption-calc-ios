@@ -26,7 +26,7 @@ struct ConsumerListItemView: View {
                 .contentShape(Rectangle())
             Spacer()
             Text("\(convertEnergyDoubleToNiceFormat(value: consumer.consumption)) Watt")
-            Text("x\(String(consumer.quantity))")
+            Text("x\(consumer.quantity)")
         }
         .opacity(consumer.isActive ? 1.0 : 0.5)
     }

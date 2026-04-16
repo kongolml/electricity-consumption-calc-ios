@@ -23,7 +23,7 @@ struct AccessTokens: Codable {
 }
 
 /// Service for managing authentication operations
-final class AuthenticationService: AuthenticationServiceProtocol, ObservableObject {
+final class AuthenticationService: AuthenticationServiceProtocol {
     static let shared = AuthenticationService()
     
     private let logger = Logger(subsystem: Bundle.main.bundleIdentifier ?? "com.electricitycalculator", category: "Auth")

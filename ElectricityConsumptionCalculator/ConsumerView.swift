@@ -39,7 +39,7 @@ struct ConsumerView: View {
                     .foregroundStyle(.gray)
 
                     Toggle("Enabled", isOn: $consumer.isActive)
-                        .foregroundColor(.gray)
+                        .foregroundStyle(.gray)
                 }
 
                 Section {

@@ -41,7 +41,7 @@ struct EnergyInput: View {
 }
 
 #Preview {
-    @State var val = 1000.0
+    @Previewable @State var val = 1000.0
 
-    return EnergyInput(entityProperty: $val, placeholder: "Capacity")
+    EnergyInput(entityProperty: $val, placeholder: "Capacity")
 }
