@@ -1,10 +1,7 @@
 {
   "sourceLanguage" : "uk",
   "strings" : {
-    "/" : {
-
-    },
-    "/ %lld W" : {
+    "" : {
 
     },
     "%@ consumer" : {
@@ -84,47 +81,23 @@
         }
       }
     },
-    "%lld + %lld = %lld W" : {
-      "localizations" : {
-        "uk" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "%1$lld + %2$lld = %3$lld W"
-          }
-        }
-      }
-    },
-    "%lld devices" : {
+    "%lld percent" : {
 
     },
     "%lld W" : {
 
     },
-    "%lld W surge" : {
-
-    },
     "%lld%%" : {
 
     },
-    "•" : {
-
-    },
-    "+%@ W" : {
-
-    },
-    "+%@ W over limit" : {
-
-    },
-    "0.5" : {
-
-    },
-    "1.0" : {
+    "0 W" : {
 
     },
     "Account" : {
 
     },
     "Activate" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -184,73 +157,72 @@
         }
       }
     },
-    "Back" : {
-
+    "Caution" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Caution"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Обережно"
+          }
+        }
+      }
     },
-    "Basic Information" : {
-
+    "Critical" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Critical"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Критичний"
+          }
+        }
+      }
     },
-    "Brand (optional)" : {
-
+    "Critical device" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Critical device"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Критичний прилад"
+          }
+        }
+      }
     },
-    "Can I Add?" : {
-
-    },
-    "Cancel" : {
-
-    },
-    "Capacity" : {
-
-    },
-    "Category" : {
-
-    },
-    "Category_Cooling" : {
-
-    },
-    "Category_Electronics" : {
-
-    },
-    "Category_Heating" : {
-
-    },
-    "Category_Kitchen" : {
-
-    },
-    "Category_Lighting" : {
-
-    },
-    "Category_Medical" : {
-
-    },
-    "Category_Other" : {
-
-    },
-    "Category_Tools" : {
-
-    },
-    "Category_WaterPumps" : {
-
-    },
-    "Choose Different" : {
-
-    },
-    "Configuration" : {
-
-    },
-    "Consumption" : {
-
-    },
-    "Consumption Rate" : {
-
-    },
-    "Current Load" : {
-
-    },
-    "Custom" : {
-
+    "Critical_plural" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Critical"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Критичні"
+          }
+        }
+      }
     },
     "Deactivate" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -319,6 +291,22 @@
     },
     "default_value_backlight" : {
 
+    },
+    "default_value_charger" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Phone charger"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Зарядка телефону"
+          }
+        }
+      }
     },
     "default_value_fridge" : {
 
@@ -443,11 +431,69 @@
     "Generator" : {
 
     },
-    "Generator load: %lld percent" : {
-
+    "High Load" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "High Load"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Високе навантаження"
+          }
+        }
+      }
     },
-    "High surge devices:" : {
-
+    "Important" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Important"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Важливий"
+          }
+        }
+      }
+    },
+    "Important device" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Important device"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Важливий прилад"
+          }
+        }
+      }
+    },
+    "Important_plural" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Important"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Важливі"
+          }
+        }
+      }
     },
     "kWatt" : {
       "localizations" : {
@@ -472,6 +518,7 @@
 
     },
     "Left capacity" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -487,14 +534,95 @@
         }
       }
     },
-    "Liters" : {
-
-    },
     "Load" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Load"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Навантаження"
+          }
+        }
+      }
     },
-    "Load is within safe limits" : {
-
+    "Load at %lld percent, %@" : {
+      "localizations" : {
+        "uk" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Load at %1$lld percent, %2$@"
+          }
+        }
+      }
+    },
+    "Load status caution" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Load status caution"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Статус навантаження: обережно"
+          }
+        }
+      }
+    },
+    "Load status high" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Load status high"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Статус навантаження: високе"
+          }
+        }
+      }
+    },
+    "Load status normal" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Load status normal"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Статус навантаження: норма"
+          }
+        }
+      }
+    },
+    "Load status overload" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Load status overload"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Статус навантаження: перевантаження"
+          }
+        }
+      }
     },
     "Loading" : {
       "localizations" : {
@@ -662,44 +790,85 @@
         }
       }
     },
-    "No suggestions needed" : {
-
+    "Normal" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Normal"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Норма"
+          }
+        }
+      }
     },
-    "Not Recommended" : {
-
+    "Optional" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Optional"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Додатковий"
+          }
+        }
+      }
+    },
+    "Optional device" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Optional device"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Додатковий прилад"
+          }
+        }
+      }
+    },
+    "Optional_plural" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Optional"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Додаткові"
+          }
+        }
+      }
     },
     "Overload" : {
-
-    },
-    "Peak capacity is used for surge protection calculations" : {
-
-    },
-    "Peak/Surge Capacity" : {
-
-    },
-    "Power Factor" : {
-
-    },
-    "Priority" : {
-
-    },
-    "Priority_Critical" : {
-
-    },
-    "Priority_Critical_Plural" : {
-
-    },
-    "Priority_Important" : {
-
-    },
-    "Priority_Important_Plural" : {
-
-    },
-    "Priority_Optional" : {
-
-    },
-    "Priority_Optional_Plural" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Overload"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Перевантаження"
+          }
+        }
+      }
     },
     "Quantity" : {
       "localizations" : {
@@ -805,6 +974,7 @@
 
     },
     "Summary" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -820,25 +990,28 @@
         }
       }
     },
-    "Surge" : {
+    "Toggle %@" : {
 
     },
-    "Surge Safe" : {
-
-    },
-    "Surge Warning" : {
-
-    },
-    "Surge Wattage" : {
-
-    },
-    "Surge Watts (optional)" : {
-
-    },
-    "Tank Capacity" : {
-
+    "Toggle active" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Toggle active"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Перемкнути"
+          }
+        }
+      }
     },
     "Total capacity" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -855,6 +1028,7 @@
       }
     },
     "Total consumption" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {

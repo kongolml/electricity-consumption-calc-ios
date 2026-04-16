@@ -36,6 +36,30 @@ struct ConsumptionCalculator {
         }
     }
 
+    /// Returns load percentage (total consumption / generator capacity).
+    /// Returns 0 when capacity is 0 or less.
+    static func loadPercentage(generator: GeneratorEntity, consumers: [ConsumerEntity]) -> Double {
+        let capacity = generator.capacity
+        guard capacity > 0 else { return 0 }
+        let total = totalConsumption(for: consumers)
+        return (total / capacity) * 100
+    }
+
+    /// Returns a LoadStatus enum value based on load percentage.
+    /// 0-60% → .normal, 60-80% → .caution, 80-100% → .highLoad, >100% → .overload
+    static func loadStatus(percentage: Double) -> LoadStatus {
+        switch percentage {
+        case ..<60:
+            return .normal
+        case 60..<80:
+            return .caution
+        case 80..<100:
+            return .highLoad
+        default:
+            return .overload
+        }
+    }
+
     // MARK: - Load Percentage
 
     /// Calculates load percentage (0.0 - 1.0+)

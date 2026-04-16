@@ -10,39 +10,24 @@ import SwiftUI
 struct ConsumerListItemView: View {
     @ObservedObject var consumer: ConsumerEntity
     @Environment(\.managedObjectContext) private var viewContext
+    @EnvironmentObject var persistenceController: PersistenceController
 
     private var category: DeviceCategory {
         DeviceCategory(rawValue: consumer.category) ?? .other
     }
 
     var body: some View {
-        HStack(spacing: 12) {
-            // Category icon
-            Image(systemName: category.iconName)
-                .font(.callout)
-                .foregroundStyle(.tint)
-                .frame(width: 28, height: 28)
-                .background(Color(.systemGray5))
-                .cornerRadius(6)
-
-            // Name and details
-            VStack(alignment: .leading, spacing: 2) {
-                Text(consumer.name)
-                    .font(.body)
-
-                HStack(spacing: 8) {
-                    Text("\(convertEnergyDoubleToNiceFormat(value: consumer.consumption)) W")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-
-                    if consumer.surgeWattage > consumer.consumption {
-                        Image(systemName: "exclamationmark.triangle.fill")
-                            .font(.caption2)
-                            .foregroundStyle(.orange)
-                    }
+        HStack {
+            Toggle("", isOn: $consumer.isActive)
+                .toggleStyle(.switch)
+                .labelsHidden()
+                .accessibilityLabel("Toggle \(consumer.name)")
+                .onChange(of: consumer.isActive) { _ in
+                    persistenceController.saveContext()
                 }
-            }
 
+            Text(consumer.name)
+                .contentShape(Rectangle())
             Spacer()
 
             // Quantity and toggle

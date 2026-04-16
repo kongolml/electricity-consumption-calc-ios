@@ -26,14 +26,6 @@ struct ConsumersSectionView: View {
                 } label: {
                     ConsumerListItemView(consumer: consumerItem)
                 }
-                .swipeActions(edge: .leading) {
-                    Button(action: {
-                        toggleItemActiveStatus(consumer: consumerItem)
-                    }) {
-                        consumerItem.isActive ? Label("Activate", systemImage: "x.circle") : Label("Deactivate", systemImage: "checkmark.circle.fill")
-                    }
-                    .tint(consumerItem.isActive ? .red : .green)
-                }
                 .swipeActions(edge: .trailing) {
                     Button(action: {
                         deleteItem(consumer: consumerItem)
@@ -47,15 +39,7 @@ struct ConsumersSectionView: View {
             Text("Total Consumption: \(consumersTotalConsumption, specifier: "%.2f")")
         })
     }
-    
-    private func toggleItemActiveStatus(consumer: ConsumerEntity) {
-        viewContext.perform {
-            consumer.isActive.toggle()
-            
-            persistenceController.saveContext()
-        }
-    }
-    
+
     private func deleteItem(consumer: ConsumerEntity) {
         viewContext.perform {
             withAnimation {

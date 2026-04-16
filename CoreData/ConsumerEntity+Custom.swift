@@ -15,7 +15,7 @@ extension ConsumerEntity {
         self.id = UUID()
         self.name = NSLocalizedString("new_consumer_item_name", comment: "")
         self.consumption = 0
-        self.priorityType = 1
+        self.priorityType = ConsumerPriorityType.critical.rawValue
         self.isActive = true
         self.quantity = 1
         self.timeCreated = Date()
@@ -30,7 +30,7 @@ extension ConsumerEntity {
         newConsumer.id = UUID()
         newConsumer.name = NSLocalizedString("new_mock_consumer_item_name", comment: "")
         newConsumer.timeCreated = Date()
-        newConsumer.priorityType = Int16.random(in: 1...2)
+        newConsumer.priorityType = Int16.random(in: 1...3)
         newConsumer.consumption = 100.0 //Double.random(in: 10.0...500.0)
         newConsumer.quantity = Int16.random(in: 1...5)
         newConsumer.isActive = Bool.random()

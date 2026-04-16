@@ -39,6 +39,10 @@ struct GeneratorView: View {
         ConsumptionCalculator.loadPercentage(generator: generator, consumers: Array(allGeneratorConsumers))
     }
 
+    var loadStatus: LoadStatus {
+        ConsumptionCalculator.loadStatus(percentage: loadPercentage)
+    }
+
     private func filteredItems(for category: ConsumerPriorityType) -> [ConsumerEntity] {
         ConsumptionCalculator.groupedByPriority(consumers: Array(allGeneratorConsumers))[category] ?? []
     }
@@ -86,6 +90,16 @@ struct GeneratorView: View {
                     Text("No consumers yet")
                 }
 
+                // Dashboard Gauge
+                LoadGaugeView(
+                    loadPercentage: loadPercentage,
+                    loadStatus: loadStatus,
+                    totalConsumption: totalConsumption,
+                    generatorCapacity: generator.capacity
+                )
+                .listRowBackground(Color.clear)
+                .listRowInsets(EdgeInsets())
+
                 if !allGeneratorConsumers.isEmpty {
                     ForEach(ConsumerPriorityType.allCases, id: \.self) { filteredConsumersGroup in
                         let consumersInGroup = filteredItems(for: filteredConsumersGroup)
@@ -96,14 +110,6 @@ struct GeneratorView: View {
                                     ConsumerView(consumer: consumerItem)
                                 } label: {
                                     ConsumerListItemView(consumer: consumerItem)
-                                }
-                                .swipeActions(edge: .leading) {
-                                    Button(action: {
-                                        toggleItemActiveStatus(consumer: consumerItem)
-                                    }) {
-                                        consumerItem.isActive ? Label("Deactivate", systemImage: "bolt.slash") : Label("Activate", systemImage: "powercord")
-                                    }
-                                    .tint(consumerItem.isActive ? .red : .green)
                                 }
                                 .swipeActions(edge: .trailing) {
                                     Button(action: {
@@ -129,29 +135,6 @@ struct GeneratorView: View {
                         })
                     }
                 }
-
-                Section(content: {
-                    HStack {
-                        Text("Total capacity")
-                        Spacer()
-                        Text("\(convertEnergyDoubleToNiceFormat(value: generator.capacity)) Watt")
-                            .foregroundStyle(.gray)
-                    }
-                    HStack {
-                        Text("Total consumption")
-                        Spacer()
-                        Text("\(convertEnergyDoubleToNiceFormat(value: totalConsumption)) Watt")
-                            .foregroundStyle(.gray)
-                    }
-                    HStack {
-                        Text("Left capacity")
-                        Spacer()
-                        Text("\(convertEnergyDoubleToNiceFormat(value: leftCapacity)) Watt")
-                            .foregroundStyle(.gray)
-                    }
-                }, header: {
-                    Text("Summary")
-                })
             }
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
@@ -165,9 +148,25 @@ struct GeneratorView: View {
                     EditButton()
                 }
                 ToolbarItem {
-                    Button(action: {
-                        showAddDeviceSheet = true
-                    }) {
+                    Menu {
+                        Button(action: {
+                            addNewItem(priority: .critical)
+                        }) {
+                            Label("Critical device", systemImage: "bolt.circle")
+                        }
+
+                        Button(action: {
+                            addNewItem(priority: .important)
+                        }) {
+                            Label("Important device", systemImage: "lightbulb.2")
+                        }
+
+                        Button(action: {
+                            addNewItem(priority: .optional)
+                        }) {
+                            Label("Optional device", systemImage: "leaf")
+                        }
+                    } label: {
                         Label("Add Item", systemImage: "plus")
                     }
                 }

@@ -11,26 +11,26 @@ enum ConsumerPriorityType: Int16, CaseIterable {
     case critical = 1
     case important = 2
     case optional = 3
-    
+
     var name: LocalizedStringResource {
         switch self {
         case .critical:
-            return "Priority_Critical"
+            return "Critical"
         case .important:
-            return "Priority_Important"
+            return "Important"
         case .optional:
-            return "Priority_Optional"
+            return "Optional"
         }
     }
-    
+
     var namePlural: LocalizedStringResource {
         switch self {
         case .critical:
-            return "Priority_Critical_Plural"
+            return "Critical_plural"
         case .important:
-            return "Priority_Important_Plural"
+            return "Important_plural"
         case .optional:
-            return "Priority_Optional_Plural"
+            return "Optional_plural"
         }
     }
 }

@@ -134,21 +134,21 @@ class PersistenceController: ObservableObject {
             if !results.isEmpty {
                 return results
             } else {
-                // Create default consumers for this generator
                 let newConsumerCritical = ConsumerEntity.createMock(context: container.viewContext)
                 newConsumerCritical.priorityType = ConsumerPriorityType.critical.rawValue
                 newConsumerCritical.quantity = 1
                 newConsumerCritical.name = NSLocalizedString("default_value_fridge", comment: "")
                 newConsumerCritical.isActive = true
-                newConsumerCritical.category = DeviceCategory.kitchen.rawValue
-                newConsumerCritical.relationship = generator
 
                 let newConsumerImportant = ConsumerEntity.createMock(context: container.viewContext)
                 newConsumerImportant.priorityType = ConsumerPriorityType.important.rawValue
                 newConsumerImportant.name = NSLocalizedString("default_value_backlight", comment: "")
                 newConsumerImportant.isActive = true
-                newConsumerImportant.category = DeviceCategory.lighting.rawValue
-                newConsumerImportant.relationship = generator
+
+                let newConsumerOptional = ConsumerEntity.createMock(context: container.viewContext)
+                newConsumerOptional.priorityType = ConsumerPriorityType.optional.rawValue
+                newConsumerOptional.name = NSLocalizedString("default_value_charger", comment: "")
+                newConsumerOptional.isActive = false
 
                 try container.viewContext.save()
                 return [newConsumerCritical, newConsumerImportant]
