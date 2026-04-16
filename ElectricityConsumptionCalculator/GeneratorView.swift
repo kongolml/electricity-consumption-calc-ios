@@ -16,8 +16,6 @@ struct GeneratorView: View {
 
     @FetchRequest private var allGeneratorConsumers: FetchedResults<ConsumerEntity>
 
-    @State private var showAddDeviceSheet = false
-
     init(generator: GeneratorEntity) {
         self.generator = generator
         self._allGeneratorConsumers = FetchRequest(
@@ -54,51 +52,18 @@ struct GeneratorView: View {
                 Section {
                     LoadGaugeView(
                         loadPercentage: loadPercentage,
-                        currentConsumption: totalConsumption,
-                        maxCapacity: generator.capacity
+                        loadStatus: loadStatus,
+                        totalConsumption: totalConsumption,
+                        generatorCapacity: generator.capacity
                     )
                     .frame(maxWidth: .infinity)
                     .listRowBackground(Color.clear)
                     .listRowInsets(EdgeInsets())
                 }
 
-                // Surge Warning Section
-                if generator.peakCapacity > 0 {
-                    Section {
-                        SurgeWarningView(
-                            generator: generator,
-                            consumers: Array(allGeneratorConsumers)
-                        )
-                        .listRowBackground(Color.clear)
-                        .listRowInsets(EdgeInsets())
-                    }
-                }
-
-                // Fuel Runtime Section
-                if generator.fuelTankCapacity > 0 {
-                    Section {
-                        FuelRuntimeView(
-                            generator: generator,
-                            consumers: Array(allGeneratorConsumers)
-                        )
-                        .listRowBackground(Color.clear)
-                        .listRowInsets(EdgeInsets())
-                    }
-                }
-
                 if allGeneratorConsumers.isEmpty {
                     Text("No consumers yet")
                 }
-
-                // Dashboard Gauge
-                LoadGaugeView(
-                    loadPercentage: loadPercentage,
-                    loadStatus: loadStatus,
-                    totalConsumption: totalConsumption,
-                    generatorCapacity: generator.capacity
-                )
-                .listRowBackground(Color.clear)
-                .listRowInsets(EdgeInsets())
 
                 if !allGeneratorConsumers.isEmpty {
                     ForEach(ConsumerPriorityType.allCases, id: \.self) { filteredConsumersGroup in
@@ -171,9 +136,6 @@ struct GeneratorView: View {
                     }
                 }
             }
-            .sheet(isPresented: $showAddDeviceSheet) {
-                AddDeviceFlowView(generator: generator)
-            }
             .navigationTitle(generator.name)
         }
     }
@@ -188,14 +150,6 @@ struct GeneratorView: View {
 
                 persistenceController.saveContext()
             }
-        }
-    }
-
-    private func toggleItemActiveStatus(consumer: ConsumerEntity) {
-        viewContext.perform {
-            consumer.isActive.toggle()
-
-            persistenceController.saveContext()
         }
     }
 

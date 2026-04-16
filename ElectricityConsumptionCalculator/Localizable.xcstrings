@@ -36,15 +36,6 @@
         }
       }
     },
-    "%@ L/h" : {
-
-    },
-    "%@ W" : {
-
-    },
-    "%@ W peak" : {
-
-    },
     "%@ Watt" : {
       "localizations" : {
         "en" : {
@@ -57,16 +48,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%@ Вт"
-          }
-        }
-      }
-    },
-    "%@ watts of %@ watts capacity" : {
-      "localizations" : {
-        "uk" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "%1$@ watts of %2$@ watts capacity"
           }
         }
       }
@@ -113,15 +94,6 @@
         }
       }
     },
-    "Active" : {
-
-    },
-    "Add active consumers to see runtime estimate" : {
-
-    },
-    "Add Device" : {
-
-    },
     "Add Item" : {
       "localizations" : {
         "en" : {
@@ -138,9 +110,6 @@
         }
       }
     },
-    "Advanced" : {
-
-    },
     "Are you sure you want to delete this item?" : {
       "localizations" : {
         "en" : {
@@ -156,6 +125,12 @@
           }
         }
       }
+    },
+    "Basic Information" : {
+
+    },
+    "Capacity" : {
+
     },
     "Caution" : {
       "localizations" : {
@@ -327,30 +302,6 @@
         }
       }
     },
-    "Device" : {
-
-    },
-    "Device Details" : {
-
-    },
-    "Device Name" : {
-
-    },
-    "Devices are ordered by priority (optional first) and consumption (highest first)." : {
-
-    },
-    "Duty Cycle" : {
-
-    },
-    "DutyCycle_AlwaysOn" : {
-
-    },
-    "DutyCycle_CyclesAutomatically" : {
-
-    },
-    "DutyCycle_ManualOnOff" : {
-
-    },
     "Edit generator" : {
       "localizations" : {
         "en" : {
@@ -367,15 +318,6 @@
         }
       }
     },
-    "Efficiency multiplier (0.5 - 1.0)" : {
-
-    },
-    "Empty" : {
-
-    },
-    "Enable Fuel Tracking" : {
-
-    },
     "Enabled" : {
       "localizations" : {
         "en" : {
@@ -391,42 +333,6 @@
           }
         }
       }
-    },
-    "Estimated Runtime" : {
-
-    },
-    "Estimated runtime based on current load" : {
-
-    },
-    "Fuel & Runtime" : {
-
-    },
-    "Fuel Configuration" : {
-
-    },
-    "Fuel Level" : {
-
-    },
-    "Fuel tracking enables runtime estimation based on current load." : {
-
-    },
-    "Fuel Type" : {
-
-    },
-    "FuelType_Diesel" : {
-
-    },
-    "FuelType_Gasoline" : {
-
-    },
-    "FuelType_None" : {
-
-    },
-    "FuelType_Propane" : {
-
-    },
-    "Full (%lld L)" : {
-
     },
     "Generator" : {
 
@@ -510,12 +416,6 @@
           }
         }
       }
-    },
-    "L" : {
-
-    },
-    "L/kWh" : {
-
     },
     "Left capacity" : {
       "extractionState" : "stale",
@@ -690,9 +590,6 @@
           }
         }
       }
-    },
-    "May exceed generator capacity" : {
-
     },
     "Name" : {
       "localizations" : {
@@ -870,6 +767,9 @@
         }
       }
     },
+    "Priority" : {
+
+    },
     "Quantity" : {
       "localizations" : {
         "en" : {
@@ -886,19 +786,7 @@
         }
       }
     },
-    "Quantity: %d" : {
-
-    },
-    "Result" : {
-
-    },
     "Running Capacity" : {
-
-    },
-    "Running Watts" : {
-
-    },
-    "Safe to Add" : {
 
     },
     "Secondary" : {
@@ -952,25 +840,10 @@
         }
       }
     },
-    "Select Category" : {
-
-    },
-    "Select Device" : {
-
-    },
-    "Select from Presets" : {
-
-    },
     "Sign out google" : {
 
     },
     "Signing in..." : {
-
-    },
-    "Startup/surge power (0 = same as running)" : {
-
-    },
-    "Suggested to Turn Off" : {
 
     },
     "Summary" : {
@@ -1076,9 +949,6 @@
         }
       }
     },
-    "Turn Off All Suggested" : {
-
-    },
     "Type" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -1096,9 +966,6 @@
         }
       }
     },
-    "Use default for %@" : {
-
-    },
     "Watt" : {
       "localizations" : {
         "en" : {
@@ -1114,12 +981,6 @@
           }
         }
       }
-    },
-    "What to Turn Off?" : {
-
-    },
-    "Worst-case startup surge analysis" : {
-
     },
     "x%@" : {
       "localizations" : {
